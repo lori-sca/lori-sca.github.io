@@ -88,6 +88,10 @@
       const cs = (w.sections || {}).contact || {};
       setText("sec-contact-eyebrow", cs.eyebrow);
       setHeadline(document.getElementById("sec-contact-headline"), cs.headline);
+      // editor-added picture + links per section (hero keys live on w itself)
+      mountSectionMedia("top", w);
+      mountSectionMedia("pipeline", (w.sections || {}).pipeline);
+      mountSectionMedia("contact", (w.sections || {}).contact);
       document.getElementById("w-eyebrow").textContent = w.eyebrow;
       document.getElementById("w-headline").textContent = w.headline;
       document.getElementById("w-lede").textContent = w.lede;

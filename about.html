@@ -212,6 +212,9 @@
       setText("oct-title", ot.title);
       setText("oct-text", ot.text);
       setText("oct-btn", ot.button);
+      // editor-added picture + links per section
+      mountSectionMedia("top", about.hero);
+      ["thirties", "story", "selected", "route", "toolbox", "contact"].forEach((k) => mountSectionMedia(k, S[k]));
       // labels
       const L = about.labels || {};
       setText("link-see-all", L.seeAllCases);

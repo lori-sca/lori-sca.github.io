@@ -149,6 +149,10 @@
       if (S.contact) {
         setText("sec-contact-eyebrow", S.contact.eyebrow);
         setHeadline(document.getElementById("sec-contact-headline"), S.contact.headline);
+      // editor-added picture + links per section
+      mountSectionMedia("top", oc.hero);
+      mountSectionMedia("field", S.field);
+      mountSectionMedia("contact", S.contact);
       }
     })
     .catch(() => {});
