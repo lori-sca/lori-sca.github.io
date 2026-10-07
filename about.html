@@ -4,10 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About — Lorisca Cessia</title>
-<meta name="description" content="The translator instinct: business questions in, technical answers out.">
+<meta name="description" content="Hi, you've found my 5-9 here. Use the data. Keep the human visible.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="about">
@@ -26,31 +27,69 @@
       <a data-nav="about" href="about.html">About</a>
     </div>
   </div>
-<div class="subnav"><div class="subnav-inner"><a href="#top">About</a><a href="#route">The Route</a><a href="#method">How I Work</a><a href="#contact">Contact</a></div></div>
+<div class="subnav"><div class="subnav-inner"><a href="#top">About</a><a href="#thirties">30 seconds</a><a href="#story">Story</a><a href="#route">The Route</a><a href="#toolbox">Toolbox</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
-  <section class="page-hero" id="top">
+  <!-- HERO -->
+  <section class="hero" id="top">
     <div class="wrap">
-      <span class="eyebrow">About</span>
-      <h1>Who this <em>is.</em></h1>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div class="about-grid">
-        <div class="about-main" id="chapters"></div>
-        <aside class="about-side">
-          <div class="portrait" id="portrait-block" style="display:none;">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">About · San Francisco</span>
+          <h1 id="about-greeting" data-sparkles></h1>
+          <p class="lede" id="about-lede"></p>
+          <p class="tagline" id="about-tagline"></p>
+        </div>
+        <div class="hero-side">
+          <div class="portrait tilt" id="portrait-block" style="display:none;">
             <img id="portrait-img" alt="Portrait of Lorisca Cessia">
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   </section>
 
-  <div class="band" id="route">
+  <!-- 30-SECOND VERSION -->
+  <section class="section" id="thirties" style="padding-top:0;">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">The 30-second version</span>
+          <h2>Three things <em>to know.</em></h2>
+        </div>
+      </div>
+      <div class="card-grid cols-3" id="thirties-grid"></div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <div class="band" id="story">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">So, what's the problem?</span>
+          <h2>The longer <em>version.</em></h2>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="about-main" id="chapters"></div>
+        <aside class="about-side">
+          <div class="aside-card reveal" id="holdup-card">
+            <span class="k">Hold up</span>
+            <p id="holdup-text"></p>
+          </div>
+          <div class="aside-card reveal" id="proudest-card">
+            <span class="k" id="proudest-title"></span>
+            <p id="proudest-text"></p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUTE + JOURNEY MAP -->
+  <section class="section" id="route">
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
@@ -59,32 +98,61 @@
         </div>
         <p class="sh-side">Seven years across four industries. The industries changed; the problem didn't.</p>
       </div>
-      <div id="route"></div>
-    </div>
-  </div>
-
-  <section class="section" id="method">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow">How I work</span>
-          <h2>Method, <em>not mystique.</em></h2>
-        </div>
+      <div class="journey-map reveal" id="journey-map">
+        <div class="map-canvas" id="journey-canvas"></div>
+        <div class="journey-legend" id="journey-legend"></div>
       </div>
-      <div class="method-grid" id="method-grid"></div>
+      <div id="route-stops" style="margin-top:2.5rem;"></div>
     </div>
   </section>
 
+  <!-- TOOLBOX -->
+  <div class="band" id="toolbox">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">Toolbox</span>
+          <h2>What I <em>reach for.</em></h2>
+        </div>
+        <p class="sh-side">Tools-agnostic by principle. These are just the current defaults.</p>
+      </div>
+      <div class="card-grid cols-3" id="toolbox-grid"></div>
+    </div>
+  </div>
+
+  <!-- PRINCIPLE + FIELD NOTES -->
+  <section class="section" id="principle">
+    <div class="wrap">
+      <div class="principle-block reveal">
+        <p class="principle-latin" id="principle-latin"></p>
+        <p class="principle-trans" id="principle-trans"></p>
+        <p class="principle-note" id="principle-note"></p>
+      </div>
+      <p class="fieldnotes reveal" id="fieldnotes"></p>
+      <div class="offclock-teaser reveal">
+        <div>
+          <h3>The 5-9 stuff lives elsewhere.</h3>
+          <p>Climbing, singing, snowboarding, and wherever I helped an event run.</p>
+        </div>
+        <a class="btn primary" href="off-the-clock.html">Off the clock →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
   <div class="band" id="contact">
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
           <span class="eyebrow">Contact</span>
-          <h2>Get in <em>touch.</em></h2>
+          <h2>Say <em>hi.</em></h2>
         </div>
         <p class="sh-side">Currently in San Francisco. Happy to walk through any of this live.</p>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
+      <div style="margin-top:1.6rem;">
+        <button data-like-heart type="button"></button>
+      </div>
     </div>
   </div>
 </main>
@@ -104,7 +172,9 @@
   </div>
 </footer>
 
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
 <script src="site.js"></script>
+<script src="motion.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
     .then(([site, about]) => {
@@ -114,11 +184,26 @@
         document.getElementById("portrait-block").style.display = "block";
         document.getElementById("portrait-img").src = site.portrait;
       }
+      // hero
+      const hero = about.hero || {};
+      document.getElementById("about-greeting").textContent = hero.greeting || "";
+      document.getElementById("about-lede").textContent = hero.lede || "";
+      document.getElementById("about-tagline").textContent = hero.tagline ? "\u201c" + hero.tagline + "\u201d" : "";
+      // 30-second cards
+      const tg = document.getElementById("thirties-grid");
+      (about.thirties || []).forEach((t) => {
+        const d = document.createElement("div");
+        d.className = "method tilt reveal";
+        const h = document.createElement("h3"); h.textContent = t.title;
+        const p = document.createElement("p"); p.textContent = t.text;
+        d.appendChild(h); d.appendChild(p);
+        tg.appendChild(d);
+      });
       // chapters
       const ch = document.getElementById("chapters");
       (about.chapters || []).forEach((c) => {
         const d = document.createElement("div");
-        d.className = "chapter";
+        d.className = "chapter reveal";
         const k = document.createElement("span");
         k.className = "k"; k.textContent = c.label;
         const p = document.createElement("p");
@@ -128,25 +213,111 @@
         if (emb) d.appendChild(emb);
         ch.appendChild(d);
       });
+      // hold up + proudest
+      document.getElementById("holdup-text").textContent = about.holdup || "";
+      document.getElementById("proudest-title").textContent = (about.proudest || {}).title || "";
+      document.getElementById("proudest-text").textContent = (about.proudest || {}).text || "";
       // route
-      renderRoute("route", about.route);
-      // method
-      const mg = document.getElementById("method-grid");
-      (about.method || []).forEach((m) => {
+      renderRoute("route-stops", about.route);
+      // toolbox
+      const bx = document.getElementById("toolbox-grid");
+      (about.toolbox || []).forEach((g) => {
         const d = document.createElement("div");
-        d.className = "method";
-        const h = document.createElement("h3");
-        h.textContent = m.title;
-        const p = document.createElement("p");
-        p.textContent = m.text;
-        d.appendChild(h); d.appendChild(p);
-        mg.appendChild(d);
+        d.className = "method tilt reveal";
+        const h = document.createElement("h3"); h.textContent = g.group;
+        d.appendChild(h);
+        const ul = document.createElement("ul");
+        ul.className = "tool-list";
+        (g.items || []).forEach((it) => {
+          const li = document.createElement("li"); li.textContent = it; ul.appendChild(li);
+        });
+        d.appendChild(ul);
+        bx.appendChild(d);
       });
+      // principle — latin gets the hannibal easter egg
+      const pr = about.principle || {};
+      const latEl = document.getElementById("principle-latin");
+      latEl.innerHTML = "";
+      const hw = document.createElement("span");
+      hw.className = "hannibal";
+      hw.tabIndex = 0;
+      hw.textContent = pr.latin || "";
+      const him = document.createElement("img");
+      him.src = "assets/hannibal.png";
+      him.alt = "Hannibal of Carthage";
+      hw.appendChild(him);
+      latEl.appendChild(hw);
+      document.getElementById("principle-trans").textContent = pr.translation || "";
+      document.getElementById("principle-note").textContent = pr.note || "";
+      // field notes
+      document.getElementById("fieldnotes").textContent = about.fieldnotes || "";
+      // journey map
+      initJourney(about.journey || []);
+      // wake up motion for everything just rendered
+      if (window.Motion) Motion.refresh(document);
     })
     .catch(() => {
       document.getElementById("chapters").innerHTML =
         "<p class='lede'>Content couldn't load — try refreshing.</p>";
     });
+
+  /* ---------- journey map ---------- */
+  function initJourney(stops) {
+    const box = document.getElementById("journey-map");
+    if (!stops.length || typeof mapboxgl === "undefined") { box.style.display = "none"; return; }
+    fetch("assets/mapbox-token.txt")
+      .then((r) => { if (!r.ok) throw new Error("no token"); return r.text(); })
+      .then((tok) => {
+        mapboxgl.accessToken = tok.trim();
+        const pts = stops.map((s) => [s.lng, s.lat]);
+        const map = new mapboxgl.Map({
+          container: "journey-canvas",
+          style: "mapbox://styles/mapbox/streets-v12",
+          scrollZoom: false,
+        });
+        const bounds = pts.reduce((b, p) => b.extend(p), new mapboxgl.LngLatBounds(pts[0], pts[0]));
+        function addRoute() {
+          if (map.getSource("journey")) return;
+          map.addSource("journey", {
+            type: "geojson",
+            data: { type: "Feature", geometry: { type: "LineString", coordinates: pts } },
+          });
+          map.addLayer({
+            id: "journey-line", type: "line", source: "journey",
+            paint: { "line-color": "#5b7fa6", "line-width": 3, "line-opacity": 0.85 },
+          });
+        }
+        map.on("load", () => { addRoute(); map.fitBounds(bounds, { padding: 70 }); });
+        stops.forEach((s) => {
+          const pin = document.createElement("div");
+          pin.className = "map-pin";
+          new mapboxgl.Marker(pin)
+            .setLngLat([s.lng, s.lat])
+            .setPopup(new mapboxgl.Popup({ offset: 18 }).setHTML(
+              "<strong>" + s.city + "</strong><br>" + s.note
+            ))
+            .addTo(map);
+        });
+        // legend
+        const lg = document.getElementById("journey-legend");
+        stops.forEach((s) => {
+          const sp = document.createElement("span");
+          const dot = document.createElement("i");
+          sp.appendChild(dot);
+          sp.appendChild(document.createTextNode(s.city + " — " + s.note));
+          lg.appendChild(sp);
+        });
+        // follow dark mode
+        document.addEventListener("lori-theme", (e) => {
+          map.setStyle(e.detail === "dark"
+            ? "mapbox://styles/mapbox/dark-v11"
+            : "mapbox://styles/mapbox/streets-v12");
+          map.once("styledata", addRoute);
+        });
+        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
+      })
+      .catch(() => { box.style.display = "none"; });
+  }
 </script>
 </body>
 </html>
