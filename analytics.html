@@ -2,97 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Analytics Work — Lorisca Cessia</title>
-<meta name="description" content="Case studies in SQL, machine learning, and BI. Proof, not promises.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<meta http-equiv="refresh" content="0; url=https://lorisca-analytics.github.io">
+<title>Redirecting to Analytics Work…</title>
 </head>
-<body data-page="analytics">
-
-<nav class="nav">
-  <div class="nav-inner">
-    <a class="wordmark" href="index.html">
-      <span class="wm-name">Lorisca Cessia</span>
-      <span class="wm-role">People Analytics &amp; Operations</span>
-    </a>
-    <div class="nav-links">
-      <a data-nav="analytics" href="analytics.html">Analytics</a>
-      <a data-nav="builds" href="builds.html">Builds</a>
-      <a data-nav="about" href="about.html">About</a>
-    </div>
-  </div>
-</nav>
-
-<main>
-  <section class="page-hero">
-    <div class="wrap">
-      <div class="lane-head">
-        <span class="eyebrow">Analytics Work</span>
-        <span class="lane-org">→ <a href="https://github.com/lorisca-analytics" target="_blank" rel="noopener">lorisca-analytics</a> on GitHub</span>
-      </div>
-      <h1>Proof, <em>not promises.</em></h1>
-      <p class="lede">Case studies in SQL, machine learning, and BI — each one built to answer a decision someone was getting wrong. The obvious metric points one way; the mechanism underneath points the other.</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="wrap">
-      <div id="analytics-grid"></div>
-      <div class="pipeline" id="pipeline-line" style="display:none;">
-        <strong>Building next</strong><span id="pipeline-text"></span>
-      </div>
-    </div>
-  </section>
-
-  <div class="band" id="contact">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow">Contact</span>
-          <h2>Questions about <em>the work?</em></h2>
-        </div>
-      </div>
-      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
-    </div>
-  </div>
-</main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-links">
-      <a href="https://lori-sca.github.io">Lorisca Cessia</a>
-      <a href="https://lorisca-analytics.github.io">Analytics Work</a>
-      <a href="https://lorisca-builds.github.io">Builds</a>
-      <a href="https://lori-sca.github.io/about.html">About</a>
-      <a href="mailto:loriscatuuk@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/lorisca" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/lori-sca" target="_blank" rel="noopener">GitHub</a>
-    </div>
-    <p class="fine">&copy; <span id="year"></span> Lorisca Cessia</p>
-  </div>
-</footer>
-
-<script src="content.js"></script>
-<script src="site.js"></script>
-<script>
-  renderCards("analytics-grid", PROJECTS.analytics, "cols-2");
-  if (PIPELINE.analytics) {
-    document.getElementById("pipeline-line").style.display = "grid";
-    document.getElementById("pipeline-text").textContent = PIPELINE.analytics;
-  }
-  const cr = document.getElementById("contact-row");
-  [
-    { label: "Email", href: "mailto:" + SITE.email },
-    { label: "LinkedIn", href: SITE.linkedin },
-    { label: "GitHub", href: SITE.github },
-  ].forEach((c) => {
-    const a = document.createElement("a");
-    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = c.label; cr.appendChild(a);
-  });
-</script>
+<body>
+<p>Redirecting to <a href="https://lorisca-analytics.github.io">lorisca-analytics.github.io</a>…</p>
 </body>
 </html>

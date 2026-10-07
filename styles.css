@@ -277,3 +277,20 @@ footer { border-top: 1px solid var(--hairline); background: var(--white); }
   font-family: var(--mono); font-size: .66rem; letter-spacing: .1em;
   text-transform: uppercase; color: var(--steel);
 }
+
+/* ---------- Pipeline index (shared with org sites) ---------- */
+.pipeline-index { margin-top: 2.8rem; border-top: 2px solid var(--ink); padding-top: 1.6rem; }
+.pipe-head {
+  font-family: var(--display); font-weight: 800; font-size: 1.1rem;
+  letter-spacing: -0.02em; margin-bottom: .6rem;
+}
+.pipe-note { color: var(--steel); font-size: .92rem; margin-bottom: 1rem; max-width: var(--measure); }
+.pipe-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: .75rem 0; border-bottom: 1px solid var(--hairline);
+}
+.pipe-title { font-weight: 600; font-size: .98rem; }
+.pipe-status {
+  font-family: var(--mono); font-size: .62rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--steel); white-space: nowrap;
+}

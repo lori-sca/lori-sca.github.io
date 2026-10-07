@@ -26,7 +26,7 @@ const HOME = {
     lede: "I live between business language and technical language: rigorous enough to understand the technical side, fluent enough to translate it for any audience. Tools-agnostic by principle.",
     metric: "▸ Hiring SLA −80% — one system, 10,000+ CVs a year",
     ctas: [
-      { label: "See the work", href: "analytics.html" },
+      { label: "See the work", href: "https://lorisca-analytics.github.io" },
       { label: "Get in touch", href: "about.html#contact" },
     ],
   },
@@ -212,4 +212,23 @@ const ABOUT = {
       text: "Documented well enough that successors run it. The best systems don't need their builder in the room.",
     },
   ],
+};
+
+/* ---------------- WRITING ---------------- */
+/* Essay candidates: real titles from the inventory + MBA adaptations.
+   Each graduates to a published essay card. Redaction pass required. */
+const WRITING = {
+  eyebrow: "WRITING · ESSAYS & FIELD NOTES",
+  headline: "Essays & field notes.",
+  lede: "Analytical essays and leadership reflections — adapted from MBA coursework and work diaries. Names and proprietary detail redacted before anything publishes.",
+  pipeline: [
+    { title: "Managing up when the evidence is not the obstacle" },
+    { title: "Rebuilding a company after the functions stopped talking" },
+    { title: "Two field diaries from a bank strategy sprint" },
+    { title: "Where my defaults cost the team" },
+    { title: "What leading with purpose costs in practice" },
+    { title: "Unlearning the instinct to look prepared" },
+    { title: "What AI can and cannot do in an analytics role" },
+  ],
+  note: "MBA article adaptations — the branding/mental-effort essay and the AI-transformation founder's-voice audit — join this list after redaction.",
 };
