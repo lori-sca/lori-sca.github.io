@@ -174,11 +174,16 @@ function processImage(file, maxSize) {
 }
 async function uploadPhoto(path, file, message) {
   const p = await processImage(file);
-  await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", {
+  const body = {
     message: message || "Upload photo",
     content: p.b64,
     branch: BRANCH,
-  });
+  };
+  try {
+    const existing = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path + "?ref=" + BRANCH);
+    if (existing && existing.sha) body.sha = existing.sha; // replacing an existing file
+  } catch (e) { /* new file — no sha needed */ }
+  await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", body);
   return path;
 }
 </script>
