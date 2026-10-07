@@ -15,11 +15,11 @@
       "place": "WeAreDevelopers"
     },
     {
-      "context": "Volunteer · Coming up",
       "id": "t-tc",
+      "place": "TechCrunch",
+      "context": "Coming up!",
       "link": "",
-      "photo": "",
-      "place": "TechCrunch"
+      "photo": ""
     }
   ]
 }
