@@ -21,7 +21,7 @@ const SITE = {
 
 const HOME = {
   hero: {
-    eyebrow: "MBA IN ANALYTICS · HULT 2026",
+    eyebrow: "MBA IN ANALYTICS",
     headline: "I build the hiring systems behind high-growth teams.",
     lede: "I live between business language and technical language: rigorous enough to understand the technical side, fluent enough to translate it for any audience. Tools-agnostic by principle.",
     metric: "▸ Hiring SLA −80% — one system, 10,000+ CVs a year",
