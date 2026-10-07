@@ -13,6 +13,9 @@
   .ed-wrap { max-width: 820px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
   .ed-wrap h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: 2.2rem; margin-bottom: .6rem; }
   .ed-sub { color: var(--steel); margin-bottom: 2rem; max-width: 60ch; }
+  .ed-sites { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
+  .ed-site { background: var(--mist); border: 1px solid var(--hairline); font-family: var(--display); font-weight: 700; font-size: .95rem; color: var(--steel); padding: .7rem 1.2rem; border-radius: 999px; cursor: pointer; }
+  .ed-site.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
   .ed-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.8rem; border-bottom: 1px solid var(--hairline); padding-bottom: .8rem; }
   .ed-tab { background: none; border: none; font-family: var(--display); font-weight: 700; font-size: .98rem; color: var(--steel); padding: .6rem 1rem; border-radius: 10px; cursor: pointer; }
   .ed-tab:hover { color: var(--ink); background: var(--mist); }
@@ -22,16 +25,16 @@
   .ed-card .ed-hint { color: var(--steel); font-size: .9rem; margin-bottom: 1rem; }
   .ed-viewlink { float: right; font-size: .85rem; font-weight: 700; }
   label.ed-label { display: block; font-family: var(--mono); font-size: .64rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); margin: 1.1rem 0 .4rem; }
-  .ed-input, .ed-textarea {
+  .ed-input, .ed-textarea, .ed-select {
     width: 100%; font-family: var(--body); font-size: 1rem; color: var(--ink);
     border: 1px solid var(--hairline); border-radius: 10px; padding: .75rem 1rem; background: var(--white);
   }
-  .ed-input:focus, .ed-textarea:focus { outline: 2px solid var(--ink); border-color: var(--ink); }
+  .ed-input:focus, .ed-textarea:focus, .ed-select:focus { outline: 2px solid var(--ink); border-color: var(--ink); }
   .ed-textarea { min-height: 5rem; resize: vertical; line-height: 1.6; }
   .ed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .ed-actions { display: flex; gap: .8rem; margin-top: 1.6rem; flex-wrap: wrap; align-items: center; }
   .ed-status { margin-top: 1.2rem; font-size: .95rem; color: var(--steel); min-height: 1.5rem; }
-  .ed-item { border: 1px solid var(--hairline); border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; background: var(--white); position: relative; }
+  .ed-item { border: 1px solid var(--hairline); border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; background: var(--white); }
   .ed-item-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .4rem; }
   .ed-item-title { font-weight: 800; font-family: var(--display); }
   .ed-link { background: none; border: none; color: var(--steel); font-weight: 700; font-size: .9rem; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
@@ -45,6 +48,7 @@
   .ed-post { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--hairline); }
   .ed-post .t { font-weight: 700; }
   .ed-post .d { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--steel); margin-left: .7rem; }
+  .ed-siteerr { border: 1px solid #e5b6b0; background: #fdf1f0; border-radius: 12px; padding: 1.4rem; color: #7a2e28; line-height: 1.6; }
   @media (max-width: 640px) { .ed-row { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -64,12 +68,12 @@
 
     <section id="setup-view">
       <h1>Site editor</h1>
-      <p class="ed-sub">Edit your site's words the way you'd edit a blog — pick a page, change the text, publish. The key below stays in this browser only, and is sent only to GitHub. I never see it.</p>
+      <p class="ed-sub">Edit your sites' words the way you'd edit a blog — pick a site, pick a page, change the text, publish. The key below stays in this browser only, and is sent only to GitHub. I never see it.</p>
       <div class="ed-card">
         <h2>1 · Create the key (one time)</h2>
         <ol class="ed-steps">
           <li>On GitHub: profile photo → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
-          <li>Name it <code>site-editor</code>. Repository access: <b>Only select repositories</b> → <code>lori-sca.github.io</code>.</li>
+          <li>Name it <code>site-editor</code>. Repository access: <b>Only select repositories</b> → tick <code>lori-sca.github.io</code>, <code>lorisca-analytics.github.io</code>, and <code>lorisca-builds.github.io</code>.</li>
           <li>Under Repository permissions, set <b>Contents</b> to <b>Read and write</b>. Generate the token and copy it.</li>
         </ol>
         <h2 style="margin-top:1.8rem;">2 · Paste it here</h2>
@@ -84,7 +88,8 @@
 
     <section id="editor-view" hidden>
       <h1>Site editor</h1>
-      <p class="ed-sub">Pick a page, edit the words, hit Save. Changes go live in about a minute. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
+      <p class="ed-sub">Pick a site, then a page. Edit the words, hit Save — live in about a minute. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
+      <div class="ed-sites" id="ed-sites"></div>
       <div class="ed-tabs" id="ed-tabs"></div>
       <div id="tab-panels"></div>
       <p class="ed-status" id="status"></p>
@@ -97,7 +102,13 @@
 <script src="../content.js"></script>
 <script>
 /* ================= infra ================= */
-const OWNER = "lori-sca", REPO = "lori-sca.github.io", BRANCH = "main";
+const SITES = {
+  main:      { id: "main",      label: "Main site",      owner: "lori-sca",         repo: "lori-sca.github.io",               home: "../index.html" },
+  analytics: { id: "analytics", label: "Analytics work", owner: "lorisca-analytics", repo: "lorisca-analytics.github.io",    home: "https://lorisca-analytics.github.io" },
+  builds:    { id: "builds",    label: "Builds",         owner: "lorisca-builds",    repo: "lorisca-builds.github.io",       home: "https://lorisca-builds.github.io" },
+};
+const BRANCH = "main";
+let currentSite = SITES.main;
 const $ = (id) => document.getElementById(id);
 const getToken = () => localStorage.getItem("oc_pat") || "";
 function status(msg, ok) {
@@ -118,7 +129,7 @@ function b64ToUtf8(b64) {
   return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
 async function gh(path, method, body) {
-  const res = await fetch("https://api.github.com" + path, {
+  const res = await fetch("https://api.github.com/repos/" + currentSite.owner + "/" + currentSite.repo + "/contents/" + path, {
     method: method || "GET",
     headers: {
       "Authorization": "Bearer " + getToken(),
@@ -131,16 +142,18 @@ async function gh(path, method, body) {
   return res.status === 204 ? null : res.json();
 }
 const fileCache = {};
+function cacheKey(path) { return currentSite.id + ":" + path; }
 async function loadData(path) {
-  if (fileCache[path]) return fileCache[path];
-  const f = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path + "?ref=" + BRANCH);
+  const k = cacheKey(path);
+  if (fileCache[k]) return fileCache[k];
+  const f = await gh(path + "?ref=" + BRANCH);
   const entry = { sha: f.sha, data: JSON.parse(b64ToUtf8(f.content)) };
-  fileCache[path] = entry;
+  fileCache[k] = entry;
   return entry;
 }
 async function saveData(path, data, message) {
   const entry = await loadData(path);
-  const res = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", {
+  const res = await gh(path, "PUT", {
     message: message,
     content: utf8ToB64(JSON.stringify(data, null, 2) + "\n"),
     sha: entry.sha,
@@ -174,16 +187,12 @@ function processImage(file, maxSize) {
 }
 async function uploadPhoto(path, file, message) {
   const p = await processImage(file);
-  const body = {
-    message: message || "Upload photo",
-    content: p.b64,
-    branch: BRANCH,
-  };
+  const body = { message: message || "Upload photo", content: p.b64, branch: BRANCH };
   try {
-    const existing = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path + "?ref=" + BRANCH);
-    if (existing && existing.sha) body.sha = existing.sha; // replacing an existing file
-  } catch (e) { /* new file — no sha needed */ }
-  await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", body);
+    const existing = await gh(path + "?ref=" + BRANCH);
+    if (existing && existing.sha) body.sha = existing.sha;
+  } catch (e) { /* new file */ }
+  await gh(path, "PUT", body);
   return path;
 }
 </script>
@@ -200,7 +209,6 @@ function h2card(title, hint, viewUrl) {
     v.className = "ed-viewlink";
     v.href = viewUrl; v.target = "_blank"; v.rel = "noopener";
     v.textContent = "View page →";
-    h.appendChild(document.createTextNode(" "));
     d.appendChild(v);
   }
   if (hint) {
@@ -223,7 +231,6 @@ function textInput(value, multiline) {
   i.value = value || "";
   return i;
 }
-/* binds an input to obj[key]; returns the wrapper */
 function field(host, label, obj, key, multiline, placeholder) {
   host.appendChild(lab(label));
   const i = textInput(obj[key], multiline);
@@ -240,7 +247,19 @@ function embedField(host, label, obj, key) {
   i.addEventListener("input", () => { obj[key] = i.value.trim(); });
   host.appendChild(i);
 }
-/* generic list editor: items array mutated in place */
+function selectField(host, label, obj, key, options) {
+  host.appendChild(lab(label));
+  const s = document.createElement("select");
+  s.className = "ed-select";
+  options.forEach((o) => {
+    const op = document.createElement("option");
+    op.value = o; op.textContent = o;
+    if (obj[key] === o) op.selected = true;
+    s.appendChild(op);
+  });
+  s.addEventListener("change", () => { obj[key] = s.value; });
+  host.appendChild(s);
+}
 function listEditor(host, items, buildItem, blankItem, addLabel) {
   const wrap = document.createElement("div");
   host.appendChild(wrap);
@@ -281,27 +300,98 @@ function saveBar(host, onSave, label) {
   bar.appendChild(b);
   host.appendChild(bar);
 }
+/* full project/card form, shared by analytics lanes + builds */
+function projectForm(box, p) {
+  field(box, "Title", p, "title");
+  field(box, "Hook", p, "hook", true);
+  const row = document.createElement("div");
+  row.className = "ed-row";
+  const a = document.createElement("div"), b = document.createElement("div");
+  field(a, "Metric line", p, "metric");
+  selectField(b, "Status", p, "status", ["live", "building"]);
+  row.appendChild(a); row.appendChild(b);
+  box.appendChild(row);
+  field(box, "Image URL", p, "visual");
+  field(box, "Image description", p, "visualAlt");
+  field(box, "Diagram URL", p, "diagram");
+  field(box, "Diagram description", p, "diagramAlt");
+  box.appendChild(lab("Links"));
+  listEditor(box, p.links || (p.links = []), (lb, l) => {
+    field(lb, "Label", l, "label");
+    field(lb, "URL", l, "url");
+    selectField(lb, "Kind", l, "kind", ["github", "demo", "article", "deck", "sheet", "drive", "other"]);
+  }, () => ({ label: "", url: "", kind: "other" }), "Add link");
+  const bd = p.body || (p.body = {});
+  field(box, "Problem", bd, "problem", true);
+  field(box, "Approach", bd, "approach", true);
+  field(box, "Her take", bd, "hers", true);
+  field(box, "Result", bd, "result", true);
+  field(box, "Lesson", bd, "lesson", true);
+}
+function blankProject() {
+  return {
+    id: "p-" + Date.now(), title: "", hook: "", metric: "", visual: "", visualAlt: "",
+    diagram: "", diagramAlt: "", status: "building", links: [],
+    body: { problem: "", approach: "", hers: "", result: "", lesson: "" },
+  };
+}
 
 /* ================= tabs ================= */
-const TABS = [];
-function defineTab(id, label, build) {
-  TABS.push({ id: id, label: label, build: build, built: false });
+const TABS = { main: [], analytics: [], builds: [] };
+function defineTab(siteId, id, label, build) {
+  TABS[siteId].push({ id: id, label: label, build: build, built: false, siteId: siteId });
 }
-function switchTab(id) {
-  document.querySelectorAll(".ed-tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === id));
-  document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== id; });
-  const tab = TABS.find((t) => t.id === id);
-  if (tab && !tab.built) { tab.built = true; tab.build(document.querySelector('[data-panel="' + id + '"]')); }
+function switchTab(tab) {
+  document.querySelectorAll(".ed-tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab.id));
+  document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== tab.id; });
+  if (!tab.built) {
+    tab.built = true;
+    const panel = document.querySelector('[data-panel="' + tab.id + '"]');
+    Promise.resolve()
+      .then(() => tab.build(panel))
+      .catch((e) => {
+        panel.innerHTML = "";
+        const err = document.createElement("div");
+        err.className = "ed-siteerr";
+        err.innerHTML = "<b>Couldn't open this section.</b><br>" + e.message +
+          "<br><br>If your key doesn't list this repo yet, edit the key on GitHub (Settings → Developer settings → Personal access tokens) and tick the repo, then reload this page.";
+        panel.appendChild(err);
+      });
+  }
   status("");
 }
+function switchSite(siteId) {
+  currentSite = SITES[siteId];
+  document.querySelectorAll(".ed-site").forEach((b) => b.classList.toggle("active", b.dataset.site === siteId));
+  const tabsEl = $("ed-tabs");
+  const panelsEl = $("tab-panels");
+  tabsEl.innerHTML = "";
+  panelsEl.innerHTML = "";
+  TABS[siteId].forEach((t) => {
+    t.built = false;
+    const b = document.createElement("button");
+    b.className = "ed-tab";
+    b.dataset.tab = t.id;
+    b.textContent = t.label;
+    b.addEventListener("click", () => switchTab(t));
+    tabsEl.appendChild(b);
+    const p = document.createElement("div");
+    p.dataset.panel = t.id;
+    p.hidden = true;
+    panelsEl.appendChild(p);
+  });
+  if (TABS[siteId].length) switchTab(TABS[siteId][0]);
+}
+</script>
+<script>
+/* ================= MAIN SITE tabs ================= */
+const MAIN_HOME = "../index.html";
 
-/* ---------- Home tab ---------- */
-defineTab("home", "Home", async (panel) => {
+defineTab("main", "home", "Home", async (panel) => {
   const entry = await loadData("data/home.json");
   const d = entry.data;
-  const card = h2card("Home page", "Hero, the three start-here cards, and the about teaser.", "../index.html");
+  const card = h2card("Home page", "Hero, the three start-here cards, and the about teaser.", MAIN_HOME);
   panel.appendChild(card);
-
   const hero = d.hero;
   card.appendChild(lab("Hero"));
   field(card, "Eyebrow", hero, "eyebrow");
@@ -316,7 +406,7 @@ defineTab("home", "Home", async (panel) => {
     field(box, "Link", c, "href");
   }, () => ({ label: "", href: "" }), "Add button");
 
-  const sh = h2card("Start here", "The three cards under the hero.", "../index.html#start");
+  const sh = h2card("Start here", "The three cards under the hero.", MAIN_HOME + "#start");
   panel.appendChild(sh);
   listEditor(sh, d.startHere, (box, s) => {
     field(box, "Title", s, "title");
@@ -324,12 +414,12 @@ defineTab("home", "Home", async (panel) => {
     embedField(box, "Embed link", s, "embed");
   }, () => ({ title: "", text: "", embed: "" }), "Add card");
 
-  const at = h2card("About teaser", null, "../index.html#about");
+  const at = h2card("About teaser", null, MAIN_HOME + "#about");
   panel.appendChild(at);
   field(at, "Teaser", d, "aboutTeaser", true);
   embedField(at, "Embed link", d, "aboutTeaserEmbed");
 
-  const ft = h2card("Featured work", "Tick the projects shown on the home page (max 3).", "../index.html#featured");
+  const ft = h2card("Featured work", "Tick the projects shown on the home page (max 3).", MAIN_HOME + "#featured");
   panel.appendChild(ft);
   const ids = d.featured || [];
   const all = [];
@@ -361,8 +451,7 @@ defineTab("home", "Home", async (panel) => {
   }, "Save home page");
 });
 
-/* ---------- Writing tab ---------- */
-defineTab("writing", "Writing", async (panel) => {
+defineTab("main", "writing", "Writing", async (panel) => {
   const entry = await loadData("data/writing.json");
   const d = entry.data;
   const card = h2card("Writing page", "Page header and the pipeline list.", "../writing.html");
@@ -371,14 +460,12 @@ defineTab("writing", "Writing", async (panel) => {
   field(card, "Headline", d, "headline");
   field(card, "Intro", d, "lede", true);
   field(card, "Note under the list", d, "note", true);
-
   const pl = h2card("In the pipeline", "Essay titles. Give one a link when it publishes elsewhere.", "../writing.html#pipeline");
   panel.appendChild(pl);
   listEditor(pl, d.pipeline, (box, item) => {
     field(box, "Title", item, "title");
     field(box, "Link (optional)", item, "link");
   }, () => ({ title: "", link: "" }), "Add title");
-
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -387,29 +474,25 @@ defineTab("writing", "Writing", async (panel) => {
     } catch (e) { status(e.message, false); }
   }, "Save writing page");
 });
-</script>
-<script>
-/* ---------- Off the clock tab ---------- */
-defineTab("offclock", "Off the clock", async (panel) => {
+
+defineTab("main", "offclock", "Off the clock", async (panel) => {
   const entry = await loadData("fun/posts.json");
-  const store = entry; // {sha, data:{posts:[]}}
+  const store = entry;
   let editingId = null;
   let pendingPhoto = null;
-
   const card = h2card("Off the clock", "Fun blog posts — newest first.", "../off-the-clock.html");
   panel.appendChild(card);
+  const abar = document.createElement("div");
+  abar.className = "ed-actions";
+  abar.style.margin = "0 0 1rem";
   const newBtn = document.createElement("button");
   newBtn.className = "btn primary";
   newBtn.textContent = "+ New post";
   newBtn.addEventListener("click", () => openForm(null));
-  const abar = document.createElement("div");
-  abar.className = "ed-actions";
-  abar.style.margin = "0 0 1rem";
   abar.appendChild(newBtn);
   card.appendChild(abar);
   const list = document.createElement("div");
   card.appendChild(list);
-
   const form = document.createElement("form");
   form.className = "ed-card";
   form.hidden = true;
@@ -435,7 +518,6 @@ defineTab("offclock", "Off the clock", async (panel) => {
       list.appendChild(row);
     });
   }
-
   function openForm(id) {
     editingId = id || null;
     pendingPhoto = null;
@@ -460,8 +542,7 @@ defineTab("offclock", "Off the clock", async (panel) => {
     row.className = "ed-row";
     const c1 = document.createElement("div"), c2 = document.createElement("div");
     field(c1, "Emoji", draft, "emoji");
-    const dl = lab("Date");
-    c2.appendChild(dl);
+    c2.appendChild(lab("Date"));
     const di = document.createElement("input");
     di.className = "ed-input"; di.type = "date"; di.value = draft.date;
     di.addEventListener("input", () => { draft.date = di.value; });
@@ -559,15 +640,12 @@ defineTab("offclock", "Off the clock", async (panel) => {
     };
     form.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-
   renderList();
 });
 
-/* ---------- About tab ---------- */
-defineTab("about", "About", async (panel) => {
+defineTab("main", "about", "About", async (panel) => {
   const entry = await loadData("data/about.json");
   const d = entry.data;
-
   const ch = h2card("Chapters", "The four story blocks.", "../about.html#chapters");
   panel.appendChild(ch);
   listEditor(ch, d.chapters, (box, c) => {
@@ -575,7 +653,6 @@ defineTab("about", "About", async (panel) => {
     field(box, "Text", c, "text", true);
     embedField(box, "Embed link", c, "embed");
   }, () => ({ label: "", text: "", embed: "" }), "Add chapter");
-
   const rt = h2card("Route", "Work history stops, newest first.", "../about.html#route");
   panel.appendChild(rt);
   listEditor(rt, d.route, (box, s) => {
@@ -603,14 +680,12 @@ defineTab("about", "About", async (panel) => {
     nowL.appendChild(document.createTextNode("This is the current stop"));
     box.appendChild(nowL);
   }, () => ({ when: "", where: "", role: "", detail: [], now: false }), "Add stop");
-
   const mt = h2card("Method", "The three how-I-work cards.", "../about.html#method");
   panel.appendChild(mt);
   listEditor(mt, d.method, (box, m) => {
     field(box, "Title", m, "title");
     field(box, "Text", m, "text", true);
   }, () => ({ title: "", text: "" }), "Add card");
-
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -620,11 +695,10 @@ defineTab("about", "About", async (panel) => {
   }, "Save about page");
 });
 
-/* ---------- Site links tab ---------- */
-defineTab("sitelinks", "Site links", async (panel) => {
+defineTab("main", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");
   const d = entry.data;
-  const card = h2card("Site links", "Name, contact links, and portrait. Used in the nav, footer, and contact buttons on every page.", "../index.html");
+  const card = h2card("Site links", "Name, contact links, and portrait. Used in the nav, footer, and contact buttons on every page.", MAIN_HOME);
   panel.appendChild(card);
   field(card, "Name", d, "name");
   field(card, "Role line", d, "role");
@@ -676,6 +750,147 @@ defineTab("sitelinks", "Site links", async (panel) => {
     } catch (e) { status(e.message, false); }
   }, "Save site links");
 });
+</script>
+<script>
+/* ================= ANALYTICS tabs ================= */
+defineTab("analytics", "header", "Header", async (panel) => {
+  const entry = await loadData("data/hero.json");
+  const d = entry.data;
+  const card = h2card("Page header", null, SITES.analytics.home);
+  panel.appendChild(card);
+  field(card, "Eyebrow", d, "eyebrow");
+  field(card, "Headline", d, "headline");
+  field(card, "Intro", d, "lede", true);
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/hero.json", d, "Update analytics header via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save header");
+});
+
+defineTab("analytics", "lanes", "Lanes", async (panel) => {
+  const entry = await loadData("data/lanes.json");
+  const d = entry.data;
+  const card = h2card("Work lanes", "Each lane: name, intro, case-study cards, and the pipeline list.", SITES.analytics.home + "#talent");
+  panel.appendChild(card);
+  listEditor(card, d.lanes, (box, lane) => {
+    const row = document.createElement("div");
+    row.className = "ed-row";
+    const a = document.createElement("div"), b = document.createElement("div");
+    field(a, "Lane name", lane, "name");
+    field(b, "Page anchor (id)", lane, "id");
+    row.appendChild(a); row.appendChild(b);
+    box.appendChild(row);
+    field(box, "Intro", lane, "blurb", true);
+    embedField(box, "Embed link", lane, "embed");
+    box.appendChild(lab("Case studies"));
+    listEditor(box, lane.projects || (lane.projects = []), (pb, p) => {
+      const t = document.createElement("div");
+      t.className = "ed-item-title";
+      t.style.marginBottom = ".6rem";
+      t.textContent = p.title || "(untitled)";
+      pb.appendChild(t);
+      projectForm(pb, p);
+    }, blankProject, "Add case study");
+    box.appendChild(lab("In the pipeline"));
+    listEditor(box, lane.pipeline || (lane.pipeline = []), (qb, item) => {
+      field(qb, "Title", item, "title");
+      field(qb, "Link (optional)", item, "link");
+    }, () => ({ title: "", link: "" }), "Add pipeline title");
+  }, () => ({ id: "lane-" + Date.now(), name: "", blurb: "", embed: "", projects: [], pipeline: [] }), "Add lane");
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/lanes.json", d, "Update analytics lanes via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save lanes");
+});
+
+defineTab("analytics", "sitelinks", "Site links", async (panel) => {
+  const entry = await loadData("data/site.json");
+  const d = entry.data;
+  const card = h2card("Site links", "Shown in the nav and footer.", SITES.analytics.home);
+  panel.appendChild(card);
+  field(card, "Site name", d, "orgLabel");
+  field(card, "Org id", d, "org");
+  field(card, "Owner name", d, "owner");
+  field(card, "Main site URL", d, "mainSite");
+  field(card, "GitHub org URL", d, "githubOrg");
+  field(card, "Email", d, "email");
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/site.json", d, "Update analytics site links via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save site links");
+});
+
+/* ================= BUILDS tabs ================= */
+defineTab("builds", "header", "Header", async (panel) => {
+  const entry = await loadData("data/hero.json");
+  const d = entry.data;
+  const card = h2card("Page header", null, SITES.builds.home);
+  panel.appendChild(card);
+  field(card, "Eyebrow", d, "eyebrow");
+  field(card, "Headline", d, "headline");
+  field(card, "Intro", d, "lede", true);
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/hero.json", d, "Update builds header via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save header");
+});
+
+defineTab("builds", "builds", "Builds", async (panel) => {
+  const entry = await loadData("data/projects.json");
+  const d = entry.data;
+  const card = h2card("Builds", "One card per tool. A card earns its place with a live demo and a playbook.", SITES.builds.home);
+  panel.appendChild(card);
+  listEditor(card, d.projects, (box, p) => {
+    const t = document.createElement("div");
+    t.className = "ed-item-title";
+    t.style.marginBottom = ".6rem";
+    t.textContent = p.title || "(untitled)";
+    box.appendChild(t);
+    projectForm(box, p);
+  }, blankProject, "Add build");
+  const proto = h2card("Prototyping", "The honest one-liner under the builds.", SITES.builds.home);
+  panel.appendChild(proto);
+  field(proto, "Prototyping line", d, "prototyping", true);
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/projects.json", d, "Update builds via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save builds");
+});
+
+defineTab("builds", "sitelinks", "Site links", async (panel) => {
+  const entry = await loadData("data/site.json");
+  const d = entry.data;
+  const card = h2card("Site links", "Shown in the nav and footer.", SITES.builds.home);
+  panel.appendChild(card);
+  field(card, "Site name", d, "orgLabel");
+  field(card, "Org id", d, "org");
+  field(card, "Owner name", d, "owner");
+  field(card, "Main site URL", d, "mainSite");
+  field(card, "GitHub org URL", d, "githubOrg");
+  field(card, "Email", d, "email");
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/site.json", d, "Update builds site links via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save site links");
+});
 
 /* ================= boot ================= */
 function showEditor(on) {
@@ -685,24 +900,20 @@ function showEditor(on) {
 async function boot() {
   if (!getToken()) { showEditor(false); return; }
   try {
-    // validate the key by reading one small file
-    await loadData("data/site.json");
+    currentSite = SITES.main;
+    await loadData("data/site.json"); // validates the key
     showEditor(true);
-    const tabsEl = $("ed-tabs");
-    const panelsEl = $("tab-panels");
-    TABS.forEach((t) => {
+    const sitesEl = $("ed-sites");
+    sitesEl.innerHTML = "";
+    Object.values(SITES).forEach((s) => {
       const b = document.createElement("button");
-      b.className = "ed-tab";
-      b.dataset.tab = t.id;
-      b.textContent = t.label;
-      b.addEventListener("click", () => switchTab(t.id));
-      tabsEl.appendChild(b);
-      const p = document.createElement("div");
-      p.dataset.panel = t.id;
-      p.hidden = true;
-      panelsEl.appendChild(p);
+      b.className = "ed-site";
+      b.dataset.site = s.id;
+      b.textContent = s.label;
+      b.addEventListener("click", () => switchSite(s.id));
+      sitesEl.appendChild(b);
     });
-    switchTab(TABS[0].id);
+    switchSite("main");
   } catch (e) {
     localStorage.removeItem("oc_pat");
     showEditor(false);
@@ -724,3 +935,5 @@ $("logout").addEventListener("click", () => {
 });
 boot();
 </script>
+</body>
+</html>
