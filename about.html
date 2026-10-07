@@ -289,7 +289,10 @@
       latEl.tabIndex = 0;
       latEl.setAttribute("role", "button");
       latEl.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
-      function toggleHannibal() { hw.classList.toggle("show"); }
+      function toggleHannibal() {
+        const on = hw.classList.toggle("show");
+        if (!on) latEl.blur(); // release focus so :focus doesn't keep it visible
+      }
       latEl.addEventListener("click", toggleHannibal);
       latEl.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleHannibal(); }
