@@ -26,7 +26,7 @@
       <a data-nav="about" href="about.html">About</a>
     </div>
   </div>
-  <div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#fun">The fun stuff</a><a href="#contact">Contact</a></div></div>
+  <div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#field">In the field</a><a href="#fun">The fun stuff</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
@@ -35,6 +35,19 @@
       <span class="eyebrow">Off the clock</span>
       <h1>Off the <em>clock.</em></h1>
       <p class="lede">Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.</p>
+    </div>
+  </section>
+
+  <section class="section" id="field">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">In the field</span>
+          <h2>Out &amp; <em>about.</em></h2>
+        </div>
+        <p class="sh-side">Events and communities I've helped run — the short version.</p>
+      </div>
+      <div class="tile-grid" id="tile-grid"></div>
     </div>
   </section>
 
@@ -82,6 +95,8 @@
       ph.className = "post-photo";
       const img = document.createElement("img");
       img.src = p.photo; img.alt = p.title; img.loading = "lazy";
+      img.setAttribute("data-zoom", p.photo);
+      img.dataset.caption = p.title || "";
       ph.appendChild(img);
       card.appendChild(ph);
     }
@@ -116,23 +131,75 @@
     return card;
   }
   loadJSON("data/site.json").then(applySiteChrome).catch(() => {});
-  // lightbox: click a photo to see it full-size
-  document.getElementById("post-list").addEventListener("click", (e) => {
-    const img = e.target.closest(".post-photo img");
-    if (!img) return;
+  // lightbox: click any zoomable photo to see it full-size
+  function openLightbox(src, alt, caption, link) {
     const lb = document.createElement("div");
     lb.className = "lightbox";
+    const fig = document.createElement("figure");
+    fig.className = "lb-fig";
     const full = document.createElement("img");
-    full.src = img.src;
-    full.alt = img.alt;
-    lb.appendChild(full);
+    full.src = src;
+    full.alt = alt || "";
+    fig.appendChild(full);
+    if (caption) {
+      const cap = document.createElement("figcaption");
+      cap.className = "lb-cap";
+      cap.textContent = caption;
+      if (link) {
+        const a = document.createElement("a");
+        a.href = link; a.target = "_blank"; a.rel = "noopener";
+        a.textContent = "Open link ↗";
+        cap.appendChild(a);
+      }
+      fig.appendChild(cap);
+    }
+    lb.appendChild(fig);
     const close = () => lb.remove();
     lb.addEventListener("click", close);
     document.addEventListener("keydown", function esc(ev) {
       if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); }
     });
     document.body.appendChild(lb);
+  }
+  document.addEventListener("click", (e) => {
+    const z = e.target.closest("[data-zoom]");
+    if (!z) return;
+    openLightbox(z.getAttribute("data-zoom"), z.alt || "", z.dataset.caption || "", z.dataset.link || "");
   });
+  // involvement tiles: photo mosaic with PLACE · CONTEXT captions
+  function tileNode(t) {
+    const d = document.createElement("div");
+    d.className = "tile";
+    if (t.photo) {
+      const img = document.createElement("img");
+      img.src = t.photo;
+      img.alt = [t.place, t.context].filter(Boolean).join(" — ");
+      img.loading = "lazy";
+      img.setAttribute("data-zoom", t.photo);
+      img.dataset.caption = [t.place, t.context].filter(Boolean).join(" · ");
+      if (t.link) img.dataset.link = t.link;
+      d.appendChild(img);
+    } else {
+      const ph = document.createElement("div");
+      ph.className = "tile-empty";
+      ph.textContent = (t.place || "?").trim().charAt(0).toUpperCase();
+      d.appendChild(ph);
+    }
+    const cap = document.createElement("div");
+    cap.className = "tile-cap";
+    cap.textContent = [t.place, t.context].filter(Boolean).join(" · ");
+    d.appendChild(cap);
+    return d;
+  }
+  fetch("fun/tiles.json")
+    .then((r) => { if (!r.ok) throw new Error("tiles not found"); return r.json(); })
+    .then((d) => {
+      const tiles = d.tiles || [];
+      if (!tiles.length) { document.getElementById("field").hidden = true; return; }
+      const grid = document.getElementById("tile-grid");
+      tiles.forEach((t) => grid.appendChild(tileNode(t)));
+    })
+    .catch(() => { document.getElementById("field").hidden = true; });
   fetch("fun/posts.json")
     .then((r) => { if (!r.ok) throw new Error("posts not found"); return r.json(); })
     .then((d) => {

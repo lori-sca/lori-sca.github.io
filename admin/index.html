@@ -641,6 +641,177 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     form.scrollIntoView({ behavior: "smooth", block: "start" });
   }
   renderList();
+
+  // ---- involvement tiles: photo mosaic at the top of Off the clock ----
+  const tentry = await loadData("fun/tiles.json");
+  const tstore = tentry;
+  let tEditingId = null;
+  let tPendingPhoto = null;
+  const tcard = h2card("Involvement tiles", "Photo mosaic at the top of Off the clock — top first.", "../off-the-clock.html#field");
+  panel.appendChild(tcard);
+  const tabar = document.createElement("div");
+  tabar.className = "ed-actions";
+  tabar.style.margin = "0 0 1rem";
+  const tNewBtn = document.createElement("button");
+  tNewBtn.className = "btn primary";
+  tNewBtn.textContent = "+ New tile";
+  tNewBtn.addEventListener("click", () => tOpenForm(null));
+  tabar.appendChild(tNewBtn);
+  tcard.appendChild(tabar);
+  const tlist = document.createElement("div");
+  tcard.appendChild(tlist);
+  const tform = document.createElement("form");
+  tform.className = "ed-card";
+  tform.hidden = true;
+  panel.appendChild(tform);
+
+  function tRenderList() {
+    tlist.innerHTML = "";
+    const tiles = tstore.data.tiles || [];
+    if (!tiles.length) tlist.innerHTML = "<p style='color:var(--steel)'>No tiles yet.</p>";
+    tiles.forEach((t, idx) => {
+      const row = document.createElement("div");
+      row.className = "ed-post";
+      const left = document.createElement("div");
+      const tt = document.createElement("span");
+      tt.className = "t"; tt.textContent = (t.place || "Untitled") + (t.context ? " · " + t.context : "");
+      left.appendChild(tt);
+      const btns = document.createElement("div");
+      btns.style.cssText = "display:flex;gap:.5rem;align-items:center;";
+      const up = document.createElement("button");
+      up.className = "ed-link"; up.textContent = "↑"; up.title = "Move up";
+      up.disabled = idx === 0;
+      up.addEventListener("click", () => tMove(idx, -1));
+      const down = document.createElement("button");
+      down.className = "ed-link"; down.textContent = "↓"; down.title = "Move down";
+      down.disabled = idx === tiles.length - 1;
+      down.addEventListener("click", () => tMove(idx, 1));
+      const edit = document.createElement("button");
+      edit.className = "ed-link"; edit.textContent = "Edit";
+      edit.addEventListener("click", () => tOpenForm(t.id));
+      btns.appendChild(up); btns.appendChild(down); btns.appendChild(edit);
+      row.appendChild(left); row.appendChild(btns);
+      tlist.appendChild(row);
+    });
+  }
+  async function tMove(idx, dir) {
+    const tiles = tstore.data.tiles.slice();
+    const j = idx + dir;
+    if (j < 0 || j >= tiles.length) return;
+    const tmp = tiles[idx]; tiles[idx] = tiles[j]; tiles[j] = tmp;
+    try {
+      status("Reordering…");
+      await saveData("fun/tiles.json", { tiles: tiles }, "Reorder involvement tiles via editor");
+      tstore.data.tiles = tiles;
+      tRenderList();
+      status("Reordered — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }
+  function tOpenForm(id) {
+    tEditingId = id || null;
+    tPendingPhoto = null;
+    tform.hidden = false;
+    tform.innerHTML = "";
+    const tiles = tstore.data.tiles || [];
+    const t = id ? tiles.find((x) => x.id === id) : null;
+    const h = document.createElement("h2");
+    h.textContent = t ? "Edit tile" : "New tile";
+    tform.appendChild(h);
+    const draft = {
+      place: t ? t.place || "" : "",
+      context: t ? t.context || "" : "",
+      link: t ? t.link || "" : "",
+      photo: t ? t.photo || "" : "",
+    };
+    field(tform, "Place (e.g. AWS Builder Loft)", draft, "place");
+    field(tform, "Context (e.g. BuilderPub Buildathon · Volunteer)", draft, "context");
+    field(tform, "Link (optional)", draft, "link");
+    tform.appendChild(lab("Photo"));
+    const fi = document.createElement("input");
+    fi.className = "ed-input"; fi.type = "file"; fi.accept = "image/*";
+    tform.appendChild(fi);
+    const pv = document.createElement("img");
+    pv.className = "ed-photo-preview";
+    if (draft.photo) { pv.src = draft.photo; } else { pv.hidden = true; }
+    tform.appendChild(pv);
+    let removePhoto = false;
+    if (draft.photo) {
+      const rl = document.createElement("label");
+      rl.style.cssText = "display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);";
+      const rc = document.createElement("input");
+      rc.type = "checkbox";
+      rc.addEventListener("change", () => { removePhoto = rc.checked; });
+      rl.appendChild(rc);
+      rl.appendChild(document.createTextNode("Remove the current photo"));
+      tform.appendChild(rl);
+    }
+    fi.addEventListener("change", async () => {
+      const file = fi.files[0];
+      if (!file) return;
+      try {
+        status("Preparing photo…");
+        tPendingPhoto = await processImage(file);
+        pv.src = "data:image/jpeg;base64," + tPendingPhoto.b64;
+        pv.hidden = false;
+        status("");
+      } catch (err) { status(err.message, false); }
+    });
+    const bar = document.createElement("div");
+    bar.className = "ed-actions";
+    const pub = document.createElement("button");
+    pub.type = "submit"; pub.className = "btn primary"; pub.textContent = "Publish";
+    const cancel = document.createElement("button");
+    cancel.type = "button"; cancel.className = "btn ghost"; cancel.textContent = "Cancel";
+    cancel.addEventListener("click", () => { tform.hidden = true; });
+    bar.appendChild(pub); bar.appendChild(cancel);
+    if (t) {
+      const del = document.createElement("button");
+      del.type = "button"; del.className = "ed-link danger"; del.textContent = "Delete this tile";
+      del.addEventListener("click", async () => {
+        if (!confirm("Delete “" + (t.place || "tile") + "”?")) return;
+        try {
+          status("Deleting…");
+          tstore.data.tiles = tstore.data.tiles.filter((x) => x.id !== tEditingId);
+          await saveData("fun/tiles.json", tstore.data, "Delete involvement tile via editor");
+          tform.hidden = true;
+          tRenderList();
+          status("Deleted.");
+        } catch (e) { status(e.message, false); }
+      });
+      bar.appendChild(del);
+    }
+    tform.appendChild(bar);
+    tform.onsubmit = async (ev) => {
+      ev.preventDefault();
+      if (!draft.place.trim()) { status("Give the tile a place first.", false); return; }
+      try {
+        status("Publishing…");
+        const data = {
+          id: tEditingId || ("t-" + Date.now()),
+          place: draft.place.trim(),
+          context: draft.context.trim(),
+          link: draft.link.trim(),
+          photo: removePhoto ? "" : draft.photo,
+        };
+        if (tPendingPhoto) {
+          const safe = tPendingPhoto.name.replace(/[^a-zA-Z0-9.\-]/g, "-").replace(/\.[^.]+$/, "");
+          const path = "fun/tiles/" + Date.now() + "-" + safe + ".jpg";
+          await uploadPhoto(path, fi.files[0], "Add photo for involvement tile");
+          data.photo = path;
+        }
+        const tiles2 = (tstore.data.tiles || []).slice();
+        const i = tiles2.findIndex((x) => x.id === data.id);
+        if (i >= 0) tiles2[i] = data; else tiles2.unshift(data);
+        tstore.data.tiles = tiles2;
+        await saveData("fun/tiles.json", tstore.data, (tEditingId ? "Update" : "Add") + " involvement tile via editor");
+        tform.hidden = true;
+        tRenderList();
+        status("Published — live in about a minute.");
+      } catch (e) { status(e.message, false); }
+    };
+    tform.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  tRenderList();
 });
 
 defineTab("main", "about", "About", async (panel) => {
