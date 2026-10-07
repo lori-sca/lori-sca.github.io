@@ -88,6 +88,21 @@
     </div>
   </div>
 
+  <!-- SELECTED WORK -->
+  <section class="section" id="selected">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">Selected work</span>
+          <h2>Proof, <em>not promises.</em></h2>
+        </div>
+        <p class="sh-side">The 10-second version. Open any card on the Work hub for the deep dive.</p>
+      </div>
+      <div class="card-grid cols-3" id="selected-grid"></div>
+      <p style="margin-top:1.6rem;"><a class="text-link" href="https://lorisca-analytics.github.io">See all cases →</a></p>
+    </div>
+  </section>
+
   <!-- ROUTE + JOURNEY MAP -->
   <section class="section" id="route">
     <div class="wrap">
@@ -217,6 +232,30 @@
       document.getElementById("holdup-text").textContent = about.holdup || "";
       document.getElementById("proudest-title").textContent = (about.proudest || {}).title || "";
       document.getElementById("proudest-text").textContent = (about.proudest || {}).text || "";
+      // selected work — 10-second cards with count-up numbers
+      const sg = document.getElementById("selected-grid");
+      (about.selected || []).forEach((s) => {
+        const d = document.createElement("div");
+        d.className = "method tilt reveal sel-card";
+        const tag = document.createElement("span");
+        tag.className = "k"; tag.textContent = s.tag || "";
+        const big = document.createElement("div");
+        big.className = "sel-big";
+        big.setAttribute("data-countup", s.num);
+        big.setAttribute("data-prefix", s.prefix || "");
+        big.setAttribute("data-suffix", s.suffix || "");
+        big.setAttribute("data-decimals", s.decimals || 0);
+        const lab = document.createElement("div");
+        lab.className = "sel-label"; lab.textContent = s.label || "";
+        const h = document.createElement("h3"); h.textContent = s.title;
+        const p = document.createElement("p"); p.textContent = s.outcome;
+        const a = document.createElement("a");
+        a.className = "text-link"; a.href = s.url || "https://lorisca-analytics.github.io";
+        a.target = "_blank"; a.rel = "noopener"; a.textContent = "Deep dive →";
+        d.appendChild(tag); d.appendChild(big); d.appendChild(lab);
+        d.appendChild(h); d.appendChild(p); d.appendChild(a);
+        sg.appendChild(d);
+      });
       // route
       renderRoute("route-stops", about.route);
       // toolbox

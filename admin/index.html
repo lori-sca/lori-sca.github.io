@@ -1001,6 +1001,31 @@ defineTab("main", "about", "About", async (panel) => {
   field(pv, "Translation", d.principle, "translation");
   field(pv, "Note", d.principle, "note", true);
   field(pv, "Field notes", d, "fieldnotes", true);
+  // selected work
+  const sw = h2card("Selected work", "The 10-second cards with count-up numbers.", "../about.html#selected");
+  panel.appendChild(sw);
+  d.selected = d.selected || [];
+  listEditor(sw, d.selected, (box, s) => {
+    const row = document.createElement("div");
+    row.className = "ed-row";
+    const a = document.createElement("div"), b = document.createElement("div"), c = document.createElement("div");
+    field(a, "Number", s, "num", false, "80");
+    field(b, "Prefix", s, "prefix", false, "−");
+    field(c, "Suffix", s, "suffix", false, "%");
+    row.appendChild(a); row.appendChild(b); row.appendChild(c);
+    box.appendChild(row);
+    const row2 = document.createElement("div");
+    row2.className = "ed-row";
+    const e = document.createElement("div"), f = document.createElement("div");
+    field(e, "Decimals", s, "decimals", false, "0");
+    field(f, "Tag", s, "tag", false, "On the job · 2022–2023");
+    row2.appendChild(e); row2.appendChild(f);
+    box.appendChild(row2);
+    field(box, "Number label", s, "label", false, "hiring SLA");
+    field(box, "Title", s, "title");
+    field(box, "Outcome", s, "outcome", true);
+    field(box, "Link", s, "url");
+  }, () => ({ num: 0, prefix: "", suffix: "", decimals: 0, label: "", title: "", outcome: "", url: "https://lorisca-analytics.github.io", tag: "" }), "Add card");
   const mt = h2card("Method", "The three how-I-work cards.", "../about.html#method");
   panel.appendChild(mt);
   listEditor(mt, d.method, (box, m) => {
