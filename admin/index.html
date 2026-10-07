@@ -492,6 +492,17 @@ defineTab("main", "writing", "Writing", async (panel) => {
 });
 
 defineTab("main", "offclock", "Off the clock", async (panel) => {
+  const ocentry = await loadData("data/off-the-clock.json");
+  const od = ocentry.data;
+  od.hero = od.hero || {};
+  od.hero.headline = od.hero.headline || {};
+  const opc = h2card("Page copy", "The title block at the top of the page — the subtitle lives here.", "../off-the-clock.html");
+  panel.appendChild(opc);
+  field(opc, "Eyebrow", od.hero, "eyebrow");
+  field(opc, "Headline", od.hero.headline, "main");
+  field(opc, "Headline accent (colored part)", od.hero.headline, "accent");
+  field(opc, "Subtitle", od.hero, "lede", true);
+  saveBar(opc, () => saveData("data/off-the-clock.json", od, "Update Off the clock page copy via editor"));
   const entry = await loadData("fun/posts.json");
   const store = entry;
   let editingId = null;
