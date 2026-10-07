@@ -239,6 +239,57 @@ function field(host, label, obj, key, multiline, placeholder) {
   host.appendChild(i);
   return i;
 }
+/* Picture + links for any section object — the Blogspot-style bit.
+   Every section can carry an optional picture and a list of links.
+   `tag` namespaces the upload path, e.g. "home-start". Uploads happen
+   immediately on file select; the tab's Save persists the JSON. */
+function mediaFields(host, obj, tag) {
+  obj.links = obj.links || [];
+  const m = document.createElement("div");
+  m.className = "ed-media";
+  host.appendChild(m);
+  m.appendChild(lab("Picture"));
+  const prev = document.createElement("img");
+  prev.className = "ed-photo-preview";
+  if (obj.image) prev.src = obj.image; else prev.hidden = true;
+  m.appendChild(prev);
+  const urlInput = field(m, "Image URL", obj, "image", false, "https://\u2026");
+  const fi = document.createElement("input");
+  fi.type = "file"; fi.accept = "image/*"; fi.className = "ed-input";
+  fi.style.marginTop = ".4rem";
+  m.appendChild(fi);
+  fi.addEventListener("change", async () => {
+    const file = fi.files[0];
+    if (!file) return;
+    try {
+      status("Uploading picture\u2026");
+      const safe = file.name.replace(/[^a-zA-Z0-9.\-]/g, "-").replace(/\.[^.]+$/, "");
+      const upath = "assets/sections/" + tag + "-" + Date.now() + "-" + safe + ".jpg";
+      await uploadPhoto(upath, file, "Add section picture via editor");
+      obj.image = upath;
+      urlInput.value = upath;
+      prev.src = upath; prev.hidden = false;
+      status("Uploaded \u2014 save the page to keep it.");
+    } catch (err) { status(err.message, false); }
+  });
+  field(m, "Alt text", obj, "imageAlt");
+  field(m, "Caption", obj, "imageCaption");
+  m.appendChild(lab("Links"));
+  const lb = document.createElement("div");
+  m.appendChild(lb);
+  listEditor(lb, obj.links, (box, l) => {
+    field(box, "Label", l, "label");
+    field(box, "URL", l, "href");
+    const row = document.createElement("label");
+    row.className = "ed-check";
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = !!l.newTab;
+    cb.addEventListener("change", () => { l.newTab = cb.checked; });
+    row.appendChild(cb);
+    row.appendChild(document.createTextNode("Open in a new tab"));
+    box.appendChild(row);
+  }, () => ({ label: "", href: "", newTab: false }), "Add link");
+}
 function embedField(host, label, obj, key) {
   host.appendChild(lab(label || "Embed link (YouTube or any URL)"));
   const i = textInput(obj[key]);
@@ -421,6 +472,7 @@ defineTab("main", "home", "Home", async (panel) => {
     field(box, "Label", c, "label");
     field(box, "Link", c, "href");
   }, () => ({ label: "", href: "" }), "Add button");
+  mediaFields(card, hero, "home-hero");
 
   const sh = h2card("Start here", "The three cards under the hero.", MAIN_HOME + "#start");
   panel.appendChild(sh);
@@ -457,6 +509,20 @@ defineTab("main", "home", "Home", async (panel) => {
   });
   d.featured = ids;
 
+  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", MAIN_HOME);
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  [["start", "Start here", true], ["featured", "Featured work", true], ["about", "About teaser", false], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
+    const sec = d.sections[key] = d.sections[key] || {};
+    sec.headline = sec.headline || {};
+    shd.appendChild(lab(label));
+    field(shd, "Eyebrow", sec, "eyebrow");
+    field(shd, "Headline", sec.headline, "main");
+    field(shd, "Headline accent (colored part)", sec.headline, "accent");
+    if (hasSide) field(shd, "Side note", sec, "side", true);
+    mediaFields(shd, sec, "home-" + key);
+  });
+
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -476,12 +542,29 @@ defineTab("main", "writing", "Writing", async (panel) => {
   field(card, "Headline", d, "headline");
   field(card, "Intro", d, "lede", true);
   field(card, "Note under the list", d, "note", true);
+  mediaFields(card, d, "writing-hero");
   const pl = h2card("In the pipeline", "Essay titles. Give one a link when it publishes elsewhere.", "../writing.html#pipeline");
   panel.appendChild(pl);
   listEditor(pl, d.pipeline, (box, item) => {
     field(box, "Title", item, "title");
     field(box, "Link (optional)", item, "link");
-  }, () => ({ title: "", link: "" }), "Add title");
+  }, () => ({ title: "", link: "" }), "Add essay");
+
+  const shd = h2card("Section headings", "The pipeline heading and the contact band.", "../writing.html");
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  d.sections.pipeline = d.sections.pipeline || {};
+  d.sections.contact = d.sections.contact || {};
+  d.sections.contact.headline = d.sections.contact.headline || {};
+  shd.appendChild(lab("Pipeline"));
+  field(shd, "Heading", d.sections.pipeline, "head");
+  mediaFields(shd, d.sections.pipeline, "writing-pipeline");
+  shd.appendChild(lab("Contact band"));
+  field(shd, "Eyebrow", d.sections.contact, "eyebrow");
+  field(shd, "Headline", d.sections.contact.headline, "main");
+  field(shd, "Headline accent (colored part)", d.sections.contact.headline, "accent");
+  mediaFields(shd, d.sections.contact, "writing-contact");
+
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -502,6 +585,23 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   field(opc, "Headline", od.hero.headline, "main");
   field(opc, "Headline accent (colored part)", od.hero.headline, "accent");
   field(opc, "Subtitle", od.hero, "lede", true);
+  mediaFields(opc, od.hero, "offclock-hero");
+  od.sections = od.sections || {};
+  od.sections.field = od.sections.field || {};
+  od.sections.field.headline = od.sections.field.headline || {};
+  od.sections.contact = od.sections.contact || {};
+  od.sections.contact.headline = od.sections.contact.headline || {};
+  opc.appendChild(lab("In the field"));
+  field(opc, "Eyebrow", od.sections.field, "eyebrow");
+  field(opc, "Headline", od.sections.field.headline, "main");
+  field(opc, "Headline accent (colored part)", od.sections.field.headline, "accent");
+  field(opc, "Side note", od.sections.field, "side", true);
+  mediaFields(opc, od.sections.field, "offclock-field");
+  opc.appendChild(lab("Contact band"));
+  field(opc, "Eyebrow", od.sections.contact, "eyebrow");
+  field(opc, "Headline", od.sections.contact.headline, "main");
+  field(opc, "Headline accent (colored part)", od.sections.contact.headline, "accent");
+  mediaFields(opc, od.sections.contact, "offclock-contact");
   saveBar(opc, () => saveData("data/off-the-clock.json", od, "Update Off the clock page copy via editor"));
   const entry = await loadData("fun/posts.json");
   const store = entry;
@@ -923,6 +1023,20 @@ defineTab("main", "about", "About", async (panel) => {
   field(hr, "Greeting", d.hero, "greeting", true);
   field(hr, "Intro", d.hero, "lede", true);
   field(hr, "Tagline", d.hero, "tagline");
+  mediaFields(hr, d.hero, "about-hero");
+  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", "../about.html");
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  [["thirties", "30-second version", false], ["story", "Story", false], ["selected", "Selected work", true], ["route", "The route", true], ["toolbox", "Toolbox", true], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
+    const sec = d.sections[key] = d.sections[key] || {};
+    sec.headline = sec.headline || {};
+    shd.appendChild(lab(label));
+    field(shd, "Eyebrow", sec, "eyebrow");
+    field(shd, "Headline", sec.headline, "main");
+    field(shd, "Headline accent (colored part)", sec.headline, "accent");
+    if (hasSide) field(shd, "Side note", sec, "side", true);
+    mediaFields(shd, sec, "about-" + key);
+  });
   // 30-second cards
   const ts = h2card("30-second version", "The three quick cards.", "../about.html#thirties");
   panel.appendChild(ts);
@@ -1119,6 +1233,7 @@ defineTab("analytics", "header", "Header", async (panel) => {
   field(card, "Eyebrow", d, "eyebrow");
   field(card, "Headline", d, "headline");
   field(card, "Intro", d, "lede", true);
+  mediaFields(card, d, "analytics-hero");
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -1143,6 +1258,7 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
     box.appendChild(row);
     field(box, "Intro", lane, "blurb", true);
     embedField(box, "Embed link", lane, "embed");
+    mediaFields(box, lane, "analytics-lane-" + (lane.id || "lane"));
     box.appendChild(lab("Case studies"));
     listEditor(box, lane.projects || (lane.projects = []), (pb, p) => {
       const t = document.createElement("div");
@@ -1196,6 +1312,7 @@ defineTab("builds", "header", "Header", async (panel) => {
   field(card, "Eyebrow", d, "eyebrow");
   field(card, "Headline", d, "headline");
   field(card, "Intro", d, "lede", true);
+  mediaFields(card, d, "builds-hero");
   saveBar(panel, async () => {
     try {
       status("Saving…");
