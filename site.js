@@ -102,7 +102,8 @@ function renderRoute(containerId, stops) {
     btn.innerHTML =
       '<span class="when">' + esc(s.when) + "</span>" +
       '<div class="where">' + esc(s.where) + "</div>" +
-      '<div class="role">' + esc(s.role) + "</div>";
+      '<div class="role">' + esc(s.role) + "</div>" +
+      '<span class="stop-toggle" aria-hidden="true"><span class="st-plus">+</span><span class="st-word">details</span></span>';
     const det = el("div", "detail");
     const ul = document.createElement("ul");
     s.detail.forEach((d) => ul.appendChild(el("li", "", esc(d))));
@@ -113,6 +114,8 @@ function renderRoute(containerId, stops) {
       if (e.target.closest("a")) return;
       const open = stop.classList.toggle("open");
       btn.setAttribute("aria-expanded", open ? "true" : "false");
+      const w = btn.querySelector(".st-word");
+      if (w) w.textContent = open ? "less" : "details";
     });
     stop.appendChild(btn);
     wrap.appendChild(stop);
