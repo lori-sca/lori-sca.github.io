@@ -24,6 +24,7 @@
       <a data-nav="writing" href="writing.html">Writing</a>
       <a href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
+      <button class="nav-search" id="nav-search" aria-label="Search this site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
   </div>
 <div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#start">Start here</a><a href="#featured">Featured</a><a href="#about">About</a><a href="#contact">Contact</a></div></div>
@@ -38,18 +39,9 @@
           <span class="eyebrow" id="hero-eyebrow"></span>
           <h1 id="hero-headline"></h1>
           <p class="lede" id="hero-lede"></p>
-          <p class="metric-line" id="hero-metric"></p>
+          <p class="tagline" id="hero-tagline"></p>
           <div class="cta-row" id="hero-ctas"></div>
         </div>
-        <aside class="hero-side">
-          <div class="now-card">
-            <p class="nc-title">Right now</p>
-            <div class="nc-row"><span class="k">Based</span><span class="v">San Francisco</span></div>
-            <div class="nc-row"><span class="k">Focus</span><span class="v">People Analytics &amp; Operations</span></div>
-            <div class="nc-row"><span class="k">Contact</span><span class="v"><a id="nc-email" href="#">Email</a></span></div>
-            <div class="nc-row"><span class="k">Elsewhere</span><span class="v"><a id="nc-linkedin" href="#" target="_blank" rel="noopener">LinkedIn</a> · <a id="nc-github" href="#" target="_blank" rel="noopener">GitHub</a></span></div>
-          </div>
-        </aside>
       </div>
     </div>
   </section>
@@ -134,6 +126,7 @@
 <script src="content.js"></script>
 <script src="site.js"></script>
 <script src="motion.js"></script>
+<script src="search.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/home.json")])
     .then(([site, home]) => {
@@ -142,7 +135,7 @@
       document.getElementById("hero-eyebrow").textContent = home.hero.eyebrow;
       document.getElementById("hero-headline").textContent = home.hero.headline;
       document.getElementById("hero-lede").textContent = home.hero.lede;
-      document.getElementById("hero-metric").textContent = home.hero.metric;
+      document.getElementById("hero-tagline").textContent = home.hero.tagline ? "\u201c" + home.hero.tagline + "\u201d" : "";
       const ctas = document.getElementById("hero-ctas");
       (home.hero.ctas || []).forEach((c, i) => {
         const a = document.createElement("a");

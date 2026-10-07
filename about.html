@@ -25,6 +25,7 @@
       <a data-nav="writing" href="writing.html">Writing</a>
       <a href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
+      <button class="nav-search" id="nav-search" aria-label="Search this site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
   </div>
 <div class="subnav"><div class="subnav-inner"><a href="#top">About</a><a href="#thirties">30 seconds</a><a href="#story">Story</a><a href="#route">The Route</a><a href="#toolbox">Toolbox</a><a href="#contact">Contact</a></div></div>
@@ -190,6 +191,7 @@
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
 <script src="site.js"></script>
 <script src="motion.js"></script>
+<script src="search.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
     .then(([site, about]) => {
