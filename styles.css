@@ -449,9 +449,11 @@ section[id], div[id] { scroll-margin-top: 104px; }
 .journey-map { position: relative; border: 1px solid var(--hairline); border-radius: 14px; overflow: hidden; background: var(--mist); }
 .journey-map .map-canvas { width: 100%; height: 420px; }
 .journey-legend { display: flex; gap: 1.4rem; flex-wrap: wrap; padding: .9rem 1.2rem; border-top: 1px solid var(--hairline); background: var(--white); }
-.journey-legend span { font-family: var(--mono); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); display: flex; align-items: center; gap: .5rem; }
+.journey-legend span, .journey-legend .journey-stop { font-family: var(--mono); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); display: flex; align-items: center; gap: .5rem; }
+.journey-legend .journey-stop { background: none; border: none; padding: 0; cursor: pointer; text-align: left; }
+.journey-legend .journey-stop:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 .journey-legend i { width: .7rem; height: .7rem; border-radius: 50%; background: var(--accent); display: inline-block; }
-.map-pin { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 3px solid var(--white); box-shadow: 0 2px 8px rgba(30,45,66,.4); cursor: pointer; }
+.map-pin { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); border: 3px solid var(--white); box-shadow: 0 2px 8px rgba(30,45,66,.4); cursor: pointer; }
 @media (max-width: 640px) { .journey-map .map-canvas { height: 300px; } }
 
 /* ---------- hannibal easter egg ---------- */
@@ -462,7 +464,7 @@ section[id], div[id] { scroll-margin-top: 104px; }
   opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s cubic-bezier(.34,1.56,.64,1);
   background: var(--white); padding: 6px;
 }
-.hannibal:hover img, .hannibal:focus img { opacity: 1; transform: translateX(-50%) scale(1); }
+.hannibal:hover img, .hannibal:focus img, .hannibal.show img { opacity: 1; transform: translateX(-50%) scale(1); }
 
 /* ---------- reduced motion ---------- */
 @media (prefers-reduced-motion: reduce) {

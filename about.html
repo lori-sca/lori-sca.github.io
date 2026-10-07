@@ -280,11 +280,17 @@
       const hw = document.createElement("span");
       hw.className = "hannibal";
       hw.tabIndex = 0;
+      hw.setAttribute("role", "button");
+      hw.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
       hw.textContent = pr.latin || "";
       const him = document.createElement("img");
       him.src = "assets/hannibal.png";
       him.alt = "Hannibal of Carthage";
       hw.appendChild(him);
+      hw.addEventListener("click", () => hw.classList.toggle("show"));
+      hw.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hw.classList.toggle("show"); }
+      });
       latEl.appendChild(hw);
       document.getElementById("principle-trans").textContent = pr.translation || "";
       document.getElementById("principle-note").textContent = pr.note || "";
@@ -315,6 +321,7 @@
           scrollZoom: false,
         });
         const bounds = pts.reduce((b, p) => b.extend(p), new mapboxgl.LngLatBounds(pts[0], pts[0]));
+        const markers = [];
         function addRoute() {
           if (map.getSource("journey")) return;
           map.addSource("journey", {
@@ -327,23 +334,43 @@
           });
         }
         map.on("load", () => { addRoute(); map.fitBounds(bounds, { padding: 70 }); });
-        stops.forEach((s) => {
+        stops.forEach((s, idx) => {
           const pin = document.createElement("div");
           pin.className = "map-pin";
-          new mapboxgl.Marker(pin)
+          pin.setAttribute("role", "button");
+          pin.setAttribute("tabindex", "0");
+          pin.setAttribute("aria-label", s.city + " — " + s.note + ". Activate for details.");
+          const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(
+            "<strong>" + s.city + "</strong><br>" + s.note
+          );
+          const marker = new mapboxgl.Marker(pin)
             .setLngLat([s.lng, s.lat])
-            .setPopup(new mapboxgl.Popup({ offset: 18 }).setHTML(
-              "<strong>" + s.city + "</strong><br>" + s.note
-            ))
+            .setPopup(popup)
             .addTo(map);
+          // explicit toggle: marker default + keyboard + legend all open the popup
+          function toggle(e) {
+            if (e) e.stopPropagation();
+            marker.togglePopup();
+          }
+          pin.addEventListener("click", toggle);
+          pin.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e); }
+          });
+          markers.push(marker);
         });
         // legend
         const lg = document.getElementById("journey-legend");
-        stops.forEach((s) => {
-          const sp = document.createElement("span");
+        stops.forEach((s, idx) => {
+          const sp = document.createElement("button");
+          sp.type = "button";
+          sp.className = "journey-stop";
           const dot = document.createElement("i");
           sp.appendChild(dot);
           sp.appendChild(document.createTextNode(s.city + " — " + s.note));
+          sp.addEventListener("click", () => {
+            map.flyTo({ center: [s.lng, s.lat], zoom: 4, duration: 900 });
+            markers[idx].togglePopup();
+          });
           lg.appendChild(sp);
         });
         // follow dark mode
