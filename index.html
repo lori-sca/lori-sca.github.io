@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lorisca Cessia — People Analytics & Operations</title>
+<meta name="description" content="I build the hiring systems behind high-growth teams. People Analytics & Operations, MBA Analytics, Hult 2026.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="home">
+
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html">
+      <span class="wm-name">Lorisca Cessia</span>
+      <span class="wm-rule"></span>
+      <span class="wm-role">PEOPLE ANALYTICS &amp; OPERATIONS</span>
+    </a>
+    <div class="nav-links">
+      <a data-nav="analytics" href="analytics.html">Analytics</a>
+      <a data-nav="builds" href="builds.html">Builds</a>
+      <a data-nav="about" href="about.html">About</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <span class="eyebrow" id="hero-eyebrow"></span>
+    <h1 id="hero-headline"></h1>
+    <div class="throughline"></div>
+    <p class="lede" id="hero-lede"></p>
+    <p class="metric-line" id="hero-metric"></p>
+    <div class="cta-row" id="hero-ctas"></div>
+  </section>
+
+  <!-- START HERE -->
+  <section>
+    <span class="eyebrow">Start here</span>
+    <h2>The 30-second <em>version.</em></h2>
+    <div class="card-grid cols-3" id="starthere-grid"></div>
+  </section>
+
+  <!-- FEATURED WORK -->
+  <section>
+    <span class="eyebrow">Featured work</span>
+    <h2>Proof, <em>not promises.</em></h2>
+    <div id="featured-grid"></div>
+    <p style="margin-top:28px;">
+      <a class="text-link" href="analytics.html">All analytics work →</a>
+      &nbsp;&nbsp;
+      <a class="text-link" href="builds.html">All builds →</a>
+    </p>
+  </section>
+
+  <!-- ABOUT TEASER -->
+  <section>
+    <span class="eyebrow">About</span>
+    <h2>Who this <em>is.</em></h2>
+    <p class="lede" id="about-teaser"></p>
+    <p style="margin-top:22px;"><a class="text-link" href="about.html">More about me →</a></p>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <span class="eyebrow">Contact</span>
+    <h2>Let's talk about <em>how hiring gets built.</em></h2>
+    <p class="lede">Currently in San Francisco. Happy to walk through any of this live.</p>
+    <div class="cta-row" id="contact-row"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <a class="wordmark" href="index.html" style="text-decoration:none;">
+      <span class="wm-name" style="font-size:16px;">Lorisca Cessia</span>
+      <span class="wm-rule" style="width:28px;"></span>
+    </a>
+    <span class="mono">© <span id="year"></span> LORISCA CESSIA · PEOPLE ANALYTICS &amp; OPERATIONS</span>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="site.js"></script>
+<script>
+  // hero
+  document.getElementById("hero-eyebrow").textContent = HOME.hero.eyebrow;
+  document.getElementById("hero-headline").textContent = HOME.hero.headline;
+  document.getElementById("hero-lede").textContent = HOME.hero.lede;
+  document.getElementById("hero-metric").textContent = HOME.hero.metric;
+  const ctas = document.getElementById("hero-ctas");
+  HOME.hero.ctas.forEach((c, i) => {
+    const a = document.createElement("a");
+    a.className = "btn" + (i === 0 ? " primary" : "");
+    a.href = c.href;
+    a.textContent = c.label;
+    ctas.appendChild(a);
+  });
+  // start here
+  const sh = document.getElementById("starthere-grid");
+  HOME.startHere.forEach((s) => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="card-body"><h3 class="card-h"></h3><p class="card-hook"></p></div>';
+    card.querySelector(".card-h").textContent = s.title;
+    card.querySelector(".card-hook").textContent = s.text;
+    sh.appendChild(card);
+  });
+  // featured (cross-category, max 3)
+  const feat = [];
+  ["analytics", "builds"].forEach((cat) =>
+    (PROJECTS[cat] || []).forEach((p) => { if (p.featured && p.status === "live") feat.push(p); })
+  );
+  const fg = document.getElementById("featured-grid");
+  fg.className = "card-grid cols-" + Math.min(3, Math.max(2, feat.length));
+  feat.slice(0, 3).forEach((p) => fg.appendChild(cardNode(p)));
+  // about teaser
+  document.getElementById("about-teaser").textContent = HOME.aboutTeaser;
+  // contact
+  const cr = document.getElementById("contact-row");
+  [
+    { label: "Email", href: "mailto:" + SITE.email },
+    { label: "LinkedIn", href: SITE.linkedin },
+    { label: "GitHub", href: SITE.github },
+  ].forEach((c) => {
+    const a = document.createElement("a");
+    a.className = "btn";
+    a.href = c.href;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = c.label;
+    cr.appendChild(a);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Lorisca Cessia</title>
+<meta name="description" content="The translator instinct: business questions in, technical answers out.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="about">
+
+<nav>
+  <div class="nav-inner">
+    <a class="wordmark" href="index.html">
+      <span class="wm-name">Lorisca Cessia</span>
+      <span class="wm-rule"></span>
+      <span class="wm-role">PEOPLE ANALYTICS &amp; OPERATIONS</span>
+    </a>
+    <div class="nav-links">
+      <a data-nav="analytics" href="analytics.html">Analytics</a>
+      <a data-nav="builds" href="builds.html">Builds</a>
+      <a data-nav="about" href="about.html">About</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section>
+    <span class="eyebrow">About</span>
+    <h2>Who this <em>is.</em></h2>
+    <div class="about-grid">
+      <div class="portrait" id="portrait-block" style="display:none;">
+        <img id="portrait-img" alt="Portrait of Lorisca Cessia">
+      </div>
+      <div id="chapters"></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">The route</span>
+    <h2>Every stop taught me <em>how hiring actually works.</em></h2>
+    <div id="route"></div>
+  </section>
+
+  <section>
+    <span class="eyebrow">How I work</span>
+    <h2>Method, <em>not mystique.</em></h2>
+    <div class="method-grid" id="method-grid"></div>
+  </section>
+
+  <section id="contact">
+    <span class="eyebrow">Contact</span>
+    <h2>Let's talk about <em>how hiring gets built.</em></h2>
+    <p class="lede">Currently in San Francisco. Happy to walk through any of this live.</p>
+    <div class="cta-row" id="contact-row"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="foot-inner">
+    <a class="wordmark" href="index.html" style="text-decoration:none;">
+      <span class="wm-name" style="font-size:16px;">Lorisca Cessia</span>
+      <span class="wm-rule" style="width:28px;"></span>
+    </a>
+    <span class="mono">© <span id="year"></span> LORISCA CESSIA · PEOPLE ANALYTICS &amp; OPERATIONS</span>
+  </div>
+</footer>
+
+<script src="content.js"></script>
+<script src="site.js"></script>
+<script>
+  // portrait — hidden entirely until SITE.portrait is set
+  if (SITE.portrait) {
+    document.getElementById("portrait-block").style.display = "block";
+    document.getElementById("portrait-img").src = SITE.portrait;
+  }
+  // chapters
+  const ch = document.getElementById("chapters");
+  ABOUT.chapters.forEach((c) => {
+    const d = document.createElement("div");
+    d.className = "chapter";
+    d.innerHTML = '<span class="k"></span><p></p>';
+    d.querySelector(".k").textContent = c.label;
+    d.querySelector("p").textContent = c.text;
+    ch.appendChild(d);
+  });
+  // route
+  renderRoute("route");
+  // method
+  const mg = document.getElementById("method-grid");
+  ABOUT.method.forEach((m) => {
+    const d = document.createElement("div");
+    d.className = "method";
+    d.innerHTML = "<h3></h3><p></p>";
+    d.querySelector("h3").textContent = m.title;
+    d.querySelector("p").textContent = m.text;
+    mg.appendChild(d);
+  });
+  // contact
+  const cr = document.getElementById("contact-row");
+  [
+    { label: "Email", href: "mailto:" + SITE.email },
+    { label: "LinkedIn", href: SITE.linkedin },
+    { label: "GitHub", href: SITE.github },
+  ].forEach((c) => {
+    const a = document.createElement("a");
+    a.className = "btn"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
+    a.textContent = c.label; cr.appendChild(a);
+  });
+</script>
+</body>
+</html>
