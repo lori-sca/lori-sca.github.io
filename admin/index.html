@@ -412,7 +412,7 @@ defineTab("main", "home", "Home", async (panel) => {
   field(card, "Eyebrow", hero, "eyebrow");
   field(card, "Headline", hero, "headline");
   field(card, "Intro", hero, "lede", true);
-  field(card, "Tagline", hero, "tagline");
+  field(card, "Metric line", hero, "metric");
   card.appendChild(lab("Buttons"));
   const ctaBox = document.createElement("div");
   card.appendChild(ctaBox);
@@ -434,6 +434,54 @@ defineTab("main", "home", "Home", async (panel) => {
   field(at, "Teaser", d, "aboutTeaser", true);
   embedField(at, "Embed link", d, "aboutTeaserEmbed");
 
+  const setup = h2card("Page setup", "Browser tab title and search description.", MAIN_HOME);
+  panel.appendChild(setup);
+  d.meta = d.meta || {};
+  field(setup, "Page title", d.meta, "title");
+  field(setup, "Meta description", d.meta, "description", true);
+  const sn = h2card("Sub-navigation", "The small anchor links under the main nav.", MAIN_HOME);
+  panel.appendChild(sn);
+  d.subnav = d.subnav || [];
+  listEditor(sn, d.subnav, (box, s) => {
+    field(box, "Label", s, "label");
+    field(box, "Anchor", s, "href", false, "#top");
+  }, () => ({ label: "", href: "#" }), "Add link");
+
+  const ncd = h2card("Right-now card", "The small info card beside the hero.", MAIN_HOME + "#top");
+  panel.appendChild(ncd);
+  d.nowCard = d.nowCard || {};
+  field(ncd, "Card title", d.nowCard, "title");
+  ncd.appendChild(lab("Based row"));
+  field(ncd, "Label", d.nowCard, "basedLabel");
+  field(ncd, "Value", d.nowCard, "basedValue");
+  ncd.appendChild(lab("Focus row"));
+  field(ncd, "Label", d.nowCard, "focusLabel");
+  field(ncd, "Value", d.nowCard, "focusValue");
+  ncd.appendChild(lab("Contact row"));
+  field(ncd, "Label", d.nowCard, "contactLabel");
+  field(ncd, "Link text", d.nowCard, "contactLinkText");
+  ncd.appendChild(lab("Elsewhere row"));
+  field(ncd, "Label", d.nowCard, "elsewhereLabel");
+  field(ncd, "LinkedIn text", d.nowCard, "linkedinText");
+  field(ncd, "GitHub text", d.nowCard, "githubText");
+  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", MAIN_HOME);
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  [["start", "Start here", true], ["featured", "Featured work", true], ["about", "About teaser", false], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
+    const sec = d.sections[key] = d.sections[key] || {};
+    sec.headline = sec.headline || {};
+    shd.appendChild(lab(label));
+    field(shd, "Eyebrow", sec, "eyebrow");
+    field(shd, "Headline", sec.headline, "main");
+    field(shd, "Headline accent (colored part)", sec.headline, "accent");
+    if (hasSide) field(shd, "Side note", sec, "side", true);
+  });
+  const ll = h2card("Link labels", "The text links between sections.", MAIN_HOME);
+  panel.appendChild(ll);
+  d.links = d.links || {};
+  field(ll, "\u201cMore about me\u201d link", d.links, "moreAbout");
+  field(ll, "\u201cAll case studies\u201d link", d.links, "allCases");
+  field(ll, "\u201cAll builds\u201d link", d.links, "allBuilds");
   const ft = h2card("Featured work", "Tick the projects shown on the home page (max 3).", MAIN_HOME + "#featured");
   panel.appendChild(ft);
   const ids = d.featured || [];
@@ -481,6 +529,35 @@ defineTab("main", "writing", "Writing", async (panel) => {
     field(box, "Title", item, "title");
     field(box, "Link (optional)", item, "link");
   }, () => ({ title: "", link: "" }), "Add title");
+  const setup = h2card("Page setup", "Browser tab title and search description.", "../writing.html");
+  panel.appendChild(setup);
+  d.meta = d.meta || {};
+  field(setup, "Page title", d.meta, "title");
+  field(setup, "Meta description", d.meta, "description", true);
+  const sn = h2card("Sub-navigation", "The small anchor links under the main nav.", "../writing.html");
+  panel.appendChild(sn);
+  d.subnav = d.subnav || [];
+  listEditor(sn, d.subnav, (box, s) => {
+    field(box, "Label", s, "label");
+    field(box, "Anchor", s, "href", false, "#top");
+  }, () => ({ label: "", href: "#" }), "Add link");
+
+  const shd = h2card("Section headings", "The pipeline heading and the contact band.", "../writing.html");
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  d.sections.pipeline = d.sections.pipeline || {};
+  shd.appendChild(lab("Pipeline"));
+  field(shd, "Heading", d.sections.pipeline, "head");
+  d.sections.contact = d.sections.contact || {};
+  d.sections.contact.headline = d.sections.contact.headline || {};
+  shd.appendChild(lab("Contact band"));
+  field(shd, "Eyebrow", d.sections.contact, "eyebrow");
+  field(shd, "Headline", d.sections.contact.headline, "main");
+  field(shd, "Headline accent (colored part)", d.sections.contact.headline, "accent");
+  const lb = h2card("Labels", "Small repeated labels.", "../writing.html");
+  panel.appendChild(lb);
+  d.labels = d.labels || {};
+  field(lb, "Pipeline status label", d.labels, "pipeStatus");
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -491,6 +568,49 @@ defineTab("main", "writing", "Writing", async (panel) => {
 });
 
 defineTab("main", "offclock", "Off the clock", async (panel) => {
+  const oentry = await loadData("data/off-the-clock.json").catch(() => null);
+  const od = (oentry && oentry.data) || {};
+  const opc = h2card("Page copy", "Hero and section headings — the subtitle you wanted to change lives here. Posts, tiles, and section order are managed below.", "../off-the-clock.html");
+  panel.appendChild(opc);
+  od.meta = od.meta || {};
+  od.hero = od.hero || {};
+  od.hero.headline = od.hero.headline || {};
+  od.sections = od.sections || {};
+  od.sections.field = od.sections.field || {};
+  od.sections.field.headline = od.sections.field.headline || {};
+  od.sections.contact = od.sections.contact || {};
+  od.sections.contact.headline = od.sections.contact.headline || {};
+  field(opc, "Eyebrow", od.hero, "eyebrow");
+  field(opc, "Headline", od.hero.headline, "main");
+  field(opc, "Headline accent (colored part)", od.hero.headline, "accent");
+  field(opc, "Subtitle", od.hero, "lede", true);
+  opc.appendChild(lab("In the field"));
+  field(opc, "Eyebrow", od.sections.field, "eyebrow");
+  field(opc, "Headline", od.sections.field.headline, "main");
+  field(opc, "Headline accent (colored part)", od.sections.field.headline, "accent");
+  field(opc, "Side note", od.sections.field, "side", true);
+  opc.appendChild(lab("Contact band"));
+  field(opc, "Eyebrow", od.sections.contact, "eyebrow");
+  field(opc, "Headline", od.sections.contact.headline, "main");
+  field(opc, "Headline accent (colored part)", od.sections.contact.headline, "accent");
+  field(opc, "Page title", od.meta, "title");
+  field(opc, "Meta description", od.meta, "description", true);
+  od.subnav = od.subnav || [];
+  opc.appendChild(lab("Sub-navigation"));
+  const ocSn = document.createElement("div");
+  opc.appendChild(ocSn);
+  listEditor(ocSn, od.subnav, (box, s) => {
+    field(box, "Label", s, "label");
+    field(box, "Anchor", s, "href", false, "#top");
+  }, () => ({ label: "", href: "#" }), "Add link");
+  saveBar(opc, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/off-the-clock.json", od, "Update off-the-clock page copy via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save page copy");
+
   const entry = await loadData("fun/posts.json");
   const store = entry;
   let editingId = null;
@@ -911,6 +1031,23 @@ defineTab("main", "about", "About", async (panel) => {
   field(hr, "Greeting", d.hero, "greeting", true);
   field(hr, "Intro", d.hero, "lede", true);
   field(hr, "Tagline", d.hero, "tagline");
+  const setup = h2card("Page setup", "Browser tab title and search description.", "../about.html");
+  panel.appendChild(setup);
+  d.meta = d.meta || {};
+  field(setup, "Page title", d.meta, "title");
+  field(setup, "Meta description", d.meta, "description", true);
+  const sn = h2card("Sub-navigation", "The small anchor links under the main nav.", "../about.html");
+  panel.appendChild(sn);
+  d.subnav = d.subnav || [];
+  listEditor(sn, d.subnav, (box, s) => {
+    field(box, "Label", s, "label");
+    field(box, "Anchor", s, "href", false, "#top");
+  }, () => ({ label: "", href: "#" }), "Add link");
+
+  d.hero = d.hero || {};
+  const eb = h2card("Hero eyebrow", "The small caps line above the greeting.", "../about.html#top");
+  panel.appendChild(eb);
+  field(eb, "Eyebrow", d.hero, "eyebrow");
   // 30-second cards
   const ts = h2card("30-second version", "The three quick cards.", "../about.html#thirties");
   panel.appendChild(ts);
@@ -1032,6 +1169,29 @@ defineTab("main", "about", "About", async (panel) => {
     field(box, "Title", m, "title");
     field(box, "Text", m, "text", true);
   }, () => ({ title: "", text: "" }), "Add card");
+  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", "../about.html");
+  panel.appendChild(shd);
+  d.sections = d.sections || {};
+  [["thirties", "30-second version", false], ["story", "Story", false], ["selected", "Selected work", true], ["route", "The route", true], ["toolbox", "Toolbox", true], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
+    const sec = d.sections[key] = d.sections[key] || {};
+    sec.headline = sec.headline || {};
+    shd.appendChild(lab(label));
+    field(shd, "Eyebrow", sec, "eyebrow");
+    field(shd, "Headline", sec.headline, "main");
+    field(shd, "Headline accent (colored part)", sec.headline, "accent");
+    if (hasSide) field(shd, "Side note", sec, "side", true);
+  });
+  const ot = h2card("Off-clock teaser", "The 5-9 teaser block above the contact band.", "../about.html#principle");
+  panel.appendChild(ot);
+  d.offclockTeaser = d.offclockTeaser || {};
+  field(ot, "Title", d.offclockTeaser, "title");
+  field(ot, "Text", d.offclockTeaser, "text", true);
+  field(ot, "Button", d.offclockTeaser, "button");
+  const lb = h2card("Labels", "Small repeated labels.", "../about.html");
+  panel.appendChild(lb);
+  d.labels = d.labels || {};
+  field(lb, "\u201cSee all cases\u201d link", d.labels, "seeAllCases");
+  field(lb, "\u201cDeep dive\u201d link", d.labels, "deepDive");
   saveBar(panel, async () => {
     try {
       status("Saving…");
@@ -1051,6 +1211,14 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
   field(card, "Email", d, "email");
   field(card, "LinkedIn URL", d, "linkedin");
   field(card, "GitHub URL", d, "github");
+  const nv = h2card("Navigation", "The links in the top nav on every page.", MAIN_HOME);
+  panel.appendChild(nv);
+  d.nav = d.nav || [];
+  listEditor(nv, d.nav, (box, n) => {
+    field(box, "Label", n, "label");
+    field(box, "Link", n, "href");
+    field(box, "Active key (writing / about — blank for external links)", n, "key");
+  }, () => ({ label: "", href: "", key: "" }), "Add nav link");
   card.appendChild(lab("Portrait (optional)"));
   const fi = document.createElement("input");
   fi.className = "ed-input"; fi.type = "file"; fi.accept = "image/*";
@@ -1114,6 +1282,73 @@ defineTab("analytics", "header", "Header", async (panel) => {
       status("Saved — live in about a minute.");
     } catch (e) { status(e.message, false); }
   }, "Save header");
+});
+
+defineTab("analytics", "page", "Page", async (panel) => {
+  const pentry = await loadData("data/page.json").catch(() => null);
+  const d = (pentry && pentry.data) || {};
+  const setup = h2card("Page setup", "Browser tab title and search description.", SITES.analytics.home);
+  panel.appendChild(setup);
+  d.meta = d.meta || {};
+  field(setup, "Page title", d.meta, "title");
+  field(setup, "Meta description", d.meta, "description", true);
+  const bl = h2card("Back link", "The link back to the main site in the nav.", SITES.analytics.home);
+  panel.appendChild(bl);
+  d.backLink = d.backLink || {};
+  field(bl, "Label", d.backLink, "label");
+  field(bl, "Link", d.backLink, "href");
+  const hb = h2card("Hero buttons", "The buttons under the hero.", SITES.analytics.home);
+  panel.appendChild(hb);
+  d.heroCtas = d.heroCtas || [];
+  listEditor(hb, d.heroCtas, (box, c) => {
+    field(box, "Label", c, "label");
+    field(box, "Link", c, "href");
+    const r1 = document.createElement("label");
+    r1.className = "ed-check";
+    const cb1 = document.createElement("input");
+    cb1.type = "checkbox"; cb1.checked = !!c.orgGithub;
+    cb1.addEventListener("change", () => { c.orgGithub = cb1.checked; });
+    r1.appendChild(cb1);
+    r1.appendChild(document.createTextNode("Link follows the org's GitHub URL"));
+    box.appendChild(r1);
+    const r2 = document.createElement("label");
+    r2.className = "ed-check";
+    const cb2 = document.createElement("input");
+    cb2.type = "checkbox"; cb2.checked = !!c.newTab;
+    cb2.addEventListener("change", () => { c.newTab = cb2.checked; });
+    r2.appendChild(cb2);
+    r2.appendChild(document.createTextNode("Open in a new tab"));
+    box.appendChild(r2);
+  }, () => ({ label: "", href: "", orgGithub: false, newTab: false }), "Add button");
+  const nc = h2card("Info card", "The \u201cwhat lives here\u201d card beside the hero.", SITES.analytics.home);
+  panel.appendChild(nc);
+  d.nowCard = d.nowCard || {};
+  field(nc, "Card title", d.nowCard, "title");
+  d.nowCard.rows = d.nowCard.rows || [];
+  listEditor(nc, d.nowCard.rows, (box, r) => {
+    field(box, "Label", r, "k");
+    field(box, "Text", r, "v", true);
+  }, () => ({ k: "", v: "" }), "Add row");
+  const lb = h2card("Labels", "Small repeated labels.", SITES.analytics.home);
+  panel.appendChild(lb);
+  field(lb, "Lane eyebrow prefix", d, "laneEyebrow", false, "Lane");
+  field(lb, "Sub-nav \u201cTop\u201d label", d, "subnavTop");
+
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      try {
+        await saveData("data/page.json", d, "Update analytics page sections via editor");
+      } catch (e) {
+        await gh("data/page.json", "PUT", {
+          message: "Create page sections via editor",
+          content: utf8ToB64(JSON.stringify(d, null, 2) + "\n"),
+          branch: BRANCH,
+        });
+      }
+      status("Saved — live in about a minute.");
+    } catch (e2) { status(e2.message, false); }
+  }, "Save page");
 });
 
 defineTab("analytics", "lanes", "Lanes", async (panel) => {
@@ -1191,6 +1426,72 @@ defineTab("builds", "header", "Header", async (panel) => {
       status("Saved — live in about a minute.");
     } catch (e) { status(e.message, false); }
   }, "Save header");
+});
+
+defineTab("builds", "page", "Page", async (panel) => {
+  const pentry = await loadData("data/page.json").catch(() => null);
+  const d = (pentry && pentry.data) || {};
+  const setup = h2card("Page setup", "Browser tab title and search description.", SITES.builds.home);
+  panel.appendChild(setup);
+  d.meta = d.meta || {};
+  field(setup, "Page title", d.meta, "title");
+  field(setup, "Meta description", d.meta, "description", true);
+  const bl = h2card("Back link", "The link back to the main site in the nav.", SITES.builds.home);
+  panel.appendChild(bl);
+  d.backLink = d.backLink || {};
+  field(bl, "Label", d.backLink, "label");
+  field(bl, "Link", d.backLink, "href");
+  const hb = h2card("Hero buttons", "The buttons under the hero.", SITES.builds.home);
+  panel.appendChild(hb);
+  d.heroCtas = d.heroCtas || [];
+  listEditor(hb, d.heroCtas, (box, c) => {
+    field(box, "Label", c, "label");
+    field(box, "Link", c, "href");
+    const r1 = document.createElement("label");
+    r1.className = "ed-check";
+    const cb1 = document.createElement("input");
+    cb1.type = "checkbox"; cb1.checked = !!c.orgGithub;
+    cb1.addEventListener("change", () => { c.orgGithub = cb1.checked; });
+    r1.appendChild(cb1);
+    r1.appendChild(document.createTextNode("Link follows the org's GitHub URL"));
+    box.appendChild(r1);
+    const r2 = document.createElement("label");
+    r2.className = "ed-check";
+    const cb2 = document.createElement("input");
+    cb2.type = "checkbox"; cb2.checked = !!c.newTab;
+    cb2.addEventListener("change", () => { c.newTab = cb2.checked; });
+    r2.appendChild(cb2);
+    r2.appendChild(document.createTextNode("Open in a new tab"));
+    box.appendChild(r2);
+  }, () => ({ label: "", href: "", orgGithub: false, newTab: false }), "Add button");
+  const nc = h2card("Info card", "The \u201cwhat lives here\u201d card beside the hero.", SITES.builds.home);
+  panel.appendChild(nc);
+  d.nowCard = d.nowCard || {};
+  field(nc, "Card title", d.nowCard, "title");
+  d.nowCard.rows = d.nowCard.rows || [];
+  listEditor(nc, d.nowCard.rows, (box, r) => {
+    field(box, "Label", r, "k");
+    field(box, "Text", r, "v", true);
+  }, () => ({ k: "", v: "" }), "Add row");
+  const lb = h2card("Labels", "Small repeated labels.", SITES.builds.home);
+  panel.appendChild(lb);
+  field(lb, "Prototyping label", d, "prototypingLabel");
+
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      try {
+        await saveData("data/page.json", d, "Update builds page sections via editor");
+      } catch (e) {
+        await gh("data/page.json", "PUT", {
+          message: "Create page sections via editor",
+          content: utf8ToB64(JSON.stringify(d, null, 2) + "\n"),
+          branch: BRANCH,
+        });
+      }
+      status("Saved — live in about a minute.");
+    } catch (e2) { status(e2.message, false); }
+  }, "Save page");
 });
 
 defineTab("builds", "builds", "Builds", async (panel) => {
