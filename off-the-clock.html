@@ -40,22 +40,7 @@
 
   <section class="section" id="fun">
     <div class="wrap">
-      <div class="fun-grid">
-        <div class="fun-card">
-          <div class="fun-emoji">🎤</div>
-          <h3>I sing</h3>
-          <p>In the bathroom, mostly.</p>
-        </div>
-        <div class="fun-card">
-          <div class="fun-emoji">🧗‍♀️</div>
-          <h3>I climb</h3>
-          <p>Real walls, not corporate ladders. Yet.</p>
-        </div>
-        <div class="fun-card">
-          <div class="fun-emoji">🏂</div>
-          <h3>I (learn to) snowboard</h3>
-        </div>
-      </div>
+      <div class="fun-grid" id="fun-grid"></div>
     </div>
   </section>
 
@@ -90,6 +75,33 @@
 <script src="content.js"></script>
 <script src="site.js"></script>
 <script>
+
+  // fun entries from content.js — photo + story supported
+  const fg = document.getElementById("fun-grid");
+  FUN.forEach((f) => {
+    const card = document.createElement("div");
+    card.className = "fun-card";
+    if (f.photo) {
+      const ph = document.createElement("div");
+      ph.className = "fun-photo";
+      const img = document.createElement("img");
+      img.src = f.photo; img.alt = f.title; img.loading = "lazy";
+      ph.appendChild(img); card.appendChild(ph);
+    }
+    const em = document.createElement("div");
+    em.className = "fun-emoji"; em.textContent = f.emoji;
+    const h = document.createElement("h3"); h.textContent = f.title;
+    card.appendChild(em); card.appendChild(h);
+    if (f.text) {
+      const p = document.createElement("p"); p.textContent = f.text;
+      card.appendChild(p);
+    }
+    if (f.story) {
+      const st = document.createElement("p"); st.className = "fun-story";
+      st.textContent = f.story; card.appendChild(st);
+    }
+    fg.appendChild(card);
+  });
   const cr = document.getElementById("contact-row");
   [
     { label: "Email", href: "mailto:" + SITE.email },
