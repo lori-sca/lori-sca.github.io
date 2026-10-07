@@ -330,7 +330,8 @@ section[id], div[id] { scroll-margin-top: 104px; }
 .fun-story { margin-top: .8rem; color: var(--steel); font-size: .95rem; line-height: 1.65; }
 
 /* ---------- Blog posts (off the clock) ---------- */
-.post-list { display: flex; flex-direction: column; gap: 2.5rem; max-width: 46rem; }
+.post-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
+@media (max-width: 640px) { .post-list { grid-template-columns: 1fr; } }
 .post-card { border: 1px solid var(--hairline); border-radius: 16px; overflow: hidden; background: var(--white); }
 .post-photo { overflow: hidden; background: var(--mist); }
 .post-photo img { width: 100%; height: auto; display: block; cursor: zoom-in; }
