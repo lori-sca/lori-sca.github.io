@@ -72,39 +72,8 @@
   </div>
 </footer>
 
-<script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-  function escHtml(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-  function prettyDate(iso) {
-    const d = new Date(iso + "T12:00:00");
-    return isNaN(d) ? iso : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  }
-  function embedNode(url) {
-    if (!url) return null;
-    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([\w-]{6,})/);
-    if (m) {
-      const wrap = document.createElement("div");
-      wrap.className = "embed-video";
-      const fr = document.createElement("iframe");
-      fr.src = "https://www.youtube.com/embed/" + m[1];
-      fr.loading = "lazy";
-      fr.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      fr.allowFullscreen = true;
-      wrap.appendChild(fr);
-      return wrap;
-    }
-    let host = url;
-    try { host = new URL(url).hostname.replace(/^www\./, ""); } catch (e) {}
-    const a = document.createElement("a");
-    a.className = "embed-card";
-    a.href = url; a.target = "_blank"; a.rel = "noopener";
-    a.innerHTML = "<span>🔗</span><span></span>";
-    a.querySelector("span:last-child").textContent = host;
-    return a;
-  }
   function postCard(p) {
     const card = document.createElement("article");
     card.className = "post-card";
@@ -146,6 +115,7 @@
     card.appendChild(body);
     return card;
   }
+  loadJSON("data/site.json").then(applySiteChrome).catch(() => {});
   fetch("fun/posts.json")
     .then((r) => { if (!r.ok) throw new Error("posts not found"); return r.json(); })
     .then((d) => {
@@ -157,16 +127,6 @@
         "<p class='lede'>Posts couldn't load — try refreshing.</p>";
     });
 
-  const cr = document.getElementById("contact-row");
-  [
-    { label: "Email", href: "mailto:" + SITE.email },
-    { label: "LinkedIn", href: SITE.linkedin },
-    { label: "GitHub", href: SITE.github },
-  ].forEach((c) => {
-    const a = document.createElement("a");
-    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = c.label; cr.appendChild(a);
-  });
 </script>
 </body>
 </html>

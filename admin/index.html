@@ -10,31 +10,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
 <style>
-  .ed-wrap { max-width: 760px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
+  .ed-wrap { max-width: 820px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
   .ed-wrap h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: 2.2rem; margin-bottom: .6rem; }
   .ed-sub { color: var(--steel); margin-bottom: 2rem; max-width: 60ch; }
+  .ed-tabs { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 1.8rem; border-bottom: 1px solid var(--hairline); padding-bottom: .8rem; }
+  .ed-tab { background: none; border: none; font-family: var(--display); font-weight: 700; font-size: .98rem; color: var(--steel); padding: .6rem 1rem; border-radius: 10px; cursor: pointer; }
+  .ed-tab:hover { color: var(--ink); background: var(--mist); }
+  .ed-tab.active { color: var(--white); background: var(--ink); }
   .ed-card { border: 1px solid var(--hairline); border-radius: 14px; padding: 1.8rem; background: var(--white); margin-bottom: 1.5rem; }
-  .ed-card h2 { font-family: var(--display); font-weight: 800; font-size: 1.2rem; margin-bottom: 1rem; }
+  .ed-card h2 { font-family: var(--display); font-weight: 800; font-size: 1.2rem; margin-bottom: .4rem; }
+  .ed-card .ed-hint { color: var(--steel); font-size: .9rem; margin-bottom: 1rem; }
+  .ed-viewlink { float: right; font-size: .85rem; font-weight: 700; }
   label.ed-label { display: block; font-family: var(--mono); font-size: .64rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); margin: 1.1rem 0 .4rem; }
   .ed-input, .ed-textarea {
     width: 100%; font-family: var(--body); font-size: 1rem; color: var(--ink);
     border: 1px solid var(--hairline); border-radius: 10px; padding: .75rem 1rem; background: var(--white);
   }
   .ed-input:focus, .ed-textarea:focus { outline: 2px solid var(--ink); border-color: var(--ink); }
-  .ed-textarea { min-height: 6rem; resize: vertical; line-height: 1.6; }
+  .ed-textarea { min-height: 5rem; resize: vertical; line-height: 1.6; }
   .ed-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .ed-actions { display: flex; gap: .8rem; margin-top: 1.6rem; flex-wrap: wrap; }
+  .ed-actions { display: flex; gap: .8rem; margin-top: 1.6rem; flex-wrap: wrap; align-items: center; }
   .ed-status { margin-top: 1.2rem; font-size: .95rem; color: var(--steel); min-height: 1.5rem; }
-  .ed-post { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--hairline); }
-  .ed-post .t { font-weight: 700; }
-  .ed-post .d { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--steel); margin-left: .7rem; }
+  .ed-item { border: 1px solid var(--hairline); border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; background: var(--white); position: relative; }
+  .ed-item-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .4rem; }
+  .ed-item-title { font-weight: 800; font-family: var(--display); }
   .ed-link { background: none; border: none; color: var(--steel); font-weight: 700; font-size: .9rem; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; padding: 0; }
   .ed-link:hover { color: var(--ink); }
   .ed-link.danger { color: #b3261e; }
+  .ed-check { display: flex; gap: .6rem; align-items: center; margin-top: .9rem; font-size: .95rem; }
   .ed-photo-preview { margin-top: .7rem; max-width: 320px; border-radius: 10px; border: 1px solid var(--hairline); }
   .ed-steps { margin: 1rem 0 0 1.2rem; color: var(--steel); font-size: .95rem; line-height: 1.7; }
   .ed-steps li { margin-bottom: .5rem; }
   .ed-steps code { font-family: var(--mono); font-size: .82rem; background: var(--mist); padding: .15rem .45rem; border-radius: 6px; }
+  .ed-post { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--hairline); }
+  .ed-post .t { font-weight: 700; }
+  .ed-post .d { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--steel); margin-left: .7rem; }
   @media (max-width: 640px) { .ed-row { grid-template-columns: 1fr; } }
 </style>
 </head>
@@ -46,28 +56,24 @@
       <span class="wm-name">Lorisca Cessia</span>
       <span class="wm-role">Site editor</span>
     </a>
-    <div class="nav-links">
-      <a href="../off-the-clock.html">View the page →</a>
-    </div>
   </div>
 </nav>
 
 <main>
   <div class="ed-wrap">
 
-    <!-- SETUP: paste token -->
     <section id="setup-view">
       <h1>Site editor</h1>
-      <p class="ed-sub">This page edits your site directly. It needs a GitHub access token once — the token stays in this browser only, and is sent only to GitHub's API. I never see it.</p>
+      <p class="ed-sub">Edit your site's words the way you'd edit a blog — pick a page, change the text, publish. The key below stays in this browser only, and is sent only to GitHub. I never see it.</p>
       <div class="ed-card">
-        <h2>1 · Create the token (one time)</h2>
+        <h2>1 · Create the key (one time)</h2>
         <ol class="ed-steps">
           <li>On GitHub: profile photo → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
           <li>Name it <code>site-editor</code>. Repository access: <b>Only select repositories</b> → <code>lori-sca.github.io</code>.</li>
           <li>Under Repository permissions, set <b>Contents</b> to <b>Read and write</b>. Generate the token and copy it.</li>
         </ol>
         <h2 style="margin-top:1.8rem;">2 · Paste it here</h2>
-        <label class="ed-label" for="token-input">Token</label>
+        <label class="ed-label" for="token-input">Key</label>
         <input class="ed-input" id="token-input" type="password" autocomplete="off" placeholder="github_pat_…">
         <div class="ed-actions">
           <button class="btn primary" id="token-save">Save on this device</button>
@@ -76,79 +82,40 @@
       </div>
     </section>
 
-    <!-- EDITOR -->
     <section id="editor-view" hidden>
-      <h1>Off the clock — posts</h1>
-      <p class="ed-sub">Newest first. Publishing writes straight to the site — live in about a minute.</p>
-      <div class="ed-actions" style="margin: 0 0 1.5rem;">
-        <button class="btn primary" id="new-post">+ New post</button>
-      </div>
-      <div class="ed-card" id="post-list-card">
-        <div id="post-list"></div>
-      </div>
-
-      <form class="ed-card" id="post-form" hidden>
-        <h2 id="form-title">New post</h2>
-        <label class="ed-label" for="f-title">Title</label>
-        <input class="ed-input" id="f-title" placeholder="I sing">
-        <div class="ed-row">
-          <div>
-            <label class="ed-label" for="f-emoji">Emoji</label>
-            <input class="ed-input" id="f-emoji" placeholder="🎤">
-          </div>
-          <div>
-            <label class="ed-label" for="f-date">Date</label>
-            <input class="ed-input" id="f-date" type="date">
-          </div>
-        </div>
-        <label class="ed-label" for="f-text">One-liner</label>
-        <input class="ed-input" id="f-text" placeholder="In the bathroom, mostly.">
-        <label class="ed-label" for="f-story">Story (optional, longer)</label>
-        <textarea class="ed-textarea" id="f-story" placeholder="The longer version…"></textarea>
-        <label class="ed-label" for="f-embed">Embed link (optional — YouTube or any URL)</label>
-        <input class="ed-input" id="f-embed" type="url" placeholder="https://youtube.com/watch?v=…">
-        <label class="ed-label" for="f-photo">Cover photo (optional)</label>
-        <input class="ed-input" id="f-photo" type="file" accept="image/*">
-        <img class="ed-photo-preview" id="f-photo-preview" hidden alt="">
-        <label style="display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);" id="remove-photo-row" hidden>
-          <input type="checkbox" id="f-remove-photo"> Remove the current photo
-        </label>
-        <div class="ed-actions">
-          <button type="submit" class="btn primary">Publish</button>
-          <button type="button" class="btn ghost" id="form-cancel">Cancel</button>
-          <button type="button" class="ed-link danger" id="form-delete" hidden>Delete this post</button>
-        </div>
-      </form>
+      <h1>Site editor</h1>
+      <p class="ed-sub">Pick a page, edit the words, hit Save. Changes go live in about a minute. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
+      <div class="ed-tabs" id="ed-tabs"></div>
+      <div id="tab-panels"></div>
       <p class="ed-status" id="status"></p>
-      <p style="margin-top:2rem;"><button class="ed-link" id="logout">Forget the token on this device</button></p>
+      <p style="margin-top:2rem;"><button class="ed-link" id="logout">Forget the key on this device</button></p>
     </section>
 
   </div>
 </main>
 
+<script src="../content.js"></script>
 <script>
+/* ================= infra ================= */
 const OWNER = "lori-sca", REPO = "lori-sca.github.io", BRANCH = "main";
-const POSTS_PATH = "fun/posts.json";
 const $ = (id) => document.getElementById(id);
 const getToken = () => localStorage.getItem("oc_pat") || "";
 function status(msg, ok) {
   const el = $("status");
-  el.textContent = msg;
+  el.textContent = msg || "";
   el.style.color = ok === false ? "#b3261e" : "";
 }
 function utf8ToB64(str) {
   const bytes = new TextEncoder().encode(str);
   let bin = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  for (let i = 0; i < bytes.length; i += 0x8000) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
   }
   return btoa(bin);
 }
 function b64ToUtf8(b64) {
   const bin = atob(b64.replace(/\n/g, ""));
-  const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
+  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
 async function gh(path, method, body) {
   const res = await fetch("https://api.github.com" + path, {
@@ -160,100 +127,33 @@ async function gh(path, method, body) {
     },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) {
-    const t = await res.text();
-    throw new Error("GitHub " + res.status + " — " + t.slice(0, 140));
-  }
+  if (!res.ok) throw new Error("GitHub " + res.status + " — " + (await res.text()).slice(0, 140));
   return res.status === 204 ? null : res.json();
 }
-
-let postsFile = null;   // { sha, posts: [] }
-let editingId = null;
-let pendingPhoto = null; // { name, b64 }
-
-function showEditor(on) {
-  $("setup-view").hidden = on;
-  $("editor-view").hidden = !on;
+const fileCache = {};
+async function loadData(path) {
+  if (fileCache[path]) return fileCache[path];
+  const f = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path + "?ref=" + BRANCH);
+  const entry = { sha: f.sha, data: JSON.parse(b64ToUtf8(f.content)) };
+  fileCache[path] = entry;
+  return entry;
 }
-
-async function boot() {
-  if (!getToken()) { showEditor(false); return; }
-  try {
-    await loadPosts();
-    showEditor(true);
-    renderList();
-  } catch (e) {
-    localStorage.removeItem("oc_pat");
-    showEditor(false);
-    $("setup-status").textContent = "That token didn't work (" + e.message + "). Try a fresh one.";
-  }
-}
-
-async function loadPosts() {
-  const f = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + POSTS_PATH + "?ref=" + BRANCH);
-  postsFile = { sha: f.sha, posts: JSON.parse(b64ToUtf8(f.content)).posts || [] };
-}
-
-function renderList() {
-  const list = $("post-list");
-  list.innerHTML = "";
-  if (!postsFile.posts.length) {
-    list.innerHTML = "<p style='color:var(--steel)'>No posts yet.</p>";
-    return;
-  }
-  postsFile.posts.forEach((p) => {
-    const row = document.createElement("div");
-    row.className = "ed-post";
-    const left = document.createElement("div");
-    const t = document.createElement("span");
-    t.className = "t"; t.textContent = (p.emoji ? p.emoji + " " : "") + p.title;
-    const d = document.createElement("span");
-    d.className = "d"; d.textContent = p.date || "";
-    left.appendChild(t); left.appendChild(d);
-    const edit = document.createElement("button");
-    edit.className = "ed-link"; edit.textContent = "Edit";
-    edit.addEventListener("click", () => openForm(p.id));
-    row.appendChild(left); row.appendChild(edit);
-    list.appendChild(row);
+async function saveData(path, data, message) {
+  const entry = await loadData(path);
+  const res = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", {
+    message: message,
+    content: utf8ToB64(JSON.stringify(data, null, 2) + "\n"),
+    sha: entry.sha,
+    branch: BRANCH,
   });
+  entry.sha = res.content.sha;
+  entry.data = data;
 }
-
-function openForm(id) {
-  editingId = id || null;
-  pendingPhoto = null;
-  $("f-photo").value = "";
-  $("f-photo-preview").hidden = true;
-  $("f-remove-photo").checked = false;
-  const p = id ? postsFile.posts.find((x) => x.id === id) : null;
-  $("form-title").textContent = p ? "Edit post" : "New post";
-  $("f-title").value = p ? p.title : "";
-  $("f-emoji").value = p ? p.emoji || "" : "";
-  $("f-date").value = p && p.date ? p.date : new Date().toISOString().slice(0, 10);
-  $("f-text").value = p ? p.text || "" : "";
-  $("f-story").value = p ? p.story || "" : "";
-  $("f-embed").value = p ? p.embed || "" : "";
-  $("remove-photo-row").hidden = !(p && p.photo);
-  if (p && p.photo) {
-    const pv = $("f-photo-preview");
-    pv.src = p.photo; pv.hidden = false;
-  }
-  $("form-delete").hidden = !p;
-  $("post-form").hidden = false;
-  $("post-form").scrollIntoView({ behavior: "smooth", block: "start" });
-  status("");
-}
-
-function closeForm() {
-  $("post-form").hidden = true;
-  editingId = null;
-  pendingPhoto = null;
-}
-
-function processImage(file) {
+function processImage(file, maxSize) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => {
-      const max = 1600;
+      const max = maxSize || 1600;
       const scale = Math.min(1, max / Math.max(img.width, img.height));
       const c = document.createElement("canvas");
       c.width = Math.max(1, Math.round(img.width * scale));
@@ -272,109 +172,550 @@ function processImage(file) {
     img.src = URL.createObjectURL(file);
   });
 }
+async function uploadPhoto(path, file, message) {
+  const p = await processImage(file);
+  await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", {
+    message: message || "Upload photo",
+    content: p.b64,
+    branch: BRANCH,
+  });
+  return path;
+}
+</script>
+<script>
+/* ================= form helpers ================= */
+function h2card(title, hint, viewUrl) {
+  const d = document.createElement("div");
+  d.className = "ed-card";
+  const h = document.createElement("h2");
+  h.textContent = title;
+  d.appendChild(h);
+  if (viewUrl) {
+    const v = document.createElement("a");
+    v.className = "ed-viewlink";
+    v.href = viewUrl; v.target = "_blank"; v.rel = "noopener";
+    v.textContent = "View page →";
+    h.appendChild(document.createTextNode(" "));
+    d.appendChild(v);
+  }
+  if (hint) {
+    const p = document.createElement("p");
+    p.className = "ed-hint";
+    p.textContent = hint;
+    d.appendChild(p);
+  }
+  return d;
+}
+function lab(text) {
+  const l = document.createElement("label");
+  l.className = "ed-label";
+  l.textContent = text;
+  return l;
+}
+function textInput(value, multiline) {
+  const i = document.createElement(multiline ? "textarea" : "input");
+  i.className = multiline ? "ed-textarea" : "ed-input";
+  i.value = value || "";
+  return i;
+}
+/* binds an input to obj[key]; returns the wrapper */
+function field(host, label, obj, key, multiline, placeholder) {
+  host.appendChild(lab(label));
+  const i = textInput(obj[key], multiline);
+  if (placeholder) i.placeholder = placeholder;
+  i.addEventListener("input", () => { obj[key] = i.value; });
+  host.appendChild(i);
+  return i;
+}
+function embedField(host, label, obj, key) {
+  host.appendChild(lab(label || "Embed link (YouTube or any URL)"));
+  const i = textInput(obj[key]);
+  i.type = "url";
+  i.placeholder = "https://…";
+  i.addEventListener("input", () => { obj[key] = i.value.trim(); });
+  host.appendChild(i);
+}
+/* generic list editor: items array mutated in place */
+function listEditor(host, items, buildItem, blankItem, addLabel) {
+  const wrap = document.createElement("div");
+  host.appendChild(wrap);
+  function render() {
+    wrap.innerHTML = "";
+    items.forEach((item, idx) => {
+      const box = document.createElement("div");
+      box.className = "ed-item";
+      const head = document.createElement("div");
+      head.className = "ed-item-head";
+      const t = document.createElement("span");
+      t.className = "ed-item-title";
+      t.textContent = "#" + (idx + 1);
+      const del = document.createElement("button");
+      del.className = "ed-link danger";
+      del.textContent = "Delete";
+      del.addEventListener("click", () => { items.splice(idx, 1); render(); });
+      head.appendChild(t); head.appendChild(del);
+      box.appendChild(head);
+      buildItem(box, item, idx);
+      wrap.appendChild(box);
+    });
+    const add = document.createElement("button");
+    add.className = "btn ghost";
+    add.textContent = "+ " + (addLabel || "Add");
+    add.addEventListener("click", () => { items.push(blankItem()); render(); });
+    wrap.appendChild(add);
+  }
+  render();
+}
+function saveBar(host, onSave, label) {
+  const bar = document.createElement("div");
+  bar.className = "ed-actions";
+  const b = document.createElement("button");
+  b.className = "btn primary";
+  b.textContent = label || "Save";
+  b.addEventListener("click", onSave);
+  bar.appendChild(b);
+  host.appendChild(bar);
+}
 
-async function publish(ev) {
-  ev.preventDefault();
-  const title = $("f-title").value.trim();
-  if (!title) { status("Give the post a title first.", false); return; }
-  try {
-    status("Publishing…");
-    const posts = postsFile.posts.slice();
-    const data = {
-      id: editingId || ("p-" + Date.now()),
-      date: $("f-date").value || new Date().toISOString().slice(0, 10),
-      emoji: $("f-emoji").value.trim(),
-      title: title,
-      text: $("f-text").value.trim(),
-      story: $("f-story").value.trim(),
-      photo: "",
-      embed: $("f-embed").value.trim(),
+/* ================= tabs ================= */
+const TABS = [];
+function defineTab(id, label, build) {
+  TABS.push({ id: id, label: label, build: build, built: false });
+}
+function switchTab(id) {
+  document.querySelectorAll(".ed-tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === id));
+  document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== id; });
+  const tab = TABS.find((t) => t.id === id);
+  if (tab && !tab.built) { tab.built = true; tab.build(document.querySelector('[data-panel="' + id + '"]')); }
+  status("");
+}
+
+/* ---------- Home tab ---------- */
+defineTab("home", "Home", async (panel) => {
+  const entry = await loadData("data/home.json");
+  const d = entry.data;
+  const card = h2card("Home page", "Hero, the three start-here cards, and the about teaser.", "../index.html");
+  panel.appendChild(card);
+
+  const hero = d.hero;
+  card.appendChild(lab("Hero"));
+  field(card, "Eyebrow", hero, "eyebrow");
+  field(card, "Headline", hero, "headline");
+  field(card, "Intro", hero, "lede", true);
+  field(card, "Metric line", hero, "metric");
+  card.appendChild(lab("Buttons"));
+  const ctaBox = document.createElement("div");
+  card.appendChild(ctaBox);
+  listEditor(ctaBox, hero.ctas, (box, c) => {
+    field(box, "Label", c, "label");
+    field(box, "Link", c, "href");
+  }, () => ({ label: "", href: "" }), "Add button");
+
+  const sh = h2card("Start here", "The three cards under the hero.", "../index.html#start");
+  panel.appendChild(sh);
+  listEditor(sh, d.startHere, (box, s) => {
+    field(box, "Title", s, "title");
+    field(box, "Text", s, "text", true);
+    embedField(box, "Embed link", s, "embed");
+  }, () => ({ title: "", text: "", embed: "" }), "Add card");
+
+  const at = h2card("About teaser", null, "../index.html#about");
+  panel.appendChild(at);
+  field(at, "Teaser", d, "aboutTeaser", true);
+  embedField(at, "Embed link", d, "aboutTeaserEmbed");
+
+  const ft = h2card("Featured work", "Tick the projects shown on the home page (max 3).", "../index.html#featured");
+  panel.appendChild(ft);
+  const ids = d.featured || [];
+  const all = [];
+  ["analytics", "builds"].forEach((cat) => (PROJECTS[cat] || []).forEach((p) => all.push(p)));
+  all.forEach((p) => {
+    const row = document.createElement("label");
+    row.className = "ed-check";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = ids.includes(p.id);
+    cb.addEventListener("change", () => {
+      const i = ids.indexOf(p.id);
+      if (cb.checked && i < 0) ids.push(p.id);
+      if (!cb.checked && i >= 0) ids.splice(i, 1);
+    });
+    row.appendChild(cb);
+    row.appendChild(document.createTextNode(p.title));
+    ft.appendChild(row);
+  });
+  d.featured = ids;
+
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      if (d.featured.length > 3) { status("Pick at most 3 featured projects.", false); return; }
+      await saveData("data/home.json", d, "Update home page via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save home page");
+});
+
+/* ---------- Writing tab ---------- */
+defineTab("writing", "Writing", async (panel) => {
+  const entry = await loadData("data/writing.json");
+  const d = entry.data;
+  const card = h2card("Writing page", "Page header and the pipeline list.", "../writing.html");
+  panel.appendChild(card);
+  field(card, "Eyebrow", d, "eyebrow");
+  field(card, "Headline", d, "headline");
+  field(card, "Intro", d, "lede", true);
+  field(card, "Note under the list", d, "note", true);
+
+  const pl = h2card("In the pipeline", "Essay titles. Give one a link when it publishes elsewhere.", "../writing.html#pipeline");
+  panel.appendChild(pl);
+  listEditor(pl, d.pipeline, (box, item) => {
+    field(box, "Title", item, "title");
+    field(box, "Link (optional)", item, "link");
+  }, () => ({ title: "", link: "" }), "Add title");
+
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/writing.json", d, "Update writing page via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save writing page");
+});
+</script>
+<script>
+/* ---------- Off the clock tab ---------- */
+defineTab("offclock", "Off the clock", async (panel) => {
+  const entry = await loadData("fun/posts.json");
+  const store = entry; // {sha, data:{posts:[]}}
+  let editingId = null;
+  let pendingPhoto = null;
+
+  const card = h2card("Off the clock", "Fun blog posts — newest first.", "../off-the-clock.html");
+  panel.appendChild(card);
+  const newBtn = document.createElement("button");
+  newBtn.className = "btn primary";
+  newBtn.textContent = "+ New post";
+  newBtn.addEventListener("click", () => openForm(null));
+  const abar = document.createElement("div");
+  abar.className = "ed-actions";
+  abar.style.margin = "0 0 1rem";
+  abar.appendChild(newBtn);
+  card.appendChild(abar);
+  const list = document.createElement("div");
+  card.appendChild(list);
+
+  const form = document.createElement("form");
+  form.className = "ed-card";
+  form.hidden = true;
+  panel.appendChild(form);
+
+  function renderList() {
+    list.innerHTML = "";
+    const posts = store.data.posts || [];
+    if (!posts.length) list.innerHTML = "<p style='color:var(--steel)'>No posts yet.</p>";
+    posts.forEach((p) => {
+      const row = document.createElement("div");
+      row.className = "ed-post";
+      const left = document.createElement("div");
+      const t = document.createElement("span");
+      t.className = "t"; t.textContent = (p.emoji ? p.emoji + " " : "") + p.title;
+      const dt = document.createElement("span");
+      dt.className = "d"; dt.textContent = p.date || "";
+      left.appendChild(t); left.appendChild(dt);
+      const edit = document.createElement("button");
+      edit.className = "ed-link"; edit.textContent = "Edit";
+      edit.addEventListener("click", () => openForm(p.id));
+      row.appendChild(left); row.appendChild(edit);
+      list.appendChild(row);
+    });
+  }
+
+  function openForm(id) {
+    editingId = id || null;
+    pendingPhoto = null;
+    form.hidden = false;
+    form.innerHTML = "";
+    const posts = store.data.posts || [];
+    const p = id ? posts.find((x) => x.id === id) : null;
+    const h = document.createElement("h2");
+    h.textContent = p ? "Edit post" : "New post";
+    form.appendChild(h);
+    const draft = {
+      title: p ? p.title : "",
+      emoji: p ? p.emoji || "" : "",
+      date: p && p.date ? p.date : new Date().toISOString().slice(0, 10),
+      text: p ? p.text || "" : "",
+      story: p ? p.story || "" : "",
+      embed: p ? p.embed || "" : "",
+      photo: p ? p.photo || "" : "",
     };
-    const existing = editingId ? posts.find((p) => p.id === editingId) : null;
-    if (pendingPhoto) {
-      const safe = pendingPhoto.name.replace(/[^a-zA-Z0-9.\-]/g, "-");
-      const path = "fun/photos/" + Date.now() + "-" + safe.replace(/\.[^.]+$/, "") + ".jpg";
-      await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + path, "PUT", {
-        message: "Add photo for off-the-clock post",
-        content: pendingPhoto.b64,
-        branch: BRANCH,
-      });
-      data.photo = path;
-    } else if (existing && existing.photo && !$("f-remove-photo").checked) {
-      data.photo = existing.photo;
+    field(form, "Title", draft, "title");
+    const row = document.createElement("div");
+    row.className = "ed-row";
+    const c1 = document.createElement("div"), c2 = document.createElement("div");
+    field(c1, "Emoji", draft, "emoji");
+    const dl = lab("Date");
+    c2.appendChild(dl);
+    const di = document.createElement("input");
+    di.className = "ed-input"; di.type = "date"; di.value = draft.date;
+    di.addEventListener("input", () => { draft.date = di.value; });
+    c2.appendChild(di);
+    row.appendChild(c1); row.appendChild(c2);
+    form.appendChild(row);
+    field(form, "One-liner", draft, "text");
+    field(form, "Story (optional, longer)", draft, "story", true);
+    embedField(form, "Embed link", draft, "embed");
+    form.appendChild(lab("Cover photo (optional)"));
+    const fi = document.createElement("input");
+    fi.className = "ed-input"; fi.type = "file"; fi.accept = "image/*";
+    form.appendChild(fi);
+    const pv = document.createElement("img");
+    pv.className = "ed-photo-preview";
+    if (draft.photo) { pv.src = draft.photo; } else { pv.hidden = true; }
+    form.appendChild(pv);
+    let removePhoto = false;
+    if (draft.photo) {
+      const rl = document.createElement("label");
+      rl.style.cssText = "display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);";
+      const rc = document.createElement("input");
+      rc.type = "checkbox";
+      rc.addEventListener("change", () => { removePhoto = rc.checked; });
+      rl.appendChild(rc);
+      rl.appendChild(document.createTextNode("Remove the current photo"));
+      form.appendChild(rl);
     }
-    const i = posts.findIndex((p) => p.id === data.id);
-    if (i >= 0) posts[i] = data; else posts.unshift(data);
-    const res = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + POSTS_PATH, "PUT", {
-      message: (editingId ? "Update" : "Add") + " off-the-clock post: " + title,
-      content: utf8ToB64(JSON.stringify({ posts: posts }, null, 2) + "\n"),
-      sha: postsFile.sha,
-      branch: BRANCH,
+    fi.addEventListener("change", async () => {
+      const file = fi.files[0];
+      if (!file) return;
+      try {
+        status("Preparing photo…");
+        pendingPhoto = await processImage(file);
+        pv.src = "data:image/jpeg;base64," + pendingPhoto.b64;
+        pv.hidden = false;
+        status("");
+      } catch (err) { status(err.message, false); }
     });
-    postsFile = { sha: res.content.sha, posts: posts };
-    closeForm();
-    renderList();
-    status("Published — live on the site in about a minute.");
-  } catch (e) {
-    status(e.message, false);
+    const bar = document.createElement("div");
+    bar.className = "ed-actions";
+    const pub = document.createElement("button");
+    pub.type = "submit"; pub.className = "btn primary"; pub.textContent = "Publish";
+    const cancel = document.createElement("button");
+    cancel.type = "button"; cancel.className = "btn ghost"; cancel.textContent = "Cancel";
+    cancel.addEventListener("click", () => { form.hidden = true; });
+    bar.appendChild(pub); bar.appendChild(cancel);
+    if (p) {
+      const del = document.createElement("button");
+      del.type = "button"; del.className = "ed-link danger"; del.textContent = "Delete this post";
+      del.addEventListener("click", async () => {
+        if (!confirm("Delete “" + p.title + "”?")) return;
+        try {
+          status("Deleting…");
+          store.data.posts = store.data.posts.filter((x) => x.id !== editingId);
+          await saveData("fun/posts.json", store.data, "Delete off-the-clock post via editor");
+          form.hidden = true;
+          renderList();
+          status("Deleted.");
+        } catch (e) { status(e.message, false); }
+      });
+      bar.appendChild(del);
+    }
+    form.appendChild(bar);
+    form.onsubmit = async (ev) => {
+      ev.preventDefault();
+      if (!draft.title.trim()) { status("Give the post a title first.", false); return; }
+      try {
+        status("Publishing…");
+        const data = {
+          id: editingId || ("p-" + Date.now()),
+          date: draft.date,
+          emoji: draft.emoji.trim(),
+          title: draft.title.trim(),
+          text: draft.text.trim(),
+          story: draft.story.trim(),
+          photo: removePhoto ? "" : draft.photo,
+          embed: draft.embed.trim(),
+        };
+        if (pendingPhoto) {
+          const safe = pendingPhoto.name.replace(/[^a-zA-Z0-9.\-]/g, "-").replace(/\.[^.]+$/, "");
+          const path = "fun/photos/" + Date.now() + "-" + safe + ".jpg";
+          await uploadPhoto(path, fi.files[0], "Add photo for off-the-clock post");
+          data.photo = path;
+        }
+        const posts2 = store.data.posts.slice();
+        const i = posts2.findIndex((x) => x.id === data.id);
+        if (i >= 0) posts2[i] = data; else posts2.unshift(data);
+        store.data.posts = posts2;
+        await saveData("fun/posts.json", store.data, (editingId ? "Update" : "Add") + " off-the-clock post via editor");
+        form.hidden = true;
+        renderList();
+        status("Published — live in about a minute.");
+      } catch (e) { status(e.message, false); }
+    };
+    form.scrollIntoView({ behavior: "smooth", block: "start" });
   }
-}
 
-async function del() {
-  if (!editingId) return;
-  const p = postsFile.posts.find((x) => x.id === editingId);
-  if (!confirm("Delete “" + (p ? p.title : "this post") + "”?")) return;
+  renderList();
+});
+
+/* ---------- About tab ---------- */
+defineTab("about", "About", async (panel) => {
+  const entry = await loadData("data/about.json");
+  const d = entry.data;
+
+  const ch = h2card("Chapters", "The four story blocks.", "../about.html#chapters");
+  panel.appendChild(ch);
+  listEditor(ch, d.chapters, (box, c) => {
+    field(box, "Label", c, "label");
+    field(box, "Text", c, "text", true);
+    embedField(box, "Embed link", c, "embed");
+  }, () => ({ label: "", text: "", embed: "" }), "Add chapter");
+
+  const rt = h2card("Route", "Work history stops, newest first.", "../about.html#route");
+  panel.appendChild(rt);
+  listEditor(rt, d.route, (box, s) => {
+    const row = document.createElement("div");
+    row.className = "ed-row";
+    const a = document.createElement("div"), b = document.createElement("div");
+    field(a, "When", s, "when", false, "Now · San Francisco");
+    field(b, "Where", s, "where", false, "Company");
+    row.appendChild(a); row.appendChild(b);
+    box.appendChild(row);
+    field(box, "Role", s, "role");
+    box.appendChild(lab("Details (one per line)"));
+    const ta = textInput((s.detail || []).join("\n"), true);
+    ta.addEventListener("input", () => {
+      s.detail = ta.value.split("\n").map((x) => x.trim()).filter(Boolean);
+    });
+    box.appendChild(ta);
+    const nowL = document.createElement("label");
+    nowL.className = "ed-check";
+    const nowC = document.createElement("input");
+    nowC.type = "checkbox";
+    nowC.checked = !!s.now;
+    nowC.addEventListener("change", () => { s.now = nowC.checked; });
+    nowL.appendChild(nowC);
+    nowL.appendChild(document.createTextNode("This is the current stop"));
+    box.appendChild(nowL);
+  }, () => ({ when: "", where: "", role: "", detail: [], now: false }), "Add stop");
+
+  const mt = h2card("Method", "The three how-I-work cards.", "../about.html#method");
+  panel.appendChild(mt);
+  listEditor(mt, d.method, (box, m) => {
+    field(box, "Title", m, "title");
+    field(box, "Text", m, "text", true);
+  }, () => ({ title: "", text: "" }), "Add card");
+
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/about.json", d, "Update about page via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save about page");
+});
+
+/* ---------- Site links tab ---------- */
+defineTab("sitelinks", "Site links", async (panel) => {
+  const entry = await loadData("data/site.json");
+  const d = entry.data;
+  const card = h2card("Site links", "Name, contact links, and portrait. Used in the nav, footer, and contact buttons on every page.", "../index.html");
+  panel.appendChild(card);
+  field(card, "Name", d, "name");
+  field(card, "Role line", d, "role");
+  field(card, "Email", d, "email");
+  field(card, "LinkedIn URL", d, "linkedin");
+  field(card, "GitHub URL", d, "github");
+  card.appendChild(lab("Portrait (optional)"));
+  const fi = document.createElement("input");
+  fi.className = "ed-input"; fi.type = "file"; fi.accept = "image/*";
+  card.appendChild(fi);
+  const pv = document.createElement("img");
+  pv.className = "ed-photo-preview";
+  if (d.portrait) { pv.src = d.portrait; } else { pv.hidden = true; }
+  card.appendChild(pv);
+  let pendingPortrait = null;
+  let removePortrait = false;
+  fi.addEventListener("change", async () => {
+    const file = fi.files[0];
+    if (!file) return;
+    try {
+      status("Preparing portrait…");
+      pendingPortrait = await processImage(file, 1200);
+      pv.src = "data:image/jpeg;base64," + pendingPortrait.b64;
+      pv.hidden = false;
+      status("");
+    } catch (err) { status(err.message, false); }
+  });
+  if (d.portrait) {
+    const rl = document.createElement("label");
+    rl.style.cssText = "display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);";
+    const rc = document.createElement("input");
+    rc.type = "checkbox";
+    rc.addEventListener("change", () => { removePortrait = rc.checked; });
+    rl.appendChild(rc);
+    rl.appendChild(document.createTextNode("Remove the portrait"));
+    card.appendChild(rl);
+  }
+  saveBar(panel, async () => {
+    try {
+      status("Saving…");
+      if (pendingPortrait && fi.files[0]) {
+        await uploadPhoto("assets/portrait.jpg", fi.files[0], "Update portrait via editor");
+        d.portrait = "assets/portrait.jpg";
+      } else if (removePortrait) {
+        d.portrait = "";
+      }
+      await saveData("data/site.json", d, "Update site links via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save site links");
+});
+
+/* ================= boot ================= */
+function showEditor(on) {
+  $("setup-view").hidden = on;
+  $("editor-view").hidden = !on;
+}
+async function boot() {
+  if (!getToken()) { showEditor(false); return; }
   try {
-    status("Deleting…");
-    const posts = postsFile.posts.filter((x) => x.id !== editingId);
-    const res = await gh("/repos/" + OWNER + "/" + REPO + "/contents/" + POSTS_PATH, "PUT", {
-      message: "Delete off-the-clock post: " + (p ? p.title : editingId),
-      content: utf8ToB64(JSON.stringify({ posts: posts }, null, 2) + "\n"),
-      sha: postsFile.sha,
-      branch: BRANCH,
+    // validate the key by reading one small file
+    await loadData("data/site.json");
+    showEditor(true);
+    const tabsEl = $("ed-tabs");
+    const panelsEl = $("tab-panels");
+    TABS.forEach((t) => {
+      const b = document.createElement("button");
+      b.className = "ed-tab";
+      b.dataset.tab = t.id;
+      b.textContent = t.label;
+      b.addEventListener("click", () => switchTab(t.id));
+      tabsEl.appendChild(b);
+      const p = document.createElement("div");
+      p.dataset.panel = t.id;
+      p.hidden = true;
+      panelsEl.appendChild(p);
     });
-    postsFile = { sha: res.content.sha, posts: posts };
-    closeForm();
-    renderList();
-    status("Deleted.");
+    switchTab(TABS[0].id);
   } catch (e) {
-    status(e.message, false);
+    localStorage.removeItem("oc_pat");
+    showEditor(false);
+    $("setup-status").textContent = "That key didn't work (" + e.message + "). Try a fresh one.";
   }
 }
-
 $("token-save").addEventListener("click", async () => {
   const v = $("token-input").value.trim();
   if (!v) return;
   localStorage.setItem("oc_pat", v);
   $("token-input").value = "";
+  Object.keys(fileCache).forEach((k) => delete fileCache[k]);
   await boot();
 });
 $("logout").addEventListener("click", () => {
   localStorage.removeItem("oc_pat");
-  postsFile = null;
+  Object.keys(fileCache).forEach((k) => delete fileCache[k]);
   showEditor(false);
 });
-$("new-post").addEventListener("click", () => openForm(null));
-$("form-cancel").addEventListener("click", closeForm);
-$("post-form").addEventListener("submit", publish);
-$("form-delete").addEventListener("click", del);
-$("f-photo").addEventListener("change", async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  try {
-    status("Preparing photo…");
-    pendingPhoto = await processImage(file);
-    const pv = $("f-photo-preview");
-    pv.src = "data:image/jpeg;base64," + pendingPhoto.b64;
-    pv.hidden = false;
-    $("f-remove-photo").checked = false;
-    status("");
-  } catch (err) {
-    status(err.message, false);
-  }
-});
-
 boot();
 </script>
-</body>
-</html>

@@ -92,11 +92,11 @@ function renderCards(containerId, projects, cols) {
   live.forEach((p) => c.appendChild(cardNode(p)));
 }
 
-function renderRoute(containerId) {
+function renderRoute(containerId, stops) {
   const c = document.getElementById(containerId);
-  if (!c || typeof ABOUT === "undefined") return;
+  if (!c || !stops) return;
   const wrap = el("div", "route");
-  ABOUT.route.forEach((s) => {
+  stops.forEach((s) => {
     const stop = el("div", "stop" + (s.now ? " now" : ""));
     const btn = document.createElement("button");
     btn.innerHTML =
@@ -130,3 +130,90 @@ document.addEventListener("DOMContentLoaded", () => {
   const y = document.getElementById("year");
   if (y) y.textContent = new Date().getFullYear();
 });
+
+/* ---------- data-driven pages: shared helpers ---------- */
+
+async function loadJSON(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error("missing " + path);
+  return r.json();
+}
+
+function prettyDate(iso) {
+  const d = new Date(String(iso) + "T12:00:00");
+  return isNaN(d) ? iso : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+/* Embed block: YouTube plays inline, anything else becomes a link card. */
+function embedNode(url) {
+  if (!url) return null;
+  const m = String(url).match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([\w-]{6,})/);
+  if (m) {
+    const wrap = el("div", "embed-video");
+    const fr = document.createElement("iframe");
+    fr.src = "https://www.youtube.com/embed/" + m[1];
+    fr.loading = "lazy";
+    fr.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    fr.allowFullscreen = true;
+    wrap.appendChild(fr);
+    return wrap;
+  }
+  let host = url;
+  try { host = new URL(url).hostname.replace(/^www\./, ""); } catch (e) {}
+  const a = el("a", "embed-card");
+  a.href = url; a.target = "_blank"; a.rel = "noopener";
+  const ic = el("span", "", "🔗");
+  const tx = el("span", "", esc(host));
+  a.appendChild(ic); a.appendChild(tx);
+  return a;
+}
+
+function renderContactRow(site) {
+  const cr = document.getElementById("contact-row");
+  if (!cr || !site) return;
+  cr.innerHTML = "";
+  [
+    { label: "Email", href: "mailto:" + site.email },
+    { label: "LinkedIn", href: site.linkedin },
+    { label: "GitHub", href: site.github },
+  ].forEach((c) => {
+    const a = el("a", "btn ghost", esc(c.label));
+    a.href = c.href; a.target = "_blank"; a.rel = "noopener";
+    cr.appendChild(a);
+  });
+}
+
+/* Fills nav wordmark, footer, and contact buttons from data/site.json.
+   Static HTML stays as the no-JS fallback; this overwrites with live data. */
+function applySiteChrome(site) {
+  if (!site) return;
+  document.querySelectorAll(".wm-name").forEach((e) => { e.textContent = site.name; });
+  document.querySelectorAll(".wm-role").forEach((e) => { e.textContent = site.role; });
+  const fl = document.querySelector(".foot-links");
+  if (fl) {
+    fl.innerHTML = "";
+    [
+      [site.name, "https://lori-sca.github.io", false],
+      ["Analytics Work", "https://lorisca-analytics.github.io", false],
+      ["Builds", "https://lorisca-builds.github.io", false],
+      ["About", "https://lori-sca.github.io/about.html", false],
+      ["Email", "mailto:" + site.email, false],
+      ["LinkedIn", site.linkedin, true],
+      ["GitHub", site.github, true],
+    ].forEach(([label, href, ext]) => {
+      const a = el("a", "", esc(label));
+      a.href = href;
+      if (ext) { a.target = "_blank"; a.rel = "noopener"; }
+      fl.appendChild(a);
+    });
+  }
+  const fine = document.querySelector(".site-footer .fine");
+  if (fine) fine.innerHTML = "&copy; " + new Date().getFullYear() + " " + esc(site.name);
+  const em = document.getElementById("nc-email");
+  if (em) em.href = "mailto:" + site.email;
+  const li = document.getElementById("nc-linkedin");
+  if (li) li.href = site.linkedin;
+  const gh = document.getElementById("nc-github");
+  if (gh) gh.href = site.github;
+  renderContactRow(site);
+}

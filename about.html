@@ -104,47 +104,49 @@
   </div>
 </footer>
 
-<script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-  // portrait — hidden entirely until SITE.portrait is set
-  if (SITE.portrait) {
-    document.getElementById("portrait-block").style.display = "block";
-    document.getElementById("portrait-img").src = SITE.portrait;
-  }
-  // chapters
-  const ch = document.getElementById("chapters");
-  ABOUT.chapters.forEach((c) => {
-    const d = document.createElement("div");
-    d.className = "chapter";
-    d.innerHTML = '<span class="k"></span><p></p>';
-    d.querySelector(".k").textContent = c.label;
-    d.querySelector("p").textContent = c.text;
-    ch.appendChild(d);
-  });
-  // route
-  renderRoute("route");
-  // method
-  const mg = document.getElementById("method-grid");
-  ABOUT.method.forEach((m) => {
-    const d = document.createElement("div");
-    d.className = "method";
-    d.innerHTML = "<h3></h3><p></p>";
-    d.querySelector("h3").textContent = m.title;
-    d.querySelector("p").textContent = m.text;
-    mg.appendChild(d);
-  });
-  // contact
-  const cr = document.getElementById("contact-row");
-  [
-    { label: "Email", href: "mailto:" + SITE.email },
-    { label: "LinkedIn", href: SITE.linkedin },
-    { label: "GitHub", href: SITE.github },
-  ].forEach((c) => {
-    const a = document.createElement("a");
-    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = c.label; cr.appendChild(a);
-  });
+  Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
+    .then(([site, about]) => {
+      applySiteChrome(site);
+      // portrait — hidden entirely until site.portrait is set
+      if (site.portrait) {
+        document.getElementById("portrait-block").style.display = "block";
+        document.getElementById("portrait-img").src = site.portrait;
+      }
+      // chapters
+      const ch = document.getElementById("chapters");
+      (about.chapters || []).forEach((c) => {
+        const d = document.createElement("div");
+        d.className = "chapter";
+        const k = document.createElement("span");
+        k.className = "k"; k.textContent = c.label;
+        const p = document.createElement("p");
+        p.textContent = c.text;
+        d.appendChild(k); d.appendChild(p);
+        const emb = embedNode(c.embed);
+        if (emb) d.appendChild(emb);
+        ch.appendChild(d);
+      });
+      // route
+      renderRoute("route", about.route);
+      // method
+      const mg = document.getElementById("method-grid");
+      (about.method || []).forEach((m) => {
+        const d = document.createElement("div");
+        d.className = "method";
+        const h = document.createElement("h3");
+        h.textContent = m.title;
+        const p = document.createElement("p");
+        p.textContent = m.text;
+        d.appendChild(h); d.appendChild(p);
+        mg.appendChild(d);
+      });
+    })
+    .catch(() => {
+      document.getElementById("chapters").innerHTML =
+        "<p class='lede'>Content couldn't load — try refreshing.</p>";
+    });
 </script>
 </body>
 </html>

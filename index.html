@@ -134,59 +134,56 @@
 <script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-  // hero
-  document.getElementById("hero-eyebrow").textContent = HOME.hero.eyebrow;
-  document.getElementById("hero-headline").textContent = HOME.hero.headline;
-  document.getElementById("hero-lede").textContent = HOME.hero.lede;
-  document.getElementById("hero-metric").textContent = HOME.hero.metric;
-  const ctas = document.getElementById("hero-ctas");
-  HOME.hero.ctas.forEach((c, i) => {
-    const a = document.createElement("a");
-    a.className = "btn" + (i === 0 ? " primary" : " ghost");
-    a.href = c.href;
-    a.textContent = c.label;
-    ctas.appendChild(a);
-  });
-  // now-card links
-  document.getElementById("nc-email").href = "mailto:" + SITE.email;
-  document.getElementById("nc-linkedin").href = SITE.linkedin;
-  document.getElementById("nc-github").href = SITE.github;
-  // start here
-  const sh = document.getElementById("starthere-grid");
-  HOME.startHere.forEach((s) => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML =
-      '<div class="card-body"><h3 class="card-h"></h3><p class="card-hook"></p></div>';
-    card.querySelector(".card-h").textContent = s.title;
-    card.querySelector(".card-hook").textContent = s.text;
-    sh.appendChild(card);
-  });
-  // featured (cross-category, max 3)
-  const feat = [];
-  ["analytics", "builds"].forEach((cat) =>
-    (PROJECTS[cat] || []).forEach((p) => { if (p.featured && p.status === "live") feat.push(p); })
-  );
-  const fg = document.getElementById("featured-grid");
-  fg.className = "card-grid cols-" + Math.min(3, Math.max(2, feat.length));
-  feat.slice(0, 3).forEach((p) => fg.appendChild(cardNode(p)));
-  // about teaser
-  document.getElementById("about-teaser").textContent = HOME.aboutTeaser;
-  // contact
-  const cr = document.getElementById("contact-row");
-  [
-    { label: "Email", href: "mailto:" + SITE.email },
-    { label: "LinkedIn", href: SITE.linkedin },
-    { label: "GitHub", href: SITE.github },
-  ].forEach((c) => {
-    const a = document.createElement("a");
-    a.className = "btn ghost";
-    a.href = c.href;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.textContent = c.label;
-    cr.appendChild(a);
-  });
+  Promise.all([loadJSON("data/site.json"), loadJSON("data/home.json")])
+    .then(([site, home]) => {
+      applySiteChrome(site);
+      // hero
+      document.getElementById("hero-eyebrow").textContent = home.hero.eyebrow;
+      document.getElementById("hero-headline").textContent = home.hero.headline;
+      document.getElementById("hero-lede").textContent = home.hero.lede;
+      document.getElementById("hero-metric").textContent = home.hero.metric;
+      const ctas = document.getElementById("hero-ctas");
+      (home.hero.ctas || []).forEach((c, i) => {
+        const a = document.createElement("a");
+        a.className = "btn" + (i === 0 ? " primary" : " ghost");
+        a.href = c.href;
+        a.textContent = c.label;
+        ctas.appendChild(a);
+      });
+      // start here
+      const sh = document.getElementById("starthere-grid");
+      (home.startHere || []).forEach((s) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        const body = document.createElement("div");
+        body.className = "card-body";
+        const h = document.createElement("h3");
+        h.className = "card-h"; h.textContent = s.title;
+        const p = document.createElement("p");
+        p.className = "card-hook"; p.textContent = s.text;
+        body.appendChild(h); body.appendChild(p);
+        const emb = embedNode(s.embed);
+        if (emb) body.appendChild(emb);
+        card.appendChild(body);
+        sh.appendChild(card);
+      });
+      // featured (ids chosen in the editor; bodies live in content.js)
+      const byId = {};
+      ["analytics", "builds"].forEach((cat) =>
+        (PROJECTS[cat] || []).forEach((p) => { byId[p.id] = p; })
+      );
+      const feat = (home.featured || []).map((id) => byId[id]).filter(Boolean);
+      const fg = document.getElementById("featured-grid");
+      fg.className = "card-grid cols-" + Math.min(3, Math.max(2, feat.length));
+      feat.slice(0, 3).forEach((p) => fg.appendChild(cardNode(p)));
+      // about teaser
+      document.getElementById("about-teaser").textContent = home.aboutTeaser;
+      const te = embedNode(home.aboutTeaserEmbed);
+      if (te) document.getElementById("about-teaser").after(te);
+    })
+    .catch(() => {
+      document.getElementById("hero-headline").textContent = "Content couldn't load — try refreshing.";
+    });
 </script>
 </body>
 </html>

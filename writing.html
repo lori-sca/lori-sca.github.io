@@ -76,36 +76,39 @@
   </div>
 </footer>
 
-<script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-  document.getElementById("w-eyebrow").textContent = WRITING.eyebrow;
-  document.getElementById("w-headline").textContent = WRITING.headline;
-  document.getElementById("w-lede").textContent = WRITING.lede;
-  document.getElementById("w-note").textContent = WRITING.note;
-  const rows = document.getElementById("w-rows");
-  WRITING.pipeline.forEach((t) => {
-    const row = document.createElement("div");
-    row.className = "pipe-row";
-    const title = document.createElement("span");
-    title.className = "pipe-title";
-    title.textContent = t.title;
-    const status = document.createElement("span");
-    status.className = "pipe-status";
-    status.textContent = "In the pipeline";
-    row.appendChild(title); row.appendChild(status);
-    rows.appendChild(row);
-  });
-  const cr = document.getElementById("contact-row");
-  [
-    { label: "Email", href: "mailto:" + SITE.email },
-    { label: "LinkedIn", href: SITE.linkedin },
-    { label: "GitHub", href: SITE.github },
-  ].forEach((c) => {
-    const a = document.createElement("a");
-    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
-    a.textContent = c.label; cr.appendChild(a);
-  });
+  Promise.all([loadJSON("data/site.json"), loadJSON("data/writing.json")])
+    .then(([site, w]) => {
+      applySiteChrome(site);
+      document.getElementById("w-eyebrow").textContent = w.eyebrow;
+      document.getElementById("w-headline").textContent = w.headline;
+      document.getElementById("w-lede").textContent = w.lede;
+      document.getElementById("w-note").textContent = w.note;
+      const rows = document.getElementById("w-rows");
+      (w.pipeline || []).forEach((t) => {
+        const row = document.createElement("div");
+        row.className = "pipe-row";
+        const title = document.createElement("span");
+        title.className = "pipe-title";
+        if (t.link) {
+          const a = document.createElement("a");
+          a.href = t.link; a.target = "_blank"; a.rel = "noopener";
+          a.textContent = t.title;
+          title.appendChild(a);
+        } else {
+          title.textContent = t.title;
+        }
+        const status = document.createElement("span");
+        status.className = "pipe-status";
+        status.textContent = "In the pipeline";
+        row.appendChild(title); row.appendChild(status);
+        rows.appendChild(row);
+      });
+    })
+    .catch(() => {
+      document.getElementById("w-headline").textContent = "Content couldn't load — try refreshing.";
+    });
 </script>
 </body>
 </html>
