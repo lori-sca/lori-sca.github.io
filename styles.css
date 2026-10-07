@@ -588,3 +588,21 @@ section[id], div[id] { scroll-margin-top: 104px; }
 .sp-s { display: block; font-size: .85rem; color: var(--steel); margin-top: .2rem; line-height: 1.5; }
 .sp-empty { padding: 1.2rem 1.3rem; color: var(--steel); font-size: .9rem; margin: 0; }
 body.sp-lock { overflow: hidden; }
+
+/* ---------- Hero blurred background ---------- */
+.hero { position: relative; overflow: hidden; }
+.hero-bg {
+  position: absolute; inset: -48px;
+  background-size: cover; background-position: center 30%;
+  filter: blur(28px) saturate(1.15);
+  opacity: .45; pointer-events: none;
+}
+.hero-bg::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,255,255,.88));
+}
+[data-theme="dark"] .hero-bg { opacity: .35; }
+[data-theme="dark"] .hero-bg::after {
+  background: linear-gradient(180deg, rgba(30,45,66,.85), rgba(30,45,66,.9));
+}
+.hero .wrap { position: relative; z-index: 1; }
