@@ -70,6 +70,12 @@
       "lat": 37.7749,
       "lng": -122.4194,
       "note": "Now"
+    },
+    {
+      "city": "London",
+      "lat": "51.5074° N",
+      "lng": " 0.1278° W ",
+      "note": "Summer and Finance Adventure!"
     }
   ],
   "method": [
