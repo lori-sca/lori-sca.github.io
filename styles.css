@@ -332,8 +332,11 @@ section[id], div[id] { scroll-margin-top: 104px; }
 /* ---------- Blog posts (off the clock) ---------- */
 .post-list { display: flex; flex-direction: column; gap: 2.5rem; max-width: 46rem; }
 .post-card { border: 1px solid var(--hairline); border-radius: 16px; overflow: hidden; background: var(--white); }
-.post-photo { aspect-ratio: 16/9; overflow: hidden; background: var(--mist); }
-.post-photo img { width: 100%; height: 100%; object-fit: cover; }
+.post-photo { overflow: hidden; background: var(--mist); }
+.post-photo img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+/* lightbox */
+.lightbox { position: fixed; inset: 0; z-index: 200; background: rgba(15, 23, 34, .92); display: flex; align-items: center; justify-content: center; padding: 4vmin; cursor: zoom-out; }
+.lightbox img { max-width: 100%; max-height: 100%; border-radius: 12px; object-fit: contain; }
 .post-body { padding: 1.8rem; }
 .post-meta { display: flex; gap: .8rem; align-items: center; margin-bottom: .7rem; }
 .post-emoji { font-size: 1.6rem; line-height: 1; }

@@ -116,6 +116,23 @@
     return card;
   }
   loadJSON("data/site.json").then(applySiteChrome).catch(() => {});
+  // lightbox: click a photo to see it full-size
+  document.getElementById("post-list").addEventListener("click", (e) => {
+    const img = e.target.closest(".post-photo img");
+    if (!img) return;
+    const lb = document.createElement("div");
+    lb.className = "lightbox";
+    const full = document.createElement("img");
+    full.src = img.src;
+    full.alt = img.alt;
+    lb.appendChild(full);
+    const close = () => lb.remove();
+    lb.addEventListener("click", close);
+    document.addEventListener("keydown", function esc(ev) {
+      if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); }
+    });
+    document.body.appendChild(lb);
+  });
   fetch("fun/posts.json")
     .then((r) => { if (!r.ok) throw new Error("posts not found"); return r.json(); })
     .then((d) => {
