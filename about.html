@@ -7,17 +7,16 @@
 <meta name="description" content="The translator instinct: business questions in, technical answers out.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="about">
 
-<nav>
+<nav class="nav">
   <div class="nav-inner">
     <a class="wordmark" href="index.html">
       <span class="wm-name">Lorisca Cessia</span>
-      <span class="wm-rule"></span>
-      <span class="wm-role">PEOPLE ANALYTICS &amp; OPERATIONS</span>
+      <span class="wm-role">People Analytics &amp; Operations</span>
     </a>
     <div class="nav-links">
       <a data-nav="analytics" href="analytics.html">Analytics</a>
@@ -28,44 +27,69 @@
 </nav>
 
 <main>
-  <section>
-    <span class="eyebrow">About</span>
-    <h2>Who this <em>is.</em></h2>
-    <div class="about-grid">
-      <div class="portrait" id="portrait-block" style="display:none;">
-        <img id="portrait-img" alt="Portrait of Lorisca Cessia">
-      </div>
-      <div id="chapters"></div>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">About</span>
+      <h1>Who this <em>is.</em></h1>
     </div>
   </section>
 
-  <section>
-    <span class="eyebrow">The route</span>
-    <h2>Every stop taught me <em>how hiring actually works.</em></h2>
-    <div id="route"></div>
+  <section class="section">
+    <div class="wrap">
+      <div class="about-grid">
+        <div class="about-main" id="chapters"></div>
+        <aside class="about-side">
+          <div class="portrait" id="portrait-block" style="display:none;">
+            <img id="portrait-img" alt="Portrait of Lorisca Cessia">
+          </div>
+        </aside>
+      </div>
+    </div>
   </section>
 
-  <section>
-    <span class="eyebrow">How I work</span>
-    <h2>Method, <em>not mystique.</em></h2>
-    <div class="method-grid" id="method-grid"></div>
+  <div class="band">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">The route</span>
+          <h2>Every stop taught me <em>how hiring actually works.</em></h2>
+        </div>
+        <p class="sh-side">Seven years across four industries. The industries changed; the problem didn't.</p>
+      </div>
+      <div id="route"></div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">How I work</span>
+          <h2>Method, <em>not mystique.</em></h2>
+        </div>
+      </div>
+      <div class="method-grid" id="method-grid"></div>
+    </div>
   </section>
 
-  <section id="contact">
-    <span class="eyebrow">Contact</span>
-    <h2>Let's talk about <em>how hiring gets built.</em></h2>
-    <p class="lede">Currently in San Francisco. Happy to walk through any of this live.</p>
-    <div class="cta-row" id="contact-row"></div>
-  </section>
+  <div class="band" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">Contact</span>
+          <h2>Let's talk about <em>how hiring gets built.</em></h2>
+        </div>
+        <p class="sh-side">Currently in San Francisco. Happy to walk through any of this live.</p>
+      </div>
+      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
+    </div>
+  </div>
 </main>
 
 <footer>
   <div class="foot-inner">
-    <a class="wordmark" href="index.html" style="text-decoration:none;">
-      <span class="wm-name" style="font-size:16px;">Lorisca Cessia</span>
-      <span class="wm-rule" style="width:28px;"></span>
-    </a>
-    <span class="mono">© <span id="year"></span> LORISCA CESSIA · PEOPLE ANALYTICS &amp; OPERATIONS</span>
+    <a class="wordmark" href="index.html"><span class="wm-name" style="font-size:1rem;">Lorisca Cessia</span></a>
+    <span class="fine">© <span id="year"></span> Lorisca Cessia · People Analytics &amp; Operations</span>
   </div>
 </footer>
 
@@ -107,7 +131,7 @@
     { label: "GitHub", href: SITE.github },
   ].forEach((c) => {
     const a = document.createElement("a");
-    a.className = "btn"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
+    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
     a.textContent = c.label; cr.appendChild(a);
   });
 </script>

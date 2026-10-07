@@ -4,20 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Builds — Lorisca Cessia</title>
-<meta name="description" content="Working tools, built AI-native. Things you can touch.">
+<meta name="description" content="Working tools and demos. Systems you can click, not screenshots of systems.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500&family=Martian+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body data-page="builds">
 
-<nav>
+<nav class="nav">
   <div class="nav-inner">
     <a class="wordmark" href="index.html">
       <span class="wm-name">Lorisca Cessia</span>
-      <span class="wm-rule"></span>
-      <span class="wm-role">PEOPLE ANALYTICS &amp; OPERATIONS</span>
+      <span class="wm-role">People Analytics &amp; Operations</span>
     </a>
     <div class="nav-links">
       <a data-nav="analytics" href="analytics.html">Analytics</a>
@@ -28,33 +27,43 @@
 </nav>
 
 <main>
-  <section>
-    <div class="lane-head">
-      <span class="eyebrow" style="margin-bottom:0;">Builds</span>
-      <span class="lane-org">→ <a href="https://github.com/lorisca-builds" target="_blank" rel="noopener">lorisca-builds</a> on GitHub</span>
-    </div>
-    <h2>Things you <em>can touch.</em></h2>
-    <p class="lede">Working tools, built AI-native and shipped with open playbooks — so anyone can repurpose them. Every build opens with the problem, shows the machine, and links the demo.</p>
-    <div id="builds-grid"></div>
-    <div class="pipeline" id="pipeline-line" style="display:none;">
-      <strong>Building next</strong><span id="pipeline-text"></span>
+  <section class="page-hero">
+    <div class="wrap">
+      <div class="lane-head">
+        <span class="eyebrow">Builds</span>
+        <span class="lane-org">→ <a href="https://github.com/lorisca-builds" target="_blank" rel="noopener">lorisca-builds</a> on GitHub</span>
+      </div>
+      <h1>Tools that <em>work.</em></h1>
+      <p class="lede">Working systems with live demos — built from my own failure modes, designed so the thinking is visible in ten seconds.</p>
     </div>
   </section>
 
-  <section id="contact">
-    <span class="eyebrow">Contact</span>
-    <h2>Want to <em>repurpose one?</em></h2>
-    <div class="cta-row" id="contact-row"></div>
+  <section class="section">
+    <div class="wrap">
+      <div id="builds-grid"></div>
+      <div class="pipeline" id="pipeline-line" style="display:none;">
+        <strong>Building next</strong><span id="pipeline-text"></span>
+      </div>
+    </div>
   </section>
+
+  <div class="band" id="contact">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="sh-main">
+          <span class="eyebrow">Contact</span>
+          <h2>Want to <em>try one?</em></h2>
+        </div>
+      </div>
+      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
+    </div>
+  </div>
 </main>
 
 <footer>
   <div class="foot-inner">
-    <a class="wordmark" href="index.html" style="text-decoration:none;">
-      <span class="wm-name" style="font-size:16px;">Lorisca Cessia</span>
-      <span class="wm-rule" style="width:28px;"></span>
-    </a>
-    <span class="mono">© <span id="year"></span> LORISCA CESSIA · PEOPLE ANALYTICS &amp; OPERATIONS</span>
+    <a class="wordmark" href="index.html"><span class="wm-name" style="font-size:1rem;">Lorisca Cessia</span></a>
+    <span class="fine">© <span id="year"></span> Lorisca Cessia · People Analytics &amp; Operations</span>
   </div>
 </footer>
 
@@ -63,7 +72,7 @@
 <script>
   renderCards("builds-grid", PROJECTS.builds, "cols-2");
   if (PIPELINE.builds) {
-    document.getElementById("pipeline-line").style.display = "block";
+    document.getElementById("pipeline-line").style.display = "grid";
     document.getElementById("pipeline-text").textContent = PIPELINE.builds;
   }
   const cr = document.getElementById("contact-row");
@@ -73,7 +82,7 @@
     { label: "GitHub", href: SITE.github },
   ].forEach((c) => {
     const a = document.createElement("a");
-    a.className = "btn"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
+    a.className = "btn ghost"; a.href = c.href; a.target = "_blank"; a.rel = "noopener";
     a.textContent = c.label; cr.appendChild(a);
   });
 </script>
