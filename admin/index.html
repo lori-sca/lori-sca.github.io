@@ -273,11 +273,26 @@ function listEditor(host, items, buildItem, blankItem, addLabel) {
       const t = document.createElement("span");
       t.className = "ed-item-title";
       t.textContent = "#" + (idx + 1);
+      const up = document.createElement("button");
+      up.className = "ed-link"; up.textContent = "↑"; up.title = "Move up";
+      up.disabled = idx === 0;
+      up.addEventListener("click", () => {
+        const tmp = items[idx - 1]; items[idx - 1] = items[idx]; items[idx] = tmp; render();
+      });
+      const down = document.createElement("button");
+      down.className = "ed-link"; down.textContent = "↓"; down.title = "Move down";
+      down.disabled = idx === items.length - 1;
+      down.addEventListener("click", () => {
+        const tmp = items[idx + 1]; items[idx + 1] = items[idx]; items[idx] = tmp; render();
+      });
       const del = document.createElement("button");
       del.className = "ed-link danger";
       del.textContent = "Delete";
       del.addEventListener("click", () => { items.splice(idx, 1); render(); });
-      head.appendChild(t); head.appendChild(del);
+      const btns = document.createElement("div");
+      btns.style.cssText = "display:flex;gap:.6rem;align-items:baseline;";
+      btns.appendChild(up); btns.appendChild(down); btns.appendChild(del);
+      head.appendChild(t); head.appendChild(btns);
       box.appendChild(head);
       buildItem(box, item, idx);
       wrap.appendChild(box);
@@ -502,7 +517,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     list.innerHTML = "";
     const posts = store.data.posts || [];
     if (!posts.length) list.innerHTML = "<p style='color:var(--steel)'>No posts yet.</p>";
-    posts.forEach((p) => {
+    posts.forEach((p, idx) => {
       const row = document.createElement("div");
       row.className = "ed-post";
       const left = document.createElement("div");
@@ -511,12 +526,36 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
       const dt = document.createElement("span");
       dt.className = "d"; dt.textContent = p.date || "";
       left.appendChild(t); left.appendChild(dt);
+      const btns = document.createElement("div");
+      btns.style.cssText = "display:flex;gap:.5rem;align-items:center;";
+      const up = document.createElement("button");
+      up.className = "ed-link"; up.textContent = "↑"; up.title = "Move up";
+      up.disabled = idx === 0;
+      up.addEventListener("click", () => pMove(idx, -1));
+      const down = document.createElement("button");
+      down.className = "ed-link"; down.textContent = "↓"; down.title = "Move down";
+      down.disabled = idx === posts.length - 1;
+      down.addEventListener("click", () => pMove(idx, 1));
       const edit = document.createElement("button");
       edit.className = "ed-link"; edit.textContent = "Edit";
       edit.addEventListener("click", () => openForm(p.id));
-      row.appendChild(left); row.appendChild(edit);
+      btns.appendChild(up); btns.appendChild(down); btns.appendChild(edit);
+      row.appendChild(left); row.appendChild(btns);
       list.appendChild(row);
     });
+  }
+  async function pMove(idx, dir) {
+    const posts = store.data.posts.slice();
+    const j = idx + dir;
+    if (j < 0 || j >= posts.length) return;
+    const tmp = posts[idx]; posts[idx] = posts[j]; posts[j] = tmp;
+    try {
+      status("Reordering…");
+      store.data.posts = posts;
+      await saveData("fun/posts.json", store.data, "Reorder off-the-clock posts via editor");
+      renderList();
+      status("Reordered — live in about a minute.");
+    } catch (e) { status(e.message, false); }
   }
   function openForm(id) {
     editingId = id || null;
