@@ -22,12 +22,12 @@
     }
   ],
   "hero": {
-    "eyebrow": "Off the clock",
+    "eyebrow": "Communities, Events, Hobbies",
     "headline": {
       "main": "Off the ",
       "accent": "clock."
     },
-    "lede": "Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.",
+    "lede": "While not busy on the screen with classes, assignments, building, and... (ahem) job searching? 😂",
     "image": "",
     "imageAlt": "",
     "imageCaption": "",
@@ -40,7 +40,7 @@
         "main": "Out & ",
         "accent": "about."
       },
-      "side": "Events and communities I've helped run — the short version.",
+      "side": "Events and communities ",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
