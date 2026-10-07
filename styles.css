@@ -457,7 +457,8 @@ section[id], div[id] { scroll-margin-top: 104px; }
 @media (max-width: 640px) { .journey-map .map-canvas { height: 300px; } }
 
 /* ---------- hannibal easter egg ---------- */
-.hannibal { position: relative; display: inline-block; border-bottom: 2px dotted var(--accent); cursor: help; }
+.hannibal { position: relative; display: inline-block; border-bottom: 2px dotted var(--accent); }
+.hannibal-line { cursor: pointer; }
 .hannibal img {
   position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%) scale(.6);
   width: 120px; border-radius: 10px; border: 1px solid var(--hairline);

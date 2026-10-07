@@ -279,17 +279,20 @@
       latEl.innerHTML = "";
       const hw = document.createElement("span");
       hw.className = "hannibal";
-      hw.tabIndex = 0;
-      hw.setAttribute("role", "button");
-      hw.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
       hw.textContent = pr.latin || "";
       const him = document.createElement("img");
       him.src = "assets/hannibal.png";
       him.alt = "Hannibal of Carthage";
       hw.appendChild(him);
-      hw.addEventListener("click", () => hw.classList.toggle("show"));
-      hw.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); hw.classList.toggle("show"); }
+      // the whole latin line is the button: bigger target, same easter egg
+      latEl.classList.add("hannibal-line");
+      latEl.tabIndex = 0;
+      latEl.setAttribute("role", "button");
+      latEl.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
+      function toggleHannibal() { hw.classList.toggle("show"); }
+      latEl.addEventListener("click", toggleHannibal);
+      latEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleHannibal(); }
       });
       latEl.appendChild(hw);
       document.getElementById("principle-trans").textContent = pr.translation || "";
