@@ -35,16 +35,22 @@
   "holdup": "Is this a résumé? No. That's what LinkedIn is for. This is the part where you decide whether you'd actually want to work with me.",
   "journey": [
     {
+      "city": "Manado",
+      "lat": 1.4748,
+      "lng": 124.8421,
+      "note": "Born here · Minahasa roots"
+    },
+    {
       "city": "Pangkalan Bun",
       "lat": -2.6833,
       "lng": 111.6167,
-      "note": "Where it started · Kalimantan"
+      "note": "Kalimantan"
     },
     {
       "city": "Manado",
       "lat": 1.4748,
       "lng": 124.8421,
-      "note": "Grew up · Minahasa roots"
+      "note": "Back again · Minahasa roots"
     },
     {
       "city": "Jakarta",
