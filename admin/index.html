@@ -681,12 +681,60 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   }
   renderList();
 
+  // ---- page sections: reorder "In the field" vs "The fun stuff" ----
+  const lentry = await loadData("fun/layout.json");
+  const lstore = lentry;
+  const SECTION_LABELS = { field: "In the field", fun: "The fun stuff" };
+  const lcard = h2card("Page sections", "Order the sections on Off the clock — top first.", "../off-the-clock.html");
+  panel.appendChild(lcard);
+  const llist = document.createElement("div");
+  lcard.appendChild(llist);
+  function lRenderList() {
+    llist.innerHTML = "";
+    const secs = lstore.data.sections || [];
+    secs.forEach((key, idx) => {
+      const row = document.createElement("div");
+      row.className = "ed-post";
+      const left = document.createElement("div");
+      const t = document.createElement("span");
+      t.className = "t"; t.textContent = SECTION_LABELS[key] || key;
+      left.appendChild(t);
+      const btns = document.createElement("div");
+      btns.style.cssText = "display:flex;gap:.5rem;align-items:center;";
+      const up = document.createElement("button");
+      up.className = "ed-link"; up.textContent = "↑"; up.title = "Move up";
+      up.disabled = idx === 0;
+      up.addEventListener("click", () => lMove(idx, -1));
+      const down = document.createElement("button");
+      down.className = "ed-link"; down.textContent = "↓"; down.title = "Move down";
+      down.disabled = idx === secs.length - 1;
+      down.addEventListener("click", () => lMove(idx, 1));
+      btns.appendChild(up); btns.appendChild(down);
+      row.appendChild(left); row.appendChild(btns);
+      llist.appendChild(row);
+    });
+  }
+  async function lMove(idx, dir) {
+    const secs = (lstore.data.sections || []).slice();
+    const j = idx + dir;
+    if (j < 0 || j >= secs.length) return;
+    const tmp = secs[idx]; secs[idx] = secs[j]; secs[j] = tmp;
+    try {
+      status("Reordering sections…");
+      lstore.data.sections = secs;
+      await saveData("fun/layout.json", lstore.data, "Reorder off-the-clock sections via editor");
+      lRenderList();
+      status("Reordered — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }
+  lRenderList();
+
   // ---- involvement tiles: photo mosaic at the top of Off the clock ----
   const tentry = await loadData("fun/tiles.json");
   const tstore = tentry;
   let tEditingId = null;
   let tPendingPhoto = null;
-  const tcard = h2card("Involvement tiles", "Photo mosaic at the top of Off the clock — top first.", "../off-the-clock.html#field");
+  const tcard = h2card("Involvement tiles", "Photo mosaic of involvements.", "../off-the-clock.html#field");
   panel.appendChild(tcard);
   const tabar = document.createElement("div");
   tabar.className = "ed-actions";

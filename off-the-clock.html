@@ -191,6 +191,21 @@
     d.appendChild(cap);
     return d;
   }
+  // section order: editable in the admin ("Page sections")
+  fetch("fun/layout.json")
+    .then((r) => { if (!r.ok) throw new Error("no layout"); return r.json(); })
+    .then((d) => {
+      const order = d.sections || [];
+      if (!order.length) return;
+      const main = document.querySelector("main");
+      const band = document.getElementById("contact");
+      const map = { field: document.getElementById("field"), fun: document.getElementById("fun") };
+      order.forEach((key) => {
+        const el = map[key];
+        if (el && band) main.insertBefore(el, band);
+      });
+    })
+    .catch(() => {});
   fetch("fun/tiles.json")
     .then((r) => { if (!r.ok) throw new Error("tiles not found"); return r.json(); })
     .then((d) => {
