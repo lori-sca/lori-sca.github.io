@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About — Lorisca Cessia</title>
-<meta name="description" content="The translator instinct: business questions in, technical answers out.">
+<title>Off the clock — Lorisca Cessia</title>
+<meta name="description" content="Communities, events, and hobbies. The rest of me.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
-<body data-page="about">
+<body data-page="offtheclock">
 
 <nav class="nav">
   <div class="nav-inner">
@@ -22,56 +22,40 @@
       <a href="https://lorisca-analytics.github.io">Work</a>
       <a href="https://lorisca-builds.github.io">Builds</a>
       <a data-nav="writing" href="writing.html">Writing</a>
-      <a href="off-the-clock.html">Off the clock</a>
+      <a data-nav="offtheclock" href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
     </div>
   </div>
-<div class="subnav"><div class="subnav-inner"><a href="#top">About</a><a href="#route">The Route</a><a href="#method">How I Work</a><a href="#contact">Contact</a></div></div>
+  <div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#fun">The fun stuff</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
   <section class="page-hero" id="top">
     <div class="wrap">
-      <span class="eyebrow">About</span>
-      <h1>Who this <em>is.</em></h1>
+      <span class="eyebrow">Off the clock</span>
+      <h1>Off the <em>clock.</em></h1>
+      <p class="lede">Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.</p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="fun">
     <div class="wrap">
-      <div class="about-grid">
-        <div class="about-main" id="chapters"></div>
-        <aside class="about-side">
-          <div class="portrait" id="portrait-block" style="display:none;">
-            <img id="portrait-img" alt="Portrait of Lorisca Cessia">
-          </div>
-        </aside>
-      </div>
-    </div>
-  </section>
-
-  <div class="band" id="route">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow">The route</span>
-          <h2>Every stop taught me <em>how hiring actually works.</em></h2>
+      <div class="fun-grid">
+        <div class="fun-card">
+          <div class="fun-emoji">🎤</div>
+          <h3>I sing</h3>
+          <p>In the bathroom, mostly.</p>
         </div>
-        <p class="sh-side">Seven years across four industries. The industries changed; the problem didn't.</p>
-      </div>
-      <div id="route"></div>
-    </div>
-  </div>
-
-  <section class="section" id="method">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow">How I work</span>
-          <h2>Method, <em>not mystique.</em></h2>
+        <div class="fun-card">
+          <div class="fun-emoji">🧗‍♀️</div>
+          <h3>I climb</h3>
+          <p>Real walls, not corporate ladders. Yet.</p>
+        </div>
+        <div class="fun-card">
+          <div class="fun-emoji">🏂</div>
+          <h3>I (learn to) snowboard</h3>
         </div>
       </div>
-      <div class="method-grid" id="method-grid"></div>
     </div>
   </section>
 
@@ -82,7 +66,6 @@
           <span class="eyebrow">Contact</span>
           <h2>Get in <em>touch.</em></h2>
         </div>
-        <p class="sh-side">Currently in San Francisco. Happy to walk through any of this live.</p>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
     </div>
@@ -107,34 +90,6 @@
 <script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-  // portrait — hidden entirely until SITE.portrait is set
-  if (SITE.portrait) {
-    document.getElementById("portrait-block").style.display = "block";
-    document.getElementById("portrait-img").src = SITE.portrait;
-  }
-  // chapters
-  const ch = document.getElementById("chapters");
-  ABOUT.chapters.forEach((c) => {
-    const d = document.createElement("div");
-    d.className = "chapter";
-    d.innerHTML = '<span class="k"></span><p></p>';
-    d.querySelector(".k").textContent = c.label;
-    d.querySelector("p").textContent = c.text;
-    ch.appendChild(d);
-  });
-  // route
-  renderRoute("route");
-  // method
-  const mg = document.getElementById("method-grid");
-  ABOUT.method.forEach((m) => {
-    const d = document.createElement("div");
-    d.className = "method";
-    d.innerHTML = "<h3></h3><p></p>";
-    d.querySelector("h3").textContent = m.title;
-    d.querySelector("p").textContent = m.text;
-    mg.appendChild(d);
-  });
-  // contact
   const cr = document.getElementById("contact-row");
   [
     { label: "Email", href: "mailto:" + SITE.email },
