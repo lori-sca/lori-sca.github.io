@@ -30,7 +30,8 @@
   "hero": {
     "greeting": "Hi, you've found my 5-9 here.",
     "lede": "I'm Lori. By day I build the systems behind hiring — the intake flows, the scorecards, the dashboards that decide who gets a chance. This page is the rest of me: where I come from, how I think, and what I do when nobody's paying me.",
-    "tagline": "Use the data. Keep the human visible."
+    "tagline": "Use the data. Keep the human visible.",
+    "eyebrow": "About · San Francisco"
   },
   "holdup": "Is this a résumé? No. That's what LinkedIn is for. This is the part where you decide whether you'd actually want to work with me.",
   "journey": [
@@ -69,18 +70,12 @@
       "lat": 37.7749,
       "lng": -122.4194,
       "note": "Now"
-    },
-    {
-      "city": "London",
-      "note": "Summer and Finance Adventure!",
-      "lat": "51.5074° N",
-      "lng": " 0.1278° W "
     }
   ],
   "method": [
     {
       "text": "Sheets to SQL — I build in whatever stack the team uses. Constraints are a design input, not an excuse.",
-      "title": "Tools-Agnostic"
+      "title": "Tools-agnostic"
     },
     {
       "text": "Find where the work breaks under scale, then rebuild the operating flow. Never duties narration.",
@@ -214,5 +209,92 @@
       "url": "https://lorisca-analytics.github.io#card-h1b-sponsorship",
       "tag": "MBA · 2026"
     }
-  ]
+  ],
+  "meta": {
+    "title": "About — Lorisca Cessia",
+    "description": "Hi, you've found my 5-9 here. Use the data. Keep the human visible."
+  },
+  "subnav": [
+    {
+      "label": "About",
+      "href": "#top"
+    },
+    {
+      "label": "30 seconds",
+      "href": "#thirties"
+    },
+    {
+      "label": "Story",
+      "href": "#story"
+    },
+    {
+      "label": "The Route",
+      "href": "#route"
+    },
+    {
+      "label": "Toolbox",
+      "href": "#toolbox"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "sections": {
+    "thirties": {
+      "eyebrow": "The 30-second version",
+      "headline": {
+        "main": "Three things ",
+        "accent": "to know."
+      }
+    },
+    "story": {
+      "eyebrow": "So, what's the problem?",
+      "headline": {
+        "main": "The longer ",
+        "accent": "version."
+      }
+    },
+    "selected": {
+      "eyebrow": "Selected work",
+      "headline": {
+        "main": "Proof, ",
+        "accent": "not promises."
+      },
+      "side": "The 10-second version. Open any card on the Work hub for the deep dive."
+    },
+    "route": {
+      "eyebrow": "The route",
+      "headline": {
+        "main": "Every stop taught me ",
+        "accent": "how hiring actually works."
+      },
+      "side": "Seven years across four industries. The industries changed; the problem didn't."
+    },
+    "toolbox": {
+      "eyebrow": "Toolbox",
+      "headline": {
+        "main": "What I ",
+        "accent": "reach for."
+      },
+      "side": "Tools-agnostic by principle. These are just the current defaults."
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "headline": {
+        "main": "Say ",
+        "accent": "hi."
+      },
+      "side": "Currently in San Francisco. Happy to walk through any of this live."
+    }
+  },
+  "labels": {
+    "seeAllCases": "See all cases →",
+    "deepDive": "Deep dive →"
+  },
+  "offclockTeaser": {
+    "title": "The 5-9 stuff lives elsewhere.",
+    "text": "Climbing, singing, snowboarding, and wherever I helped an event run.",
+    "button": "Off the clock →"
+  }
 }

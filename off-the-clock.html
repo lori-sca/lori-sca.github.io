@@ -24,18 +24,17 @@
       <a data-nav="writing" href="writing.html">Writing</a>
       <a data-nav="offtheclock" href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
-      <button class="nav-search" id="nav-search" aria-label="Search this site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
   </div>
-  <div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#field">In the field</a><a href="#fun">The fun stuff</a><a href="#contact">Contact</a></div></div>
+  <div class="subnav"><div class="subnav-inner" id="subnav-inner"><a href="#top">Top</a><a href="#field">In the field</a><a href="#fun">The fun stuff</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
   <section class="page-hero" id="top">
     <div class="wrap">
-      <span class="eyebrow">Off the clock</span>
-      <h1>Off the <em>clock.</em></h1>
-      <p class="lede">Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.</p>
+      <span class="eyebrow" id="oc-eyebrow">Off the clock</span>
+      <h1 id="oc-headline">Off the <em>clock.</em></h1>
+      <p class="lede" id="oc-lede">Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.</p>
     </div>
   </section>
 
@@ -43,10 +42,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">In the field</span>
-          <h2>Out &amp; <em>about.</em></h2>
+          <span class="eyebrow" id="sec-field-eyebrow">In the field</span>
+          <h2 id="sec-field-headline">Out &amp; <em>about.</em></h2>
         </div>
-        <p class="sh-side">Events and communities I've helped run — the short version.</p>
+        <p class="sh-side" id="sec-field-side">Events and communities I've helped run — the short version.</p>
       </div>
       <div class="tile-grid" id="tile-grid"></div>
     </div>
@@ -62,8 +61,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Contact</span>
-          <h2>Get in <em>touch.</em></h2>
+          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
+          <h2 id="sec-contact-headline">Get in <em>touch.</em></h2>
         </div>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
@@ -88,7 +87,6 @@
 
 <script src="site.js"></script>
 <script src="motion.js"></script>
-<script src="search.js"></script>
 <script>
   function postCard(p) {
     const card = document.createElement("article");
@@ -134,6 +132,26 @@
     return card;
   }
   loadJSON("data/site.json").then(applySiteChrome).catch(() => {});
+  loadJSON("data/off-the-clock.json")
+    .then((oc) => {
+      setMeta(oc.meta);
+      renderSubnav(oc.subnav);
+      const hero = oc.hero || {};
+      setText("oc-eyebrow", hero.eyebrow);
+      setHeadline(document.getElementById("oc-headline"), hero.headline);
+      setText("oc-lede", hero.lede);
+      const S = oc.sections || {};
+      if (S.field) {
+        setText("sec-field-eyebrow", S.field.eyebrow);
+        setHeadline(document.getElementById("sec-field-headline"), S.field.headline);
+        setText("sec-field-side", S.field.side);
+      }
+      if (S.contact) {
+        setText("sec-contact-eyebrow", S.contact.eyebrow);
+        setHeadline(document.getElementById("sec-contact-headline"), S.contact.headline);
+      }
+    })
+    .catch(() => {});
   // lightbox: click any zoomable photo to see it full-size
   function openLightbox(src, alt, caption, link) {
     const lb = document.createElement("div");

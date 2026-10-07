@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Off the clock — Lorisca Cessia",
+    "description": "Communities, events, and hobbies. The rest of me."
+  },
+  "subnav": [
+    {
+      "label": "Top",
+      "href": "#top"
+    },
+    {
+      "label": "In the field",
+      "href": "#field"
+    },
+    {
+      "label": "The fun stuff",
+      "href": "#fun"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "hero": {
+    "eyebrow": "Off the clock",
+    "headline": {
+      "main": "Off the ",
+      "accent": "clock."
+    },
+    "lede": "Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen."
+  },
+  "sections": {
+    "field": {
+      "eyebrow": "In the field",
+      "headline": {
+        "main": "Out & ",
+        "accent": "about."
+      },
+      "side": "Events and communities I've helped run — the short version."
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "headline": {
+        "main": "Get in ",
+        "accent": "touch."
+      }
+    }
+  }
+}

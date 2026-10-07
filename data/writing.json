@@ -1,1 +1,69 @@
-{"eyebrow":"WRITING · ESSAYS & FIELD NOTES","headline":"Essays & field notes.","lede":"Analytical essays and leadership reflections — adapted from MBA coursework and work diaries. Names and proprietary detail redacted before anything publishes.","note":"MBA article adaptations — the branding/mental-effort essay and the AI-transformation founder's-voice audit — join this list after redaction.","pipeline":[{"link":"","title":"Managing up when the evidence is not the obstacle"},{"link":"","title":"Rebuilding a company after the functions stopped talking"},{"link":"","title":"Two field diaries from a bank strategy sprint"},{"link":"","title":"Where my defaults cost the team"},{"link":"","title":"What leading with purpose costs in practice"},{"link":"","title":"Unlearning the instinct to look prepared"},{"link":"","title":"What AI can and cannot do in an analytics role"}]}
+{
+  "eyebrow": "WRITING · ESSAYS & FIELD NOTES",
+  "headline": "Essays & field notes.",
+  "lede": "Analytical essays and leadership reflections — adapted from MBA coursework and work diaries. Names and proprietary detail redacted before anything publishes.",
+  "note": "MBA article adaptations — the branding/mental-effort essay and the AI-transformation founder's-voice audit — join this list after redaction.",
+  "pipeline": [
+    {
+      "link": "",
+      "title": "Managing up when the evidence is not the obstacle"
+    },
+    {
+      "link": "",
+      "title": "Rebuilding a company after the functions stopped talking"
+    },
+    {
+      "link": "",
+      "title": "Two field diaries from a bank strategy sprint"
+    },
+    {
+      "link": "",
+      "title": "Where my defaults cost the team"
+    },
+    {
+      "link": "",
+      "title": "What leading with purpose costs in practice"
+    },
+    {
+      "link": "",
+      "title": "Unlearning the instinct to look prepared"
+    },
+    {
+      "link": "",
+      "title": "What AI can and cannot do in an analytics role"
+    }
+  ],
+  "meta": {
+    "title": "Writing — Lorisca Cessia",
+    "description": "Essays and field notes on analytics, leadership, and how work actually gets done."
+  },
+  "subnav": [
+    {
+      "label": "Essays",
+      "href": "#top"
+    },
+    {
+      "label": "Pipeline",
+      "href": "#pipeline"
+    },
+    {
+      "label": "Contact",
+      "href": "#contact"
+    }
+  ],
+  "sections": {
+    "pipeline": {
+      "head": "In the pipeline"
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "headline": {
+        "main": "Get in ",
+        "accent": "touch."
+      }
+    }
+  },
+  "labels": {
+    "pipeStatus": "In the pipeline"
+  }
+}

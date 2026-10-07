@@ -25,10 +25,9 @@
       <a data-nav="writing" href="writing.html">Writing</a>
       <a href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
-      <button class="nav-search" id="nav-search" aria-label="Search this site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
   </div>
-<div class="subnav"><div class="subnav-inner"><a href="#top">About</a><a href="#thirties">30 seconds</a><a href="#story">Story</a><a href="#route">The Route</a><a href="#toolbox">Toolbox</a><a href="#contact">Contact</a></div></div>
+<div class="subnav"><div class="subnav-inner" id="subnav-inner"><a href="#top">About</a><a href="#thirties">30 seconds</a><a href="#story">Story</a><a href="#route">The Route</a><a href="#toolbox">Toolbox</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
@@ -37,7 +36,7 @@
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
-          <span class="eyebrow">About · San Francisco</span>
+          <span class="eyebrow" id="about-eyebrow">About · San Francisco</span>
           <h1 id="about-greeting" data-sparkles></h1>
           <p class="lede" id="about-lede"></p>
           <p class="tagline" id="about-tagline"></p>
@@ -56,8 +55,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">The 30-second version</span>
-          <h2>Three things <em>to know.</em></h2>
+          <span class="eyebrow" id="sec-thirties-eyebrow">The 30-second version</span>
+          <h2 id="sec-thirties-headline">Three things <em>to know.</em></h2>
         </div>
       </div>
       <div class="card-grid cols-3" id="thirties-grid"></div>
@@ -69,8 +68,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">So, what's the problem?</span>
-          <h2>The longer <em>version.</em></h2>
+          <span class="eyebrow" id="sec-story-eyebrow">So, what's the problem?</span>
+          <h2 id="sec-story-headline">The longer <em>version.</em></h2>
         </div>
       </div>
       <div class="about-grid">
@@ -94,13 +93,13 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Selected work</span>
-          <h2>Proof, <em>not promises.</em></h2>
+          <span class="eyebrow" id="sec-selected-eyebrow">Selected work</span>
+          <h2 id="sec-selected-headline">Proof, <em>not promises.</em></h2>
         </div>
-        <p class="sh-side">The 10-second version. Open any card on the Work hub for the deep dive.</p>
+        <p class="sh-side" id="sec-selected-side">The 10-second version. Open any card on the Work hub for the deep dive.</p>
       </div>
       <div class="card-grid cols-3" id="selected-grid"></div>
-      <p style="margin-top:1.6rem;"><a class="text-link" href="https://lorisca-analytics.github.io">See all cases →</a></p>
+      <p style="margin-top:1.6rem;"><a class="text-link" id="link-see-all" href="https://lorisca-analytics.github.io">See all cases →</a></p>
     </div>
   </section>
 
@@ -109,10 +108,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">The route</span>
-          <h2>Every stop taught me <em>how hiring actually works.</em></h2>
+          <span class="eyebrow" id="sec-route-eyebrow">The route</span>
+          <h2 id="sec-route-headline">Every stop taught me <em>how hiring actually works.</em></h2>
         </div>
-        <p class="sh-side">Seven years across four industries. The industries changed; the problem didn't.</p>
+        <p class="sh-side" id="sec-route-side">Seven years across four industries. The industries changed; the problem didn't.</p>
       </div>
       <div class="journey-map reveal" id="journey-map">
         <div class="map-canvas" id="journey-canvas"></div>
@@ -127,10 +126,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Toolbox</span>
-          <h2>What I <em>reach for.</em></h2>
+          <span class="eyebrow" id="sec-toolbox-eyebrow">Toolbox</span>
+          <h2 id="sec-toolbox-headline">What I <em>reach for.</em></h2>
         </div>
-        <p class="sh-side">Tools-agnostic by principle. These are just the current defaults.</p>
+        <p class="sh-side" id="sec-toolbox-side">Tools-agnostic by principle. These are just the current defaults.</p>
       </div>
       <div class="card-grid cols-3" id="toolbox-grid"></div>
     </div>
@@ -147,10 +146,10 @@
       <p class="fieldnotes reveal" id="fieldnotes"></p>
       <div class="offclock-teaser reveal">
         <div>
-          <h3>The 5-9 stuff lives elsewhere.</h3>
-          <p>Climbing, singing, snowboarding, and wherever I helped an event run.</p>
+          <h3 id="oct-title">The 5-9 stuff lives elsewhere.</h3>
+          <p id="oct-text">Climbing, singing, snowboarding, and wherever I helped an event run.</p>
         </div>
-        <a class="btn primary" href="off-the-clock.html">Off the clock →</a>
+        <a class="btn primary" id="oct-btn" href="off-the-clock.html">Off the clock →</a>
       </div>
     </div>
   </section>
@@ -160,10 +159,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Contact</span>
-          <h2>Say <em>hi.</em></h2>
+          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
+          <h2 id="sec-contact-headline">Say <em>hi.</em></h2>
         </div>
-        <p class="sh-side">Currently in San Francisco. Happy to walk through any of this live.</p>
+        <p class="sh-side" id="sec-contact-side">Currently in San Francisco. Happy to walk through any of this live.</p>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
       <div style="margin-top:1.6rem;">
@@ -191,11 +190,31 @@
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
 <script src="site.js"></script>
 <script src="motion.js"></script>
-<script src="search.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
     .then(([site, about]) => {
       applySiteChrome(site);
+      setMeta(about.meta);
+      renderSubnav(about.subnav);
+      // hero eyebrow
+      setText("about-eyebrow", (about.hero || {}).eyebrow);
+      // section headings
+      const S = about.sections || {};
+      ["thirties", "story", "selected", "route", "toolbox", "contact"].forEach((k) => {
+        const s = S[k];
+        if (!s) return;
+        setText("sec-" + k + "-eyebrow", s.eyebrow);
+        setHeadline(document.getElementById("sec-" + k + "-headline"), s.headline);
+        setText("sec-" + k + "-side", s.side);
+      });
+      // off-clock teaser
+      const ot = about.offclockTeaser || {};
+      setText("oct-title", ot.title);
+      setText("oct-text", ot.text);
+      setText("oct-btn", ot.button);
+      // labels
+      const L = about.labels || {};
+      setText("link-see-all", L.seeAllCases);
       // portrait — hidden entirely until site.portrait is set
       if (site.portrait) {
         document.getElementById("portrait-block").style.display = "block";
@@ -253,7 +272,7 @@
         const p = document.createElement("p"); p.textContent = s.outcome;
         const a = document.createElement("a");
         a.className = "text-link"; a.href = s.url || "https://lorisca-analytics.github.io";
-        a.target = "_blank"; a.rel = "noopener"; a.textContent = "Deep dive →";
+        a.target = "_blank"; a.rel = "noopener"; a.textContent = (about.labels || {}).deepDive || "Deep dive →";
         d.appendChild(tag); d.appendChild(big); d.appendChild(lab);
         d.appendChild(h); d.appendChild(p); d.appendChild(a);
         sg.appendChild(d);

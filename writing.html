@@ -24,10 +24,9 @@
       <a data-nav="writing" href="writing.html">Writing</a>
       <a href="off-the-clock.html">Off the clock</a>
       <a data-nav="about" href="about.html">About</a>
-      <button class="nav-search" id="nav-search" aria-label="Search this site"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
     </div>
   </div>
-<div class="subnav"><div class="subnav-inner"><a href="#top">Essays</a><a href="#pipeline">Pipeline</a><a href="#contact">Contact</a></div></div>
+<div class="subnav"><div class="subnav-inner" id="subnav-inner"><a href="#top">Essays</a><a href="#pipeline">Pipeline</a><a href="#contact">Contact</a></div></div>
 </nav>
 
 <main>
@@ -42,7 +41,7 @@
   <section class="section" id="pipeline">
     <div class="wrap">
       <div class="pipeline-index" id="w-pipeline" style="margin-top:0;">
-        <p class="pipe-head">In the pipeline</p>
+        <p class="pipe-head" id="w-pipe-head">In the pipeline</p>
         <p class="pipe-note" id="w-note"></p>
         <div id="w-rows"></div>
       </div>
@@ -53,8 +52,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Contact</span>
-          <h2>Get in <em>touch.</em></h2>
+          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
+          <h2 id="sec-contact-headline">Get in <em>touch.</em></h2>
         </div>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
@@ -79,11 +78,16 @@
 
 <script src="site.js"></script>
 <script src="motion.js"></script>
-<script src="search.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/writing.json")])
     .then(([site, w]) => {
       applySiteChrome(site);
+      setMeta(w.meta);
+      renderSubnav(w.subnav);
+      setText("w-pipe-head", (w.sections && w.sections.pipeline || {}).head);
+      const cs = (w.sections || {}).contact || {};
+      setText("sec-contact-eyebrow", cs.eyebrow);
+      setHeadline(document.getElementById("sec-contact-headline"), cs.headline);
       document.getElementById("w-eyebrow").textContent = w.eyebrow;
       document.getElementById("w-headline").textContent = w.headline;
       document.getElementById("w-lede").textContent = w.lede;
@@ -104,7 +108,7 @@
         }
         const status = document.createElement("span");
         status.className = "pipe-status";
-        status.textContent = "In the pipeline";
+        status.textContent = (w.labels && w.labels.pipeStatus) || "In the pipeline";
         row.appendChild(title); row.appendChild(status);
         rows.appendChild(row);
       });

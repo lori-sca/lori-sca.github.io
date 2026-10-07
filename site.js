@@ -11,6 +11,41 @@ function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
 }
 
+/* ---------- data-driven copy helpers ---------- */
+function setText(id, v) {
+  const e = document.getElementById(id);
+  if (e && v != null) e.textContent = v;
+}
+/* A headline may be a plain string or {main, accent} — the accent renders in <em>. */
+function setHeadline(elm, h) {
+  if (!elm || h == null) return;
+  elm.innerHTML = "";
+  if (typeof h === "string") { elm.textContent = h; return; }
+  elm.appendChild(document.createTextNode(h.main || ""));
+  if (h.accent) {
+    const em = document.createElement("em");
+    em.textContent = h.accent;
+    elm.appendChild(em);
+  }
+}
+function setMeta(meta) {
+  if (!meta) return;
+  if (meta.title) document.title = meta.title;
+  const md = document.querySelector('meta[name="description"]');
+  if (md && meta.description) md.setAttribute("content", meta.description);
+}
+function renderSubnav(items) {
+  const sn = document.querySelector(".subnav-inner");
+  if (!sn || !items || !items.length) return;
+  sn.innerHTML = "";
+  items.forEach((s) => {
+    const a = document.createElement("a");
+    a.href = s.href;
+    a.textContent = s.label;
+    sn.appendChild(a);
+  });
+}
+
 function linkRow(links) {
   const row = el("div", "card-links");
   links.forEach((l) => {
@@ -192,6 +227,16 @@ function applySiteChrome(site) {
   if (!site) return;
   document.querySelectorAll(".wm-name").forEach((e) => { e.textContent = site.name; });
   document.querySelectorAll(".wm-role").forEach((e) => { e.textContent = site.role; });
+  const nl = document.querySelector(".nav-links");
+  if (nl && site.nav && site.nav.length) {
+    nl.innerHTML = "";
+    site.nav.forEach((n) => {
+      const a = el("a", "", esc(n.label));
+      a.href = n.href;
+      if (n.key) a.dataset.nav = n.key;
+      nl.appendChild(a);
+    });
+  }
   const fl = document.querySelector(".foot-links");
   if (fl) {
     fl.innerHTML = "";
