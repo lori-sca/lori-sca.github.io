@@ -27,7 +27,11 @@
       "main": "Off the ",
       "accent": "clock."
     },
-    "lede": "Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen."
+    "lede": "Communities, events, and hobbies. No metrics, no case studies — photos and stories land here as they happen.",
+    "image": "",
+    "imageAlt": "",
+    "imageCaption": "",
+    "links": []
   },
   "sections": {
     "field": {
@@ -36,14 +40,22 @@
         "main": "Out & ",
         "accent": "about."
       },
-      "side": "Events and communities I've helped run — the short version."
+      "side": "Events and communities I've helped run — the short version.",
+      "image": "",
+      "imageAlt": "",
+      "imageCaption": "",
+      "links": []
     },
     "contact": {
       "eyebrow": "Contact",
       "headline": {
         "main": "Get in ",
         "accent": "touch."
-      }
+      },
+      "image": "",
+      "imageAlt": "",
+      "imageCaption": "",
+      "links": []
     }
   }
 }

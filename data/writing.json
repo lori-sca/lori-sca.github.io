@@ -53,17 +53,29 @@
   ],
   "sections": {
     "pipeline": {
-      "head": "In the pipeline"
+      "head": "In the pipeline",
+      "image": "",
+      "imageAlt": "",
+      "imageCaption": "",
+      "links": []
     },
     "contact": {
       "eyebrow": "Contact",
       "headline": {
         "main": "Get in ",
         "accent": "touch."
-      }
+      },
+      "image": "",
+      "imageAlt": "",
+      "imageCaption": "",
+      "links": []
     }
   },
   "labels": {
     "pipeStatus": "In the pipeline"
-  }
+  },
+  "image": "",
+  "imageAlt": "",
+  "imageCaption": "",
+  "links": []
 }
