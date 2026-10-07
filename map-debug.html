@@ -51,6 +51,11 @@
     const cs = getComputedStyle(img);
     log("hannibal clicked; .show=" + hw.classList.contains("show") + " opacity=" + cs.opacity);
   });
+  // diagnostic: what does ANY click actually hit?
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    log("doc click -> " + t.tagName + (t.id ? "#" + t.id : "") + (t.className && typeof t.className === "string" ? "." + t.className.split(" ")[0] : ""));
+  }, true);
   window.addEventListener("error", (e) => log("PAGE ERROR: " + e.message));
 </script>
 </body>

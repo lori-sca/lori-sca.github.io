@@ -347,15 +347,9 @@
             .setLngLat([s.lng, s.lat])
             .setPopup(popup)
             .addTo(map);
-          // explicit toggle: marker default + keyboard + legend all open the popup
-          function toggle(e) {
-            if (e) e.stopPropagation();
-            marker.togglePopup();
-          }
-          pin.addEventListener("click", toggle);
-          pin.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(e); }
-          });
+          // Mapbox toggles the popup on marker click by default; adding our own
+          // click listener would double-toggle (open then instantly close).
+          // Keyboard users get the legend buttons below, which call togglePopup once.
           markers.push(marker);
         });
         // legend
