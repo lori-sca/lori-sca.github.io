@@ -233,12 +233,3 @@ const WRITING = {
   note: "MBA article adaptations — the branding/mental-effort essay and the AI-transformation founder's-voice audit — join this list after redaction.",
 };
 
-/* ---------------- OFF THE CLOCK ---------------- */
-/* Fun entries. To add a photo: upload it to the repo's fun/ folder via the
-   GitHub website, then put the path below (e.g. "fun/snowboard.jpg").
-   story: optional longer text under the one-liner. */
-const FUN = [
-  { emoji: "🎤", title: "I sing", text: "In the bathroom, mostly.", photo: "", story: "" },
-  { emoji: "🧗\u200d♀️", title: "I climb", text: "Real walls, not corporate ladders. Yet.", photo: "", story: "" },
-  { emoji: "🏂", title: "I (learn to) snowboard", text: "", photo: "", story: "" },
-];

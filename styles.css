@@ -328,3 +328,20 @@ section[id], div[id] { scroll-margin-top: 104px; }
 .fun-photo { margin: -2rem -1.6rem 1.4rem; aspect-ratio: 16/10; overflow: hidden; background: var(--mist); }
 .fun-photo img { width: 100%; height: 100%; object-fit: cover; }
 .fun-story { margin-top: .8rem; color: var(--steel); font-size: .95rem; line-height: 1.65; }
+
+/* ---------- Blog posts (off the clock) ---------- */
+.post-list { display: flex; flex-direction: column; gap: 2.5rem; max-width: 46rem; }
+.post-card { border: 1px solid var(--hairline); border-radius: 16px; overflow: hidden; background: var(--white); }
+.post-photo { aspect-ratio: 16/9; overflow: hidden; background: var(--mist); }
+.post-photo img { width: 100%; height: 100%; object-fit: cover; }
+.post-body { padding: 1.8rem; }
+.post-meta { display: flex; gap: .8rem; align-items: center; margin-bottom: .7rem; }
+.post-emoji { font-size: 1.6rem; line-height: 1; }
+.post-date { font-family: var(--mono); font-size: .66rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--steel); }
+.post-body h3 { font-family: var(--display); font-weight: 800; font-size: 1.6rem; letter-spacing: -0.02em; margin-bottom: .5rem; }
+.post-body > p { color: var(--steel); line-height: 1.65; }
+.post-story { margin-top: .9rem; }
+.embed-video { margin-top: 1.2rem; aspect-ratio: 16/9; }
+.embed-video iframe { width: 100%; height: 100%; border: 0; border-radius: 10px; }
+.embed-card { display: flex; gap: .7rem; align-items: center; margin-top: 1.2rem; padding: 1rem 1.2rem; border: 1px solid var(--hairline); border-radius: 10px; text-decoration: none; font-weight: 600; color: var(--ink); }
+.embed-card:hover { border-color: var(--ink); }

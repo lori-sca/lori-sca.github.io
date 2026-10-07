@@ -40,7 +40,7 @@
 
   <section class="section" id="fun">
     <div class="wrap">
-      <div class="fun-grid" id="fun-grid"></div>
+      <div class="post-list" id="post-list"></div>
     </div>
   </section>
 
@@ -75,33 +75,88 @@
 <script src="content.js"></script>
 <script src="site.js"></script>
 <script>
-
-  // fun entries from content.js — photo + story supported
-  const fg = document.getElementById("fun-grid");
-  FUN.forEach((f) => {
-    const card = document.createElement("div");
-    card.className = "fun-card";
-    if (f.photo) {
+  function escHtml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function prettyDate(iso) {
+    const d = new Date(iso + "T12:00:00");
+    return isNaN(d) ? iso : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  }
+  function embedNode(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([\w-]{6,})/);
+    if (m) {
+      const wrap = document.createElement("div");
+      wrap.className = "embed-video";
+      const fr = document.createElement("iframe");
+      fr.src = "https://www.youtube.com/embed/" + m[1];
+      fr.loading = "lazy";
+      fr.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+      fr.allowFullscreen = true;
+      wrap.appendChild(fr);
+      return wrap;
+    }
+    let host = url;
+    try { host = new URL(url).hostname.replace(/^www\./, ""); } catch (e) {}
+    const a = document.createElement("a");
+    a.className = "embed-card";
+    a.href = url; a.target = "_blank"; a.rel = "noopener";
+    a.innerHTML = "<span>🔗</span><span></span>";
+    a.querySelector("span:last-child").textContent = host;
+    return a;
+  }
+  function postCard(p) {
+    const card = document.createElement("article");
+    card.className = "post-card";
+    if (p.photo) {
       const ph = document.createElement("div");
-      ph.className = "fun-photo";
+      ph.className = "post-photo";
       const img = document.createElement("img");
-      img.src = f.photo; img.alt = f.title; img.loading = "lazy";
-      ph.appendChild(img); card.appendChild(ph);
+      img.src = p.photo; img.alt = p.title; img.loading = "lazy";
+      ph.appendChild(img);
+      card.appendChild(ph);
     }
-    const em = document.createElement("div");
-    em.className = "fun-emoji"; em.textContent = f.emoji;
-    const h = document.createElement("h3"); h.textContent = f.title;
-    card.appendChild(em); card.appendChild(h);
-    if (f.text) {
-      const p = document.createElement("p"); p.textContent = f.text;
-      card.appendChild(p);
+    const body = document.createElement("div");
+    body.className = "post-body";
+    const meta = document.createElement("div");
+    meta.className = "post-meta";
+    const em = document.createElement("span");
+    em.className = "post-emoji";
+    em.textContent = p.emoji || "✳";
+    const dt = document.createElement("span");
+    dt.className = "post-date";
+    dt.textContent = prettyDate(p.date);
+    meta.appendChild(em); meta.appendChild(dt);
+    const h = document.createElement("h3");
+    h.textContent = p.title;
+    body.appendChild(meta); body.appendChild(h);
+    if (p.text) {
+      const t = document.createElement("p");
+      t.textContent = p.text;
+      body.appendChild(t);
     }
-    if (f.story) {
-      const st = document.createElement("p"); st.className = "fun-story";
-      st.textContent = f.story; card.appendChild(st);
+    if (p.story) {
+      const st = document.createElement("p");
+      st.className = "post-story";
+      st.textContent = p.story;
+      body.appendChild(st);
     }
-    fg.appendChild(card);
-  });
+    const emb = embedNode(p.embed);
+    if (emb) body.appendChild(emb);
+    card.appendChild(body);
+    return card;
+  }
+  fetch("fun/posts.json")
+    .then((r) => { if (!r.ok) throw new Error("posts not found"); return r.json(); })
+    .then((d) => {
+      const list = document.getElementById("post-list");
+      (d.posts || []).forEach((p) => list.appendChild(postCard(p)));
+    })
+    .catch(() => {
+      document.getElementById("post-list").innerHTML =
+        "<p class='lede'>Posts couldn't load — try refreshing.</p>";
+    });
+
   const cr = document.getElementById("contact-row");
   [
     { label: "Email", href: "mailto:" + SITE.email },
