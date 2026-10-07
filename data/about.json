@@ -69,12 +69,18 @@
       "lat": 37.7749,
       "lng": -122.4194,
       "note": "Now"
+    },
+    {
+      "city": "London",
+      "note": "Summer and Finance Adventure!",
+      "lat": "51.5074° N",
+      "lng": " 0.1278° W "
     }
   ],
   "method": [
     {
       "text": "Sheets to SQL — I build in whatever stack the team uses. Constraints are a design input, not an excuse.",
-      "title": "Tools-agnostic"
+      "title": "Tools-Agnostic"
     },
     {
       "text": "Find where the work breaks under scale, then rebuild the operating flow. Never duties narration.",
