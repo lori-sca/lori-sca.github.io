@@ -52,10 +52,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Start here</span>
-          <h2>The 30-second <em>version.</em></h2>
+          <span class="eyebrow" id="sec-start-eyebrow">Start here</span>
+          <h2 id="sec-start-headline">The 30-second <em>version.</em></h2>
         </div>
-        <p class="sh-side">Three ideas behind everything else here.</p>
+        <p class="sh-side" id="sec-start-side">Three ideas behind everything else here.</p>
       </div>
       <div class="card-grid cols-3" id="starthere-grid"></div>
     </div>
@@ -66,10 +66,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Featured work</span>
-          <h2>Proof, <em>not promises.</em></h2>
+          <span class="eyebrow" id="sec-featured-eyebrow">Featured work</span>
+          <h2 id="sec-featured-headline">Proof, <em>not promises.</em></h2>
         </div>
-        <p class="sh-side">One analysis, one working tool. Each opens into the full evidence — repos, demos, diagrams.</p>
+        <p class="sh-side" id="sec-featured-side">One analysis, one working tool. Each opens into the full evidence — repos, demos, diagrams.</p>
       </div>
       <div id="featured-grid"></div>
       <p style="margin-top:2rem;">
@@ -85,8 +85,8 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">About</span>
-          <h2>Who this <em>is.</em></h2>
+          <span class="eyebrow" id="sec-about-eyebrow">About</span>
+          <h2 id="sec-about-headline">Who this <em>is.</em></h2>
         </div>
       </div>
       <p class="lede" id="about-teaser"></p>
@@ -99,10 +99,10 @@
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
-          <span class="eyebrow">Contact</span>
-          <h2>Get in <em>touch.</em></h2>
+          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
+          <h2 id="sec-contact-headline">Get in <em>touch.</em></h2>
         </div>
-        <p class="sh-side">Currently in San Francisco. Happy to walk through any of this live.</p>
+        <p class="sh-side" id="sec-contact-side">Currently in San Francisco. Happy to walk through any of this live.</p>
       </div>
       <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
     </div>
@@ -148,6 +148,18 @@
         a.textContent = c.label;
         ctas.appendChild(a);
       });
+      // section headings (editable in the admin)
+      const S = home.sections || {};
+      ["start", "featured", "about", "contact"].forEach((k) => {
+        const s = S[k];
+        if (!s) return;
+        setText("sec-" + k + "-eyebrow", s.eyebrow);
+        setHeadline(document.getElementById("sec-" + k + "-headline"), s.headline);
+        setText("sec-" + k + "-side", s.side);
+      });
+      // editor-added picture + links per section
+      mountSectionMedia("top", home.hero);
+      ["start", "featured", "about", "contact"].forEach((k) => mountSectionMedia(k, S[k]));
       // start here
       const sh = document.getElementById("starthere-grid");
       (home.startHere || []).forEach((s) => {
