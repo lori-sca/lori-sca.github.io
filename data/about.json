@@ -90,45 +90,44 @@
   },
   "route": [
     {
+      "when": "Now · San Francisco",
+      "where": "Open to what's next",
+      "role": "Talent systems · People analytics · Sourcing leadership",
+      "now": true,
       "detail": [
         "MBA in Analytics (STEM), Hult International Business School, 2026.",
         "Building a people-analytics portfolio in public — and shipping the tools I build along the way."
-      ],
-      "now": true,
-      "role": "Talent systems · People analytics · Sourcing leadership",
-      "when": "Now · San Francisco",
-      "where": "Open to what's next"
+      ]
     },
     {
-      "detail": [
-        "Difficulty-weighted KPI scorecards for 15 recruiters across six regions.",
-        "Referral anti-gaming system successors ran and extended for 12+ months.",
-        "Turnover −15% in 2023, −17% in 2024."
-      ],
-      "now": false,
-      "role": "Senior Sales Resourcing & Development",
       "when": "2023 – 2024 · Jakarta",
-      "where": "PT Bank Mega Tbk"
+      "where": "PT Bank Mega Tbk",
+      "role": "Senior Sales Resourcing & Development",
+      "now": false,
+      "detail": [
+        "Cut turnover 15% in 2023 and 17% in 2024 with difficulty-weighted KPI scorecards for 15 recruiters across six regions — fair measurement where the hiring was hardest.",
+        "Built a referral anti-gaming system my successors ran and extended for 12+ months after I left."
+      ]
     },
     {
-      "detail": [
-        "Single-gate intake handling 10,000+ CVs a year.",
-        "Hiring SLA −80%, admin workload −60%."
-      ],
-      "now": false,
-      "role": "Resourcing Specialist",
       "when": "2022 – 2023 · Jakarta",
-      "where": "PT Bank Mega Tbk"
+      "where": "PT Bank Mega Tbk",
+      "role": "Resourcing Specialist",
+      "now": false,
+      "detail": [
+        "Cut hiring SLA 80% and recruiter admin workload 60% by replacing scattered intake with a single gate handling 10,000+ CVs a year.",
+        "Recruiters stopped retyping and started deciding."
+      ]
     },
     {
-      "detail": [
-        "Real-time merchant acquisition dashboard across field sales and partnerships.",
-        "Acquisitions +40% during the period."
-      ],
-      "now": false,
-      "role": "Commercial Project Manager",
       "when": "2021 – 2022 · Jakarta",
-      "where": "SiCepat Ekspres Group · DigiResto"
+      "where": "SiCepat Ekspres Group · DigiResto",
+      "role": "Commercial Project Manager",
+      "now": false,
+      "detail": [
+        "Lifted merchant acquisitions 40% with a real-time dashboard across field sales and partnerships.",
+        "One shared view of the field, instead of everyone running their own numbers."
+      ]
     }
   ],
   "thirties": [
