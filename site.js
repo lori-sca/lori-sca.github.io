@@ -94,7 +94,7 @@ function renderCards(containerId, projects, cols) {
 
 function renderRoute(containerId) {
   const c = document.getElementById(containerId);
-  if (!c || !window.ABOUT) return;
+  if (!c || typeof ABOUT === "undefined") return;
   const wrap = el("div", "route");
   ABOUT.route.forEach((s) => {
     const stop = el("div", "stop" + (s.now ? " now" : ""));
