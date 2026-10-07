@@ -904,7 +904,22 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
 defineTab("main", "about", "About", async (panel) => {
   const entry = await loadData("data/about.json");
   const d = entry.data;
-  const ch = h2card("Chapters", "The four story blocks.", "../about.html#chapters");
+  // hero
+  const hr = h2card("Hero", "Greeting, intro, and tagline.", "../about.html#top");
+  panel.appendChild(hr);
+  d.hero = d.hero || {};
+  field(hr, "Greeting", d.hero, "greeting", true);
+  field(hr, "Intro", d.hero, "lede", true);
+  field(hr, "Tagline", d.hero, "tagline");
+  // 30-second cards
+  const ts = h2card("30-second version", "The three quick cards.", "../about.html#thirties");
+  panel.appendChild(ts);
+  d.thirties = d.thirties || [];
+  listEditor(ts, d.thirties, (box, t) => {
+    field(box, "Title", t, "title");
+    field(box, "Text", t, "text", true);
+  }, () => ({ title: "", text: "" }), "Add card");
+  const ch = h2card("Chapters", "The story blocks.", "../about.html#story");
   panel.appendChild(ch);
   listEditor(ch, d.chapters, (box, c) => {
     field(box, "Label", c, "label");
@@ -938,6 +953,54 @@ defineTab("main", "about", "About", async (panel) => {
     nowL.appendChild(document.createTextNode("This is the current stop"));
     box.appendChild(nowL);
   }, () => ({ when: "", where: "", role: "", detail: [], now: false }), "Add stop");
+  // hold up + proudest
+  const hp = h2card("Spotlight", "The aside cards next to the story.", "../about.html#story");
+  panel.appendChild(hp);
+  field(hp, "Hold up text", d, "holdup", true);
+  d.proudest = d.proudest || {};
+  field(hp, "Proudest title", d.proudest, "title");
+  field(hp, "Proudest text", d.proudest, "text", true);
+  // journey map stops
+  const jn = h2card("Journey map", "Pins on the route map, in travel order.", "../about.html#route");
+  panel.appendChild(jn);
+  d.journey = d.journey || [];
+  listEditor(jn, d.journey, (box, s) => {
+    const row = document.createElement("div");
+    row.className = "ed-row";
+    const a = document.createElement("div"), b = document.createElement("div");
+    field(a, "City", s, "city", false, "Manado");
+    field(b, "Note", s, "note", false, "Grew up · Minahasa roots");
+    row.appendChild(a); row.appendChild(b);
+    box.appendChild(row);
+    const row2 = document.createElement("div");
+    row2.className = "ed-row";
+    const c = document.createElement("div"), e = document.createElement("div");
+    field(c, "Latitude", s, "lat", false, "1.4748");
+    field(e, "Longitude", s, "lng", false, "124.8421");
+    row2.appendChild(c); row2.appendChild(e);
+    box.appendChild(row2);
+  }, () => ({ city: "", note: "", lat: 0, lng: 0 }), "Add stop");
+  // toolbox
+  const tb = h2card("Toolbox", "Tool groups and their items.", "../about.html#toolbox");
+  panel.appendChild(tb);
+  d.toolbox = d.toolbox || [];
+  listEditor(tb, d.toolbox, (box, g) => {
+    field(box, "Group", g, "group", false, "Analytics");
+    box.appendChild(lab("Items (one per line)"));
+    const ta = textInput((g.items || []).join("\n"), true);
+    ta.addEventListener("input", () => {
+      g.items = ta.value.split("\n").map((x) => x.trim()).filter(Boolean);
+    });
+    box.appendChild(ta);
+  }, () => ({ group: "", items: [] }), "Add group");
+  // principle + field notes
+  const pv = h2card("Principle & field notes", "The Latin line and the fun facts.", "../about.html#principle");
+  panel.appendChild(pv);
+  d.principle = d.principle || {};
+  field(pv, "Latin", d.principle, "latin");
+  field(pv, "Translation", d.principle, "translation");
+  field(pv, "Note", d.principle, "note", true);
+  field(pv, "Field notes", d, "fieldnotes", true);
   const mt = h2card("Method", "The three how-I-work cards.", "../about.html#method");
   panel.appendChild(mt);
   listEditor(mt, d.method, (box, m) => {
