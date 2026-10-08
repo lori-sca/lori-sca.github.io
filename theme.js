@@ -384,3 +384,67 @@
 
   root.Theme = { renderPage: renderPage, applyLayout: applyLayout, menu: menu, embedSrc: embedSrc };
 })(window);
+
+/* ---------- trial look switch ----------
+   ?look=v2 turns the trial design on for this browser, ?look=off turns it off.
+   Visitors who never use the switch see the current design. */
+(function () {
+  if (window.__lcLook || location.hostname === "lori-sca.github.io") return;
+  window.__lcLook = true;
+  var KEY = "lc-look";
+  var m = location.search.match(/[?&]look=([a-z0-9-]+)/i);
+  var q = m ? m[1].toLowerCase() : "";
+  try {
+    if (q === "off" || q === "current") localStorage.removeItem(KEY);
+    else if (q) localStorage.setItem(KEY, q);
+  } catch (e) {}
+  var look = q && q !== "off" && q !== "current" ? q : null;
+  if (!look && !q) { try { look = localStorage.getItem(KEY); } catch (e) {} }
+  if (look !== "v2") return;
+  var base = location.hostname === "lori-sca.github.io" || location.hostname === "127.0.0.1" || location.hostname === "localhost" ? "" : "https://lori-sca.github.io/";
+  if (location.pathname.indexOf("/admin/") >= 0) return;
+  var root = document.documentElement;
+  root.classList.add("look-v2");
+  function addCss(href) { var l = document.createElement("link"); l.rel = "stylesheet"; l.href = href; document.head.appendChild(l); }
+  addCss("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&display=swap");
+  addCss(base + "look-v2.css");
+
+  /* rise into place */
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var SEL = ".section-head, .hero-copy > *, .page-hero .wrap > *, .card, .method, .chapter, .aside-card, .pipe-row, .stop, .lc-blocks > *, .lc-mt > *, .lc-gallery figure, .tile, .post-card, .sec-media, .journey-map, .w-card, .b-card, .now-card, .totals";
+  var io = !reduce && "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("lv-in"); io.unobserve(en.target); } });
+  }, { threshold: 0.08, rootMargin: "0px 0px -5% 0px" }) : null;
+  function scan() {
+    if (!io) return;
+    document.querySelectorAll(SEL).forEach(function (el) {
+      if (el.classList.contains("lv-rise") || el.closest(".lv-rise:not(.lv-in)")) return;
+      var sibs = el.parentNode ? Array.prototype.filter.call(el.parentNode.children, function (c) { return c.matches(SEL); }) : [];
+      el.style.setProperty("--lv-i", String(Math.min(sibs.indexOf(el), 6)));
+      el.classList.add("lv-rise");
+      io.observe(el);
+    });
+  }
+  var t = null;
+  function soon() { clearTimeout(t); t = setTimeout(scan, 60); }
+  /* safety net: anything at or above the bottom of the screen is always shown,
+     even if the observer missed it (fast scroll, jump links, print) */
+  var pending = false;
+  function sweep() {
+    pending = false;
+    var lim = window.innerHeight;
+    document.querySelectorAll(".lv-rise:not(.lv-in)").forEach(function (el) {
+      if (el.getBoundingClientRect().top < lim) el.classList.add("lv-in");
+    });
+  }
+  window.addEventListener("scroll", function () { if (!pending) { pending = true; setTimeout(sweep, 120); } }, { passive: true });
+  window.addEventListener("beforeprint", function () { document.querySelectorAll(".lv-rise").forEach(function (el) { el.classList.add("lv-in"); }); });
+  document.addEventListener("DOMContentLoaded", function () {
+    scan();
+    new MutationObserver(soon).observe(document.body, { childList: true, subtree: true });
+    var b = document.createElement("div");
+    b.className = "lv-badge";
+    b.innerHTML = "Trial look <a href=\"?look=off\">Switch back</a>";
+    document.body.appendChild(b);
+  });
+})();
