@@ -755,3 +755,32 @@ body.sp-lock { overflow: hidden; }
   background: var(--ink); color: var(--white); border-color: transparent;
 }
 #contact-row .btn:first-child:hover { background: #2a3d58; }
+
+/* ---------- Off the clock: fidelity fixes (Oct 7) ---------- */
+/* spring easing + tilt values taken from the Claude design */
+:root { --spring: cubic-bezier(.34,1.56,.64,1); }
+
+/* photos fully visible at natural ratio — neutralize older cropped rules */
+.fun-photo { margin: 1rem 0 0; aspect-ratio: auto; border-radius: 14px; overflow: hidden; background: var(--mist); }
+.fun-photo img { width: 100%; height: auto; max-height: none; object-fit: contain; display: block; cursor: zoom-in; }
+
+/* jiggle: resting tilt, hover straightens + lifts + pops on the spring */
+.fun-card { rotate: none; transform: rotate(-2.5deg); transition: transform 550ms var(--spring), box-shadow 300ms ease; }
+.fun-card.tilt-0 { rotate: none; transform: rotate(-2.5deg); }
+.fun-card.tilt-1 { rotate: none; transform: rotate(1.8deg); }
+.fun-card.tilt-2 { rotate: none; transform: rotate(-1.2deg); }
+.fun-card:hover { transform: rotate(0deg) translateY(-8px) scale(1.02); box-shadow: 0 26px 50px -22px rgba(30,45,66,.45); }
+.fun-emoji { display: inline-block; transition: transform 550ms var(--spring); }
+.fun-card:hover .fun-emoji { transform: translateY(-10px) rotate(-14deg) scale(1.15); }
+
+/* tiles: same spring lift as the design */
+.tile { transition: transform 500ms var(--spring), box-shadow 300ms ease; }
+.tile:hover { transform: translateY(-4px) rotate(-0.6deg); box-shadow: 0 22px 44px -22px rgba(30,45,66,.5); }
+
+@media (max-width: 640px) {
+  .fun-card, .fun-card.tilt-0, .fun-card.tilt-1, .fun-card.tilt-2 { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fun-card, .fun-card:hover, .tile, .tile:hover { transform: none; transition: none; }
+  .fun-card:hover .fun-emoji { transform: none; }
+}
