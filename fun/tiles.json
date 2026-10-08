@@ -3,9 +3,11 @@
     {
       "id": "t-builderpub",
       "place": "BuilderPub",
-      "context": "BuilderPub Buildathon ·AWS Builder Loft",
+      "context": "BuilderPub Buildathon 📍AWS Builder Loft",
       "link": "https://www.linkedin.com/posts/builderpub_builderpub-buildathon-activity-7502456919429742592-GyGE",
-      "photo": "fun/tiles/1791396370780-AFBC2772-A19A-476E-9BC7-59DB45CA0AD5.jpg"
+      "photo": "fun/tiles/1791396370780-AFBC2772-A19A-476E-9BC7-59DB45CA0AD5.jpg",
+      "badge": "The First Non-Tech Buildathon at AWS Builder Loft San Francisco",
+      "details": "Build Partners: Lovable, ElevenLabs, Linkup, and Vercel\nCommunity Partners: Bond AI, AICamp, WeAreDevelopers \n📍AWS Builder Loft\n\nMore than 400 people signed up, and over 150 joined us in person from backgrounds spanning product, design, marketing, operations, research, engineering, and more."
     },
     {
       "context": "World Congress · Brand Ambassador",
