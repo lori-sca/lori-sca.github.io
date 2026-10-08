@@ -1,5 +1,5 @@
 {
-  "aboutTeaser": "The full story — where I come from, and how I ended up building hiring systems.",
+  "aboutTeaser": "I build the systems I needed when I was starting out — clear intake, honest measurement, and room for people to grow into them.",
   "aboutTeaserEmbed": "",
   "featured": [
     "h1b-sponsorship",
@@ -9,16 +9,17 @@
     "ctas": [
       {
         "href": "https://lorisca-analytics.github.io",
-        "label": "See the work"
+        "label": "See the builds"
       },
       {
         "href": "about.html#contact",
         "label": "Get in touch"
       }
     ],
-    "eyebrow": "MBA IN ANALYTICS",
-    "headline": "I build the hiring systems behind high-growth teams.",
-    "lede": "I live between business language and technical language: rigorous enough to understand the technical side, fluent enough to translate it for any audience. Tools-agnostic by principle.",
+    "eyebrow": "PEOPLE ANALYTICS & OPERATIONS",
+    "subtitle": "Balancing Process Improvement & People Development",
+    "headline": "I translate the problems people feel into systems that work.",
+    "lede": "Most companies fix the system or the people. I build for both. I default to building systems. Banking, logistics, food-tech, construction — different industries, same problem: things breaking the moment they scale.",
     "tagline": "Use the data. Keep the human visible.",
     "background": "assets/portrait.jpg",
     "image": "",
@@ -29,26 +30,26 @@
   "startHere": [
     {
       "embed": "",
-      "text": "I replaced manual recruiting intake with a single-gate system handling 10,000+ CVs a year, cutting turnaround ~80%. Then I rebuilt how 15 recruiters across six regions were measured. The system outlasted me by 12+ months.",
-      "title": "Systems that survive scale"
+      "title": "People & talent",
+      "text": "Recruiting systems, sourcing, and measurement. 10,000+ CVs a year through one intake gate; hiring turnaround down 80%."
     },
     {
       "embed": "",
-      "text": "I analyzed 3.47M H-1B filings in SQL to see how sponsorship really works, and I audit AI transformations by following the mechanism underneath, not the story on top.",
-      "title": "Proof over narrative"
+      "title": "Operations",
+      "text": "Where the work breaks when it scales, I rebuild the flow. Tools-agnostic: intake to scorecards to dashboards — Sheets to SQL, whatever the team runs."
     },
     {
       "embed": "",
-      "text": "I've put scoring, routing, and automation into real hiring workflows with Sheets, Apps Script, and SQL. I care about what actually changes the work, not pilot theater.",
-      "title": "AI in HR, pragmatically"
+      "title": "Consulting & Building",
+      "text": "Reframe first, recommend with evidence, then build the system that makes it stick. I check the mechanism underneath before trusting the story on top."
     }
   ],
   "sections": {
     "start": {
       "eyebrow": "Start here",
       "headline": {
-        "main": "The 30-second ",
-        "accent": "version."
+        "main": "Three ",
+        "accent": "lanes."
       },
       "side": "Three ideas behind everything else here.",
       "image": "",
@@ -59,8 +60,8 @@
     "featured": {
       "eyebrow": "Featured work",
       "headline": {
-        "main": "Proof, ",
-        "accent": "not promises."
+        "main": "Selected ",
+        "accent": "work."
       },
       "side": "One analysis, one working tool. Each opens into the full evidence — repos, demos, diagrams.",
       "image": "",
