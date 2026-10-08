@@ -77,5 +77,59 @@
   "image": "",
   "imageAlt": "",
   "imageCaption": "",
-  "links": []
+  "links": [],
+  "layout": {
+    "sections": [
+      {
+        "id": "top",
+        "type": "page-header",
+        "menu": "Essays",
+        "hidden": false,
+        "style": {},
+        "bind": {
+          "eyebrow": "eyebrow",
+          "headline": "headline",
+          "lede": "lede",
+          "image": "image",
+          "imageAlt": "imageAlt",
+          "imageCaption": "imageCaption",
+          "links": "links"
+        }
+      },
+      {
+        "id": "pipeline",
+        "type": "list",
+        "menu": "Pipeline",
+        "hidden": false,
+        "style": {},
+        "bind": {
+          "heading": "sections.pipeline.head",
+          "note": "note",
+          "items": "pipeline",
+          "statusLabel": "labels.pipeStatus",
+          "image": "sections.pipeline.image",
+          "imageAlt": "sections.pipeline.imageAlt",
+          "imageCaption": "sections.pipeline.imageCaption",
+          "links": "sections.pipeline.links"
+        }
+      },
+      {
+        "id": "contact",
+        "type": "contact",
+        "menu": "Contact",
+        "hidden": false,
+        "style": {
+          "background": "tint"
+        },
+        "bind": {
+          "eyebrow": "sections.contact.eyebrow",
+          "headline": "sections.contact.headline",
+          "image": "sections.contact.image",
+          "imageAlt": "sections.contact.imageAlt",
+          "imageCaption": "sections.contact.imageCaption",
+          "links": "sections.contact.links"
+        }
+      }
+    ]
+  }
 }

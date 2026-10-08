@@ -276,6 +276,8 @@ function applySiteChrome(site) {
   document.querySelectorAll(".wm-role").forEach((e) => { e.textContent = site.role; });
   const nl = document.querySelector(".nav-links");
   if (nl && site.nav && site.nav.length) {
+    // keep non-link controls (the search button) when rebuilding the menu
+    const keep = Array.from(nl.children).filter((c) => c.tagName !== "A");
     nl.innerHTML = "";
     site.nav.forEach((n) => {
       const a = el("a", "", esc(n.label));
@@ -283,6 +285,7 @@ function applySiteChrome(site) {
       if (n.key) a.dataset.nav = n.key;
       nl.appendChild(a);
     });
+    keep.forEach((c) => nl.appendChild(c));
   }
   const fl = document.querySelector(".foot-links");
   if (fl) {

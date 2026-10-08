@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 <body data-page="writing">
 
@@ -29,7 +30,7 @@
 <div class="subnav"><div class="subnav-inner" id="subnav-inner"><a href="#top">Essays</a><a href="#pipeline">Pipeline</a><a href="#contact">Contact</a></div></div>
 </nav>
 
-<main>
+<main id="page-main">
   <section class="page-hero" id="top">
     <div class="wrap">
       <span class="eyebrow" id="w-eyebrow"></span>
@@ -78,9 +79,37 @@
 
 <script src="site.js"></script>
 <script src="motion.js"></script>
+<script src="skeleton.js"></script>
+<script src="theme.js"></script>
 <script>
-  Promise.all([loadJSON("data/site.json"), loadJSON("data/writing.json")])
-    .then(([site, w]) => {
+  /* Sections come from data/writing.json -> layout (edited in the admin's page builder).
+     If that key is ever missing, the older fixed render below still works. */
+  function renderWriting(site, w) {
+    applySiteChrome(site);
+    setMeta(w.meta);
+    if (w.layout && w.layout.sections && window.Theme) {
+      Theme.renderPage(document.getElementById("page-main"), w, { site: site });
+      renderSubnav(Theme.menu(w));
+      return;
+    }
+    legacyWriting(site, w);
+  }
+  /* Preview: the admin sends unsaved edits here so you see them before saving. */
+  const PREVIEW = new URLSearchParams(location.search).has("preview");
+  let gotPreview = false;
+  if (PREVIEW) {
+    window.addEventListener("message", (e) => {
+      if (e.origin !== location.origin || !e.data || e.data.type !== "lc-preview") return;
+      gotPreview = true;
+      const y = window.scrollY;
+      renderWriting(e.data.site, e.data.data);
+      document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+      window.scrollTo(0, y);
+    });
+    if (window.parent !== window) window.parent.postMessage({ type: "lc-preview-ready" }, location.origin);
+  }
+  function legacyWriting(site, w) {
+    {
       applySiteChrome(site);
       setMeta(w.meta);
       renderSubnav(w.subnav);
@@ -116,7 +145,10 @@
         row.appendChild(title); row.appendChild(status);
         rows.appendChild(row);
       });
-    })
+    }
+  }
+  Promise.all([loadJSON("data/site.json"), loadJSON("data/writing.json")])
+    .then(([site, w]) => { if (!gotPreview) renderWriting(site, w); })
     .catch(() => {
       document.getElementById("w-headline").textContent = "Content couldn't load — try refreshing.";
     });

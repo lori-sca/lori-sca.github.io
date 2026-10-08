@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="builder.css">
 <style>
   .ed-wrap { max-width: 820px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
   .ed-wrap h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: 2.2rem; margin-bottom: .6rem; }
@@ -51,7 +52,7 @@
   .ed-siteerr { border: 1px solid #e5b6b0; background: #fdf1f0; border-radius: 12px; padding: 1.4rem; color: #7a2e28; line-height: 1.6; }
   @media (max-width: 640px) { .ed-row { grid-template-columns: 1fr; } }
   /* unsaved-changes bar + dots */
-  .ed-dirty { position: sticky; top: .6rem; z-index: 40; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  .ed-dirty { position: sticky; top: 4.6rem; z-index: 40; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;
     background: #fff8e6; border: 1px solid #e8cf8a; color: #6b4e00; border-radius: 12px; padding: .8rem 1.1rem; margin-bottom: 1.2rem; font-size: .93rem; }
   .ed-dirty[hidden] { display: none; }
   .ed-tab.dirty::after, .ed-site.dirty::after { content: ""; display: inline-block; width: .45rem; height: .45rem; border-radius: 50%; background: #d08a00; margin-left: .45rem; vertical-align: middle; }
@@ -134,6 +135,8 @@
 
 <script src="../content.js"></script>
 <script src="merge.js"></script>
+<script src="../skeleton.js"></script>
+<script src="builder.js"></script>
 <script>
 /* ================= infra ================= */
 const SITES = {
@@ -694,6 +697,7 @@ function switchSite(siteId) {
   });
   TABS[siteId].forEach((t) => { t.files = new Set(); });
   closeHistory();
+  if (window.BuilderPreview) BuilderPreview.close();
   document.querySelectorAll(".ed-site").forEach((b) => b.classList.toggle("active", b.dataset.site === siteId));
   const tabsEl = $("ed-tabs");
   const panelsEl = $("tab-panels");
@@ -705,7 +709,7 @@ function switchSite(siteId) {
     b.className = "ed-tab";
     b.dataset.tab = t.id;
     b.textContent = t.label;
-    b.addEventListener("click", () => switchTab(t));
+    b.addEventListener("click", () => { if (activeTab !== t && window.BuilderPreview) BuilderPreview.close(); switchTab(t); });
     tabsEl.appendChild(b);
     const p = document.createElement("div");
     p.dataset.panel = t.id;
@@ -800,46 +804,9 @@ defineTab("main", "home", "Home", async (panel) => {
   }, "Save home page");
 });
 
-defineTab("main", "writing", "Writing", async (panel) => {
-  const entry = await loadData("data/writing.json");
-  const d = entry.data;
-  const card = h2card("Writing page", "Page header and the pipeline list.", "../writing.html");
-  panel.appendChild(card);
-  field(card, "Eyebrow", d, "eyebrow");
-  field(card, "Headline", d, "headline");
-  field(card, "Intro", d, "lede", true);
-  field(card, "Note under the list", d, "note", true);
-  mediaFields(card, d, "writing-hero");
-  const pl = h2card("In the pipeline", "Essay titles. Give one a link when it publishes elsewhere.", "../writing.html#pipeline");
-  panel.appendChild(pl);
-  listEditor(pl, d.pipeline, (box, item) => {
-    field(box, "Title", item, "title");
-    field(box, "Link (optional)", item, "link");
-  }, () => ({ title: "", link: "" }), "Add essay");
-
-  const shd = h2card("Section headings", "The pipeline heading and the contact band.", "../writing.html");
-  panel.appendChild(shd);
-  d.sections = d.sections || {};
-  d.sections.pipeline = d.sections.pipeline || {};
-  d.sections.contact = d.sections.contact || {};
-  d.sections.contact.headline = d.sections.contact.headline || {};
-  shd.appendChild(lab("Pipeline"));
-  field(shd, "Heading", d.sections.pipeline, "head");
-  mediaFields(shd, d.sections.pipeline, "writing-pipeline");
-  shd.appendChild(lab("Contact band"));
-  field(shd, "Eyebrow", d.sections.contact, "eyebrow");
-  field(shd, "Headline", d.sections.contact.headline, "main");
-  field(shd, "Headline accent (colored part)", d.sections.contact.headline, "accent");
-  mediaFields(shd, d.sections.contact, "writing-contact");
-
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/writing.json", d, "Update writing page via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save writing page");
-});
+defineTab("main", "writing", "Writing", (panel) => pageBuilder(panel, {
+  path: "data/writing.json", label: "Writing page", view: "../writing.html", tag: "writing",
+}));
 
 defineTab("main", "offclock", "Off the clock", async (panel) => {
   const ocentry = await loadData("data/off-the-clock.json");

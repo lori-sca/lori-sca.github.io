@@ -12,6 +12,27 @@
     if (t || s) index.push({ t: String(t || ""), s: String(s || ""), u: u });
   }
 
+  /* sections added in the admin's page builder (layout.sections[].content) */
+  function strip(html) { return String(html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
+  function hl(v) { return v && typeof v === "object" ? (v.main || "") + " " + (v.accent || "") : v || ""; }
+  function layoutEntries(data, page) {
+    ((data.layout || {}).sections || []).forEach(function (s) {
+      if (s.hidden || !s.content) return;
+      var c = s.content, url = page + "#" + s.id;
+      var title = strip(hl(c.headline) || c.heading || c.eyebrow || "");
+      var text = strip(c.body || c.caption || "");
+      (c.cards || []).forEach(function (cd) { add(cd.title, strip(cd.text), url); });
+      (c.items || []).forEach(function (it) { add(it.title, title, url); });
+      (c.blocks || []).forEach(function (b) {
+        var d = b.data || {};
+        if (b.type === "heading") add(d.text, title, url);
+        else if (b.type === "text" || b.type === "callout") text = text || strip(d.html);
+        else if (b.type === "file") add(d.label, d.note || "Document", url);
+      });
+      if (title || text) add(title || text.slice(0, 60), text.slice(0, 160), url);
+    });
+  }
+
   async function get(path) {
     try {
       var r = await fetch(path);
@@ -64,6 +85,7 @@
     if (writing) {
       if (writing.headline) add(writing.headline, writing.lede || "", "writing.html#top");
       (writing.pipeline || []).forEach(function (p) { add(p.title, "In the pipeline", "writing.html#pipeline"); });
+      layoutEntries(writing, "writing.html");
     }
 
     var posts = await get("fun/posts.json");
