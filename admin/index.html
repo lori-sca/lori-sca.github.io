@@ -1306,7 +1306,7 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
         if (p.id) known.add(p.id);
         (p.links || []).forEach((x) => { if (x.url) known.add(String(x.url).replace(/\/$/, "")); });
       }));
-      const fresh = repos.filter((r) => !r.fork && !r.archived && !known.has(r.name) && !known.has(String(r.html_url || "").replace(/\/$/, "")));
+      const fresh = repos.filter((r) => !r.fork && !r.archived && r.name !== ".github" && !r.name.endsWith(".github.io") && !known.has(r.name) && !known.has(String(r.html_url || "").replace(/\/$/, "")));
       if (!fresh.length) { syncList.textContent = "No new repos — everything in the org is already on the site."; }
       fresh.forEach((r) => {
         const row = document.createElement("div"); row.className = "ed-item";
