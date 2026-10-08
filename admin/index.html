@@ -374,25 +374,59 @@ function projectForm(box, p) {
   row.className = "ed-row";
   const a = document.createElement("div"), b = document.createElement("div");
   field(a, "Metric line", p, "metric");
-  selectField(b, "Status", p, "status", ["live", "building"]);
+  selectField(b, "Status", p, "status", ["live", "draft", "building"]);
   row.appendChild(a); row.appendChild(b);
   box.appendChild(row);
+  const row2 = document.createElement("div");
+  row2.className = "ed-row";
+  const c2 = document.createElement("div"), d2 = document.createElement("div"), e2 = document.createElement("div");
+  field(c2, "Badge override", p, "badge");
+  field(d2, "Hint line", p, "hint");
+  field(e2, "Button label", p, "btnLabel");
+  row2.appendChild(c2); row2.appendChild(d2); row2.appendChild(e2);
+  box.appendChild(row2);
   field(box, "Image URL", p, "visual");
   field(box, "Image description", p, "visualAlt");
   field(box, "Diagram URL", p, "diagram");
   field(box, "Diagram description", p, "diagramAlt");
+  box.appendChild(lab("Gallery images (optional — overrides the single image + diagram above)"));
+  listEditor(box, p.images || (p.images = []), (ib, im) => {
+    field(ib, "Image URL", im, "src");
+    field(ib, "Alt text", im, "alt");
+  }, () => ({ src: "", alt: "" }), "Add image");
   box.appendChild(lab("Links"));
   listEditor(box, p.links || (p.links = []), (lb, l) => {
     field(lb, "Label", l, "label");
     field(lb, "URL", l, "url");
     selectField(lb, "Kind", l, "kind", ["github", "demo", "article", "deck", "sheet", "drive", "other"]);
   }, () => ({ label: "", url: "", kind: "other" }), "Add link");
+  box.appendChild(lab("Context tiles (numbered, optional)"));
+  listEditor(box, p.csr || (p.csr = []), (cb, t) => {
+    const r = document.createElement("div"); r.className = "ed-row";
+    const n1 = document.createElement("div"), k1 = document.createElement("div");
+    field(n1, "No.", t, "n"); field(k1, "Key", t, "k");
+    r.appendChild(n1); r.appendChild(k1); cb.appendChild(r);
+    field(cb, "Value", t, "v", true);
+  }, () => ({ n: "", k: "", v: "" }), "Add tile");
   const bd = p.body || (p.body = {});
   field(box, "Problem", bd, "problem", true);
   field(box, "Approach", bd, "approach", true);
   field(box, "Her take", bd, "hers", true);
   field(box, "Result", bd, "result", true);
   field(box, "Lesson", bd, "lesson", true);
+  box.appendChild(lab("Review notes — hidden when published (one per line)"));
+  const rn = p.reviewNotes || (p.reviewNotes = {});
+  const taN = document.createElement("textarea");
+  taN.value = (rn.notes || []).join("\n");
+  taN.placeholder = "Notes for yourself while this is a draft";
+  taN.addEventListener("input", () => { rn.notes = taN.value.split("\n").map((s) => s.trim()).filter(Boolean); });
+  box.appendChild(taN);
+  box.appendChild(lab("Still missing (one per line)"));
+  const taM = document.createElement("textarea");
+  taM.value = (rn.missing || []).join("\n");
+  taM.placeholder = "What's missing before this can go live";
+  taM.addEventListener("input", () => { rn.missing = taM.value.split("\n").map((s) => s.trim()).filter(Boolean); });
+  box.appendChild(taM);
 }
 function blankProject() {
   return {
@@ -1254,6 +1288,68 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
   const d = entry.data;
   const card = h2card("Work lanes", "Each lane: name, intro, case-study cards, and the pipeline list.", SITES.analytics.home + "#talent");
   panel.appendChild(card);
+  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title and links prefill from the repo itself.", "https://github.com/lorisca-analytics");
+  panel.appendChild(syncCard);
+  const syncBtn = document.createElement("button");
+  syncBtn.className = "btn primary"; syncBtn.textContent = "Check for new repos";
+  syncCard.appendChild(syncBtn);
+  const syncList = document.createElement("div"); syncList.style.marginTop = ".8rem";
+  syncCard.appendChild(syncList);
+  syncBtn.addEventListener("click", async () => {
+    syncBtn.disabled = true; syncBtn.textContent = "Checking…"; syncList.textContent = "";
+    try {
+      const res = await fetch("https://api.github.com/orgs/lorisca-analytics/repos?per_page=100");
+      if (!res.ok) throw new Error("GitHub API " + res.status);
+      const repos = await res.json();
+      const known = new Set();
+      d.lanes.forEach((l) => (l.projects || []).forEach((p) => {
+        if (p.id) known.add(p.id);
+        (p.links || []).forEach((x) => { if (x.url) known.add(String(x.url).replace(/\/$/, "")); });
+      }));
+      const fresh = repos.filter((r) => !r.fork && !r.archived && !known.has(r.name) && !known.has(String(r.html_url || "").replace(/\/$/, "")));
+      if (!fresh.length) { syncList.textContent = "No new repos — everything in the org is already on the site."; }
+      fresh.forEach((r) => {
+        const row = document.createElement("div"); row.className = "ed-item";
+        const top = document.createElement("div"); top.className = "ed-row";
+        const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = true; cb.style.width = "auto"; cb.style.flex = "none";
+        const info = document.createElement("div"); info.style.flex = "1";
+        const nm = document.createElement("b"); nm.textContent = r.name; info.appendChild(nm);
+        if (r.description) { info.appendChild(document.createElement("br")); const ds = document.createElement("span"); ds.style.fontSize = ".85rem"; ds.style.opacity = ".75"; ds.textContent = r.description; info.appendChild(ds); }
+        const sel = document.createElement("select"); sel.className = "ed-select"; sel.style.flex = "none";
+        d.lanes.forEach((l) => { const o = document.createElement("option"); o.value = l.id; o.textContent = l.name; sel.appendChild(o); });
+        top.appendChild(cb); top.appendChild(info); top.appendChild(sel);
+        row.appendChild(top); syncList.appendChild(row);
+        row._repo = r; row._laneSel = sel; row._cb = cb;
+      });
+      if (fresh.length) {
+        const add = document.createElement("button"); add.className = "btn primary"; add.textContent = "Import selected as drafts"; add.style.marginTop = ".6rem";
+        add.addEventListener("click", async () => {
+          add.disabled = true; add.textContent = "Importing…";
+          try {
+            Array.from(syncList.children).forEach((row) => {
+              if (!row._repo || !row._cb.checked) return;
+              const r = row._repo;
+              const lane = d.lanes.find((l) => l.id === row._laneSel.value) || d.lanes[0];
+              const p = blankProject();
+              p.id = r.name;
+              p.title = r.name.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+              p.hook = r.description || ""; p.status = "draft";
+              p.links = [{ label: "Repo", url: r.html_url, kind: "github" }];
+              if (r.homepage) p.links.push({ label: "Demo", url: r.homepage, kind: "demo" });
+              if (r.topics && r.topics.length) p.tools = r.topics.slice(0, 6);
+              lane.projects = lane.projects || []; lane.projects.push(p);
+            });
+            await saveData("data/lanes.json", d, "Import org repos as drafts via editor");
+            status("Imported as drafts — reload this tab to edit them.");
+            syncList.textContent = "";
+          } catch (e) { status(e.message, false); }
+          add.disabled = false; add.textContent = "Import selected as drafts";
+        });
+        syncList.appendChild(add);
+      }
+    } catch (e) { syncList.textContent = "GitHub API error: " + e.message; }
+    syncBtn.disabled = false; syncBtn.textContent = "Check for new repos";
+  });
   listEditor(card, d.lanes, (box, lane) => {
     const row = document.createElement("div");
     row.className = "ed-row";
