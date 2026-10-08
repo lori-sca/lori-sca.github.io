@@ -612,3 +612,146 @@ body.sp-lock { overflow: hidden; }
 .sec-media img { width: 100%; display: block; }
 .sec-media figcaption { font-size: .85rem; color: var(--steel); margin-top: .6rem; }
 .sec-links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-top: 1.25rem; }
+
+/* ============================================================
+   OFF THE CLOCK — Claude design implementation (Oct 2026)
+   Design: claude.ai/design "Off the Clock" — re-implemented in
+   site code. All copy stays admin-editable via data/off-the-clock.json,
+   fun/posts.json, fun/tiles.json, fun/layout.json.
+   ============================================================ */
+
+/* ---------- hero ---------- */
+.oc-title {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(3.2rem, 8.5vw, 6.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0.8rem 0 1.4rem;
+}
+.oc-title em { font-style: normal; color: var(--accent); }
+.oc-hero-row {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 2rem; flex-wrap: wrap;
+}
+.oc-hero-row .lede { margin: 0; max-width: 46ch; color: var(--steel); }
+.oc-clock {
+  display: flex; align-items: center; gap: 0.8rem; flex: none;
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 0.55rem 1.2rem 0.55rem 0.7rem; background: var(--white);
+}
+.oc-clock[hidden] { display: none; }
+.oc-clock-face { color: var(--ink); flex: none; }
+.oc-clock-txt { display: flex; flex-direction: column; line-height: 1.35; }
+.oc-clock-txt .k {
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--steel);
+}
+.oc-clock-txt strong { font-weight: 700; }
+
+/* ---------- fun cards ---------- */
+.fun-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem; align-items: start;
+}
+.fun-card {
+  background: var(--white); border: 1px solid var(--hairline);
+  border-radius: 20px; padding: 1.4rem 1.4rem 1.2rem;
+  box-shadow: 0 10px 30px rgba(20, 35, 55, 0.07);
+}
+.fun-card.tilt-0 { rotate: -1.1deg; }
+.fun-card.tilt-1 { rotate: 0.9deg; }
+.fun-card.tilt-2 { rotate: -0.7deg; }
+@media (max-width: 640px) {
+  .fun-card.tilt-0, .fun-card.tilt-1, .fun-card.tilt-2 { rotate: none; }
+}
+.fun-top .post-meta { margin-bottom: 0.5rem; }
+.fun-top h3 {
+  font-family: var(--display); font-weight: 800; font-size: 1.35rem;
+  letter-spacing: -0.01em; margin-bottom: 0.35rem;
+}
+.fun-top > p { color: var(--steel); line-height: 1.6; font-size: 0.95rem; }
+.fun-photo { margin-top: 1rem; border-radius: 14px; overflow: hidden; background: var(--mist); }
+.fun-photo img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+.fun-story-btn {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem;
+  background: none; border: none; cursor: pointer; padding: 0.2rem 0;
+  font-family: var(--mono); font-size: 0.68rem; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--steel);
+}
+.fun-story-btn:hover { color: var(--ink); }
+.fun-story-btn .plus {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.35rem; height: 1.35rem; border: 1px solid var(--hairline);
+  border-radius: 50%; font-size: 0.9rem; line-height: 1;
+}
+.fun-story-panel { margin-top: 0.8rem; }
+.fun-story-panel[hidden] { display: none; }
+.fun-story-panel > p { color: var(--steel); line-height: 1.65; font-size: 0.95rem; }
+
+/* ---------- involvement tiles (redesigned) ---------- */
+.tile-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 0.9rem; align-items: start;
+}
+@media (max-width: 640px) {
+  .tile-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}
+.tile {
+  position: relative; border-radius: 16px; overflow: hidden;
+  background: #1e2d42; aspect-ratio: auto;
+}
+.tile-media { position: relative; }
+.tile > img, .tile-media > img {
+  width: 100%; height: auto; display: block; cursor: zoom-in;
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.tile:hover .tile-media > img { transform: scale(1.04); }
+.tile-empty {
+  position: static; inset: auto; min-height: 230px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; background: #1e2d42;
+  font-family: var(--display); font-weight: 800; font-size: 4.5rem;
+}
+.tile-badge {
+  position: absolute; top: 0.7rem; right: 0.7rem; z-index: 2;
+  font-family: var(--mono); font-size: 0.6rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: #fff; background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.3rem 0.65rem; border-radius: 999px;
+}
+.tile-cap {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+  padding: 2.4rem 3.2rem 0.9rem 1rem; color: #fff;
+  background: linear-gradient(to top, rgba(12, 19, 31, 0.88), transparent);
+  pointer-events: none;
+}
+.tile-cap strong {
+  display: block; font-family: var(--display);
+  font-weight: 800; font-size: 1.05rem;
+}
+.tile-cap span {
+  display: block; font-family: var(--mono); font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.85; margin-top: 0.25rem;
+}
+.tile-plus {
+  position: absolute; right: 0.7rem; bottom: 0.7rem; z-index: 2;
+  width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.14); color: #fff; font-size: 1.1rem; line-height: 1;
+}
+.tile-plus:hover { background: rgba(255, 255, 255, 0.3); }
+.tile-panel { background: #1e2d42; padding: 1rem 1.1rem 1.2rem; }
+.tile-panel[hidden] { display: none; }
+.tile-panel p { font-size: 0.9rem; line-height: 1.65; color: #c9d6e4; }
+.tile-panel .text-link { color: #fff; margin-top: 0.6rem; display: inline-block; }
+
+/* ---------- slim footer (off the clock) ---------- */
+.oc-footer .fine { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.72rem; }
+
+/* first contact button filled, per the Off the Clock design */
+#contact-row .btn:first-child {
+  background: var(--ink); color: var(--white); border-color: transparent;
+}
+#contact-row .btn:first-child:hover { background: #2a3d58; }
