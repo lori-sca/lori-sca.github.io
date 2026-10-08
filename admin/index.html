@@ -366,6 +366,115 @@ function saveBar(host, onSave, label) {
   bar.appendChild(b);
   host.appendChild(bar);
 }
+/* deep import: repo README -> case-study draft. Section mapping follows her
+   build-post spine (STAR or SPIDER + Trap/Insight/Machine). Tested in node
+   before porting; keep the two in sync. */
+function mdToText(md) {
+  return String(md || "")
+    .replace(/!\[[^\]]*\]\([^)]+\)/g, "")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, "$1")
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+function firstParas(text, n) {
+  const ps = String(text || "").split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+  return ps.slice(0, n).join("\n\n");
+}
+function humanizeRepo(name) {
+  return String(name || "").replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+function parseReadme(text, repo, branch) {
+  const out = { title: "", preface: "", sections: {}, links: [], visual: "" };
+  const tm = text.match(/^#\s+(.+)$/m);
+  if (tm) out.title = tm[1].trim();
+  const im = text.match(/!\[[^\]]*\]\(([^)]+)\)/);
+  if (im) {
+    out.visual = /^https?:/.test(im[1])
+      ? im[1]
+      : "https://raw.githubusercontent.com/lorisca-analytics/" + repo + "/" + branch + "/" + im[1].replace(/^\.\//, "");
+  }
+  const parts = text.split(/^##\s+/m);
+  out.preface = mdToText(parts[0].replace(/^#\s+.+$/m, "").split("\n").filter((l) => !/^\s*\*\*Live:\*\*/.test(l)).join("\n").trim());
+  for (let i = 1; i < parts.length; i++) {
+    const nl = parts[i].indexOf("\n");
+    const head = (nl < 0 ? parts[i] : parts[i].slice(0, nl)).trim();
+    const body = nl < 0 ? "" : parts[i].slice(nl + 1);
+    out.sections[head] = body;
+    const subs = {};
+    const re = /\*\*([^*]+?)\.\*\*\s*([\s\S]*?)(?=\n\*\*[^*]+?\.\*\*|$)/g;
+    let m;
+    while ((m = re.exec(body))) subs[m[1].trim()] = mdToText(m[2].trim());
+    out.sections[head + "::subs"] = subs;
+    const lr = /\[([^\]]+)\]\((https?:[^)\s]+)\)/g;
+    let lm;
+    while ((lm = lr.exec(body))) {
+      if (!/\.(svg|png|jpg|jpeg|gif)(\?|$)/i.test(lm[2])) out.links.push({ label: lm[1].trim(), url: lm[2] });
+    }
+  }
+  return out;
+}
+function deepDraft(r, parsed) {
+  const S = (n) => parsed.sections[n + "::subs"] || {};
+  const star = S("The case, in STAR");
+  const spider = S("The case, SPIDER-style");
+  const tim = S("The shape of the argument");
+  const pick = (o, ...ks) => { for (const k of ks) if (o[k]) return o[k]; return ""; };
+  const p = blankProject();
+  p.id = r.name;
+  p.title = parsed.title || humanizeRepo(r.name);
+  p.hook = firstParas(parsed.preface, 2);
+  p.status = "draft";
+  const problem = pick(star, "Situation", "Task") || pick(spider, "S — Summary", "P — Problem", "Problem");
+  const approach = pick(star, "Action") || pick(spider, "E — Execution", "Execution");
+  const result = pick(star, "Result") || pick(spider, "R — Results", "Results");
+  const context = pick(spider, "I — Inputs", "Inputs");
+  if (problem) p.body.problem = problem;
+  if (approach) p.body.approach = approach;
+  if (result) p.body.result = result;
+  if (context) p.context = context;
+  const calls = [];
+  ["Trap", "Insight", "Machine"].forEach((k) => { if (tim[k]) calls.push(k + ": " + tim[k]); });
+  const disc = pick(spider, "D — Discovery", "Discovery");
+  if (!calls.length && disc) calls.push(disc);
+  if (calls.length) p.calls = calls;
+  p.links = [{ label: "Repo", url: r.html_url, kind: "github" }];
+  const seen = {};
+  seen[r.html_url] = true;
+  (parsed.links || []).forEach((l) => {
+    if (seen[l.url]) return; seen[l.url] = true;
+    let label = l.label;
+    if (/^(here|this|link|click here)$/i.test(label)) {
+      const seg = l.url.split("?")[0].split("/").filter(Boolean).pop() || "";
+      label = seg.replace(/\.[a-z]+$/i, "").replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) || "Link";
+    }
+    p.links.push({
+      label: label.slice(0, 40),
+      url: l.url,
+      kind: /tableau|dashboard|demo|live|presentation|interactive/i.test(l.label + " " + l.url) ? "demo" : "article",
+    });
+  });
+  if (r.homepage && !seen[r.homepage]) p.links.push({ label: "Demo", url: r.homepage, kind: "demo" });
+  if (parsed.visual) { p.visual = parsed.visual; p.visualAlt = p.title + " — cover visual"; }
+  if (r.topics && r.topics.length) p.tools = r.topics.slice(0, 6);
+  p.reviewNotes = { notes: [], missing: ["Review imported copy — pulled from the repo README; trim to the 10-second version before publishing."] };
+  return p;
+}
+function shallowDraft(r) {
+  const p = blankProject();
+  p.id = r.name;
+  p.title = humanizeRepo(r.name);
+  p.hook = r.description || "";
+  p.status = "draft";
+  p.links = [{ label: "Repo", url: r.html_url, kind: "github" }];
+  if (r.homepage) p.links.push({ label: "Demo", url: r.homepage, kind: "demo" });
+  if (r.topics && r.topics.length) p.tools = r.topics.slice(0, 6);
+  return p;
+}
 /* full project/card form, shared by analytics lanes + builds */
 function projectForm(box, p) {
   field(box, "Title", p, "title");
@@ -1288,7 +1397,7 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
   const d = entry.data;
   const card = h2card("Work lanes", "Each lane: name, intro, case-study cards, and the pipeline list.", SITES.analytics.home + "#talent");
   panel.appendChild(card);
-  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title and links prefill from the repo itself.", "https://github.com/lorisca-analytics");
+  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title, story, links and cover image prefill from the repo README. Review the copy, then flip to live.", "https://github.com/lorisca-analytics");
   panel.appendChild(syncCard);
   const syncBtn = document.createElement("button");
   syncBtn.className = "btn primary"; syncBtn.textContent = "Check for new repos";
@@ -1298,7 +1407,9 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
   syncBtn.addEventListener("click", async () => {
     syncBtn.disabled = true; syncBtn.textContent = "Checking…"; syncList.textContent = "";
     try {
-      const res = await fetch("https://api.github.com/orgs/lorisca-analytics/repos?per_page=100");
+      const res = await fetch("https://api.github.com/orgs/lorisca-analytics/repos?per_page=100", {
+        headers: { "Accept": "application/vnd.github.mercy-preview+json" }
+      });
       if (!res.ok) throw new Error("GitHub API " + res.status);
       const repos = await res.json();
       const known = new Set();
@@ -1326,21 +1437,24 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
         add.addEventListener("click", async () => {
           add.disabled = true; add.textContent = "Importing…";
           try {
-            Array.from(syncList.children).forEach((row) => {
-              if (!row._repo || !row._cb.checked) return;
+            const rows = Array.from(syncList.children).filter((row) => row._repo && row._cb.checked);
+            for (const row of rows) {
               const r = row._repo;
               const lane = d.lanes.find((l) => l.id === row._laneSel.value) || d.lanes[0];
-              const p = blankProject();
-              p.id = r.name;
-              p.title = r.name.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-              p.hook = r.description || ""; p.status = "draft";
-              p.links = [{ label: "Repo", url: r.html_url, kind: "github" }];
-              if (r.homepage) p.links.push({ label: "Demo", url: r.homepage, kind: "demo" });
-              if (r.topics && r.topics.length) p.tools = r.topics.slice(0, 6);
+              let parsed = null;
+              for (const b of ["main", "master"]) {
+                try {
+                  const rr = await fetch("https://raw.githubusercontent.com/lorisca-analytics/" + r.name + "/" + b + "/README.md");
+                  if (rr.ok) { parsed = parseReadme(await rr.text(), r.name, b); break; }
+                } catch (e) {}
+              }
+              const p = parsed
+                ? deepDraft({ name: r.name, html_url: r.html_url, homepage: r.homepage, topics: r.topics }, parsed)
+                : shallowDraft(r);
               lane.projects = lane.projects || []; lane.projects.push(p);
-            });
-            await saveData("data/lanes.json", d, "Import org repos as drafts via editor");
-            status("Imported as drafts — reload this tab to edit them.");
+            }
+            await saveData("data/lanes.json", d, "Deep-import org repos as drafts via editor");
+            status("Imported as drafts with README content — reload this tab to review them.");
             syncList.textContent = "";
           } catch (e) { status(e.message, false); }
           add.disabled = false; add.textContent = "Import selected as drafts";
