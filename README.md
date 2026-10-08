@@ -17,8 +17,15 @@ site lives in `data/*.json` and `fun/*.json` and is edited from `/admin/`.
 - **A redesign rewrites the design layer only.** It must keep reading the same field
   names. New kinds of sections are added to the skeleton as new types.
 - **Pages built from sections** keep a `layout.sections` list in their JSON. Sections
-  that existed before the builder use `bind` to point at their original keys, so those
-  keys stay the single source of truth. Currently: `writing.html`.
+  that existed before the builder are *built-in* types in `skeleton.js` whose `bind`
+  points at the original keys, so those keys stay the single source of truth, and the
+  page's own drawing code still draws them. `theme.js` then orders, hides and restyles
+  them and draws any builder-added sections in between.
+  On sections: Home, About, Writing here, and both sister sites
+  (lorisca-analytics, lorisca-builds), which load `skeleton.js`, `theme.js` and
+  `theme.css` from this site. Not yet: Off the clock.
+- **Live preview**: any page opened as `page.html?preview=1` inside the admin draws
+  from unsaved data the admin sends it (see the end of `site.js`).
 
 ## Admin
 

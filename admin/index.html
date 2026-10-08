@@ -723,86 +723,11 @@ function switchSite(siteId) {
 /* ================= MAIN SITE tabs ================= */
 const MAIN_HOME = "../index.html";
 
-defineTab("main", "home", "Home", async (panel) => {
-  const entry = await loadData("data/home.json");
-  const d = entry.data;
-  const card = h2card("Home page", "Hero, the three start-here cards, and the about teaser.", MAIN_HOME);
-  panel.appendChild(card);
-  const hero = d.hero;
-  card.appendChild(lab("Hero"));
-  field(card, "Eyebrow", hero, "eyebrow");
-  field(card, "Subtitle", hero, "subtitle");
-  field(card, "Headline", hero, "headline");
-  field(card, "Intro", hero, "lede", true);
-  field(card, "Tagline", hero, "tagline");
-  field(card, "Background photo", hero, "background");
-  card.appendChild(lab("Buttons"));
-  const ctaBox = document.createElement("div");
-  card.appendChild(ctaBox);
-  listEditor(ctaBox, hero.ctas, (box, c) => {
-    field(box, "Label", c, "label");
-    field(box, "Link", c, "href");
-  }, () => ({ label: "", href: "" }), "Add button");
-  mediaFields(card, hero, "home-hero");
-
-  const sh = h2card("Start here", "The three cards under the hero.", MAIN_HOME + "#start");
-  panel.appendChild(sh);
-  listEditor(sh, d.startHere, (box, s) => {
-    field(box, "Title", s, "title");
-    field(box, "Text", s, "text", true);
-    embedField(box, "Embed link", s, "embed");
-  }, () => ({ title: "", text: "", embed: "" }), "Add card");
-
-  const at = h2card("About teaser", null, MAIN_HOME + "#about");
-  panel.appendChild(at);
-  field(at, "Teaser", d, "aboutTeaser", true);
-  embedField(at, "Embed link", d, "aboutTeaserEmbed");
-
-  const ft = h2card("Featured work", "Tick the projects shown on the home page (max 3).", MAIN_HOME + "#featured");
-  panel.appendChild(ft);
-  const ids = d.featured || [];
-  const all = [];
-  ["analytics", "builds"].forEach((cat) => (PROJECTS[cat] || []).forEach((p) => all.push(p)));
-  all.forEach((p) => {
-    const row = document.createElement("label");
-    row.className = "ed-check";
-    const cb = document.createElement("input");
-    cb.type = "checkbox";
-    cb.checked = ids.includes(p.id);
-    cb.addEventListener("change", () => {
-      const i = ids.indexOf(p.id);
-      if (cb.checked && i < 0) ids.push(p.id);
-      if (!cb.checked && i >= 0) ids.splice(i, 1);
-    });
-    row.appendChild(cb);
-    row.appendChild(document.createTextNode(p.title));
-    ft.appendChild(row);
-  });
-  d.featured = ids;
-
-  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", MAIN_HOME);
-  panel.appendChild(shd);
-  d.sections = d.sections || {};
-  [["start", "Start here", true], ["featured", "Featured work", true], ["about", "About teaser", false], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
-    const sec = d.sections[key] = d.sections[key] || {};
-    sec.headline = sec.headline || {};
-    shd.appendChild(lab(label));
-    field(shd, "Eyebrow", sec, "eyebrow");
-    field(shd, "Headline", sec.headline, "main");
-    field(shd, "Headline accent (colored part)", sec.headline, "accent");
-    if (hasSide) field(shd, "Side note", sec, "side", true);
-    mediaFields(shd, sec, "home-" + key);
-  });
-
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      if (d.featured.length > 3) { status("Pick at most 3 featured projects.", false); return; }
-      await saveData("data/home.json", d, "Update home page via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save home page");
-});
+defineTab("main", "home", "Home", (panel) => pageBuilder(panel, {
+  path: "data/home.json", label: "Home page", view: "../index.html", tag: "home",
+  sources: { projects: ["analytics", "builds"].flatMap((c) => (PROJECTS[c] || []).map((p) => ({ id: p.id, title: p.title }))) },
+  validate: (d) => ((d.featured || []).length > 3 ? "Featured work shows at most 3 projects. Untick one, then save." : ""),
+}));
 
 defineTab("main", "writing", "Writing", (panel) => pageBuilder(panel, {
   path: "data/writing.json", label: "Writing page", view: "../writing.html", tag: "writing",
@@ -1259,159 +1184,9 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   tRenderList();
 });
 
-defineTab("main", "about", "About", async (panel) => {
-  const entry = await loadData("data/about.json");
-  const d = entry.data;
-  // hero
-  const hr = h2card("Hero", "Greeting, intro, and tagline.", "../about.html#top");
-  panel.appendChild(hr);
-  d.hero = d.hero || {};
-  field(hr, "Greeting", d.hero, "greeting", true);
-  field(hr, "Intro", d.hero, "lede", true);
-  field(hr, "Tagline", d.hero, "tagline");
-  mediaFields(hr, d.hero, "about-hero");
-  const shd = h2card("Section headings", "Every eyebrow, headline, and side note on the page.", "../about.html");
-  panel.appendChild(shd);
-  d.sections = d.sections || {};
-  [["thirties", "30-second version", false], ["story", "Story", false], ["selected", "Selected work", true], ["route", "The route", true], ["toolbox", "Toolbox", true], ["contact", "Contact", true]].forEach(([key, label, hasSide]) => {
-    const sec = d.sections[key] = d.sections[key] || {};
-    sec.headline = sec.headline || {};
-    shd.appendChild(lab(label));
-    field(shd, "Eyebrow", sec, "eyebrow");
-    field(shd, "Headline", sec.headline, "main");
-    field(shd, "Headline accent (colored part)", sec.headline, "accent");
-    if (hasSide) field(shd, "Side note", sec, "side", true);
-    mediaFields(shd, sec, "about-" + key);
-  });
-  // 30-second cards
-  const ts = h2card("30-second version", "The three quick cards.", "../about.html#thirties");
-  panel.appendChild(ts);
-  d.thirties = d.thirties || [];
-  listEditor(ts, d.thirties, (box, t) => {
-    field(box, "Title", t, "title");
-    field(box, "Text", t, "text", true);
-  }, () => ({ title: "", text: "" }), "Add card");
-  const ch = h2card("Chapters", "The story blocks.", "../about.html#story");
-  panel.appendChild(ch);
-  listEditor(ch, d.chapters, (box, c) => {
-    field(box, "Label", c, "label");
-    field(box, "Text", c, "text", true);
-    embedField(box, "Embed link", c, "embed");
-  }, () => ({ label: "", text: "", embed: "" }), "Add chapter");
-  const rt = h2card("Route", "Work history stops, newest first.", "../about.html#route");
-  panel.appendChild(rt);
-  listEditor(rt, d.route, (box, s) => {
-    const row = document.createElement("div");
-    row.className = "ed-row";
-    const a = document.createElement("div"), b = document.createElement("div");
-    field(a, "When", s, "when", false, "Now · San Francisco");
-    field(b, "Where", s, "where", false, "Company");
-    row.appendChild(a); row.appendChild(b);
-    box.appendChild(row);
-    field(box, "Role", s, "role");
-    box.appendChild(lab("Details (one per line)"));
-    const ta = textInput((s.detail || []).join("\n"), true);
-    ta.addEventListener("input", () => {
-      s.detail = ta.value.split("\n").map((x) => x.trim()).filter(Boolean);
-    });
-    box.appendChild(ta);
-    const nowL = document.createElement("label");
-    nowL.className = "ed-check";
-    const nowC = document.createElement("input");
-    nowC.type = "checkbox";
-    nowC.checked = !!s.now;
-    nowC.addEventListener("change", () => { s.now = nowC.checked; });
-    nowL.appendChild(nowC);
-    nowL.appendChild(document.createTextNode("This is the current stop"));
-    box.appendChild(nowL);
-  }, () => ({ when: "", where: "", role: "", detail: [], now: false }), "Add stop");
-  // hold up + proudest
-  const hp = h2card("Spotlight", "The aside cards next to the story.", "../about.html#story");
-  panel.appendChild(hp);
-  field(hp, "Hold up text", d, "holdup", true);
-  d.proudest = d.proudest || {};
-  field(hp, "Proudest title", d.proudest, "title");
-  field(hp, "Proudest text", d.proudest, "text", true);
-  // journey map stops
-  const jn = h2card("Journey map", "Pins on the route map, in travel order.", "../about.html#route");
-  panel.appendChild(jn);
-  d.journey = d.journey || [];
-  listEditor(jn, d.journey, (box, s) => {
-    const row = document.createElement("div");
-    row.className = "ed-row";
-    const a = document.createElement("div"), b = document.createElement("div");
-    field(a, "City", s, "city", false, "Manado");
-    field(b, "Note", s, "note", false, "Grew up · Minahasa roots");
-    row.appendChild(a); row.appendChild(b);
-    box.appendChild(row);
-    const row2 = document.createElement("div");
-    row2.className = "ed-row";
-    const c = document.createElement("div"), e = document.createElement("div");
-    field(c, "Latitude", s, "lat", false, "1.4748");
-    field(e, "Longitude", s, "lng", false, "124.8421");
-    row2.appendChild(c); row2.appendChild(e);
-    box.appendChild(row2);
-  }, () => ({ city: "", note: "", lat: 0, lng: 0 }), "Add stop");
-  // toolbox
-  const tb = h2card("Toolbox", "Tool groups and their items.", "../about.html#toolbox");
-  panel.appendChild(tb);
-  d.toolbox = d.toolbox || [];
-  listEditor(tb, d.toolbox, (box, g) => {
-    field(box, "Group", g, "group", false, "Analytics");
-    box.appendChild(lab("Items (one per line)"));
-    const ta = textInput((g.items || []).join("\n"), true);
-    ta.addEventListener("input", () => {
-      g.items = ta.value.split("\n").map((x) => x.trim()).filter(Boolean);
-    });
-    box.appendChild(ta);
-  }, () => ({ group: "", items: [] }), "Add group");
-  // principle + field notes
-  const pv = h2card("Principle & field notes", "The Latin line and the fun facts.", "../about.html#principle");
-  panel.appendChild(pv);
-  d.principle = d.principle || {};
-  field(pv, "Latin", d.principle, "latin");
-  field(pv, "Translation", d.principle, "translation");
-  field(pv, "Note", d.principle, "note", true);
-  field(pv, "Field notes", d, "fieldnotes", true);
-  // selected work
-  const sw = h2card("Selected work", "The 10-second cards with count-up numbers.", "../about.html#selected");
-  panel.appendChild(sw);
-  d.selected = d.selected || [];
-  listEditor(sw, d.selected, (box, s) => {
-    const row = document.createElement("div");
-    row.className = "ed-row";
-    const a = document.createElement("div"), b = document.createElement("div"), c = document.createElement("div");
-    field(a, "Number", s, "num", false, "80");
-    field(b, "Prefix", s, "prefix", false, "−");
-    field(c, "Suffix", s, "suffix", false, "%");
-    row.appendChild(a); row.appendChild(b); row.appendChild(c);
-    box.appendChild(row);
-    const row2 = document.createElement("div");
-    row2.className = "ed-row";
-    const e = document.createElement("div"), f = document.createElement("div");
-    field(e, "Decimals", s, "decimals", false, "0");
-    field(f, "Tag", s, "tag", false, "On the job · 2022–2023");
-    row2.appendChild(e); row2.appendChild(f);
-    box.appendChild(row2);
-    field(box, "Number label", s, "label", false, "hiring SLA");
-    field(box, "Title", s, "title");
-    field(box, "Outcome", s, "outcome", true);
-    field(box, "Link", s, "url");
-  }, () => ({ num: 0, prefix: "", suffix: "", decimals: 0, label: "", title: "", outcome: "", url: "https://lorisca-analytics.github.io", tag: "" }), "Add card");
-  const mt = h2card("Method", "The three how-I-work cards.", "../about.html#method");
-  panel.appendChild(mt);
-  listEditor(mt, d.method, (box, m) => {
-    field(box, "Title", m, "title");
-    field(box, "Text", m, "text", true);
-  }, () => ({ title: "", text: "" }), "Add card");
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/about.json", d, "Update about page via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save about page");
-});
+defineTab("main", "about", "About", (panel) => pageBuilder(panel, {
+  path: "data/about.json", label: "About page", view: "../about.html", tag: "about",
+}));
 
 defineTab("main", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");
@@ -1471,30 +1246,15 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
 </script>
 <script>
 /* ================= ANALYTICS tabs ================= */
-defineTab("analytics", "header", "Header", async (panel) => {
-  const entry = await loadData("data/hero.json");
-  const d = entry.data;
-  const card = h2card("Page header", null, SITES.analytics.home);
-  panel.appendChild(card);
-  field(card, "Eyebrow", d, "eyebrow");
-  field(card, "Headline", d, "headline");
-  field(card, "Intro", d, "lede", true);
-  mediaFields(card, d, "analytics-hero");
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/hero.json", d, "Update analytics header via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save header");
-});
+defineTab("analytics", "page", "Page", (panel) => pageBuilder(panel, {
+  files: { hero: "data/hero.json", lanes: "data/lanes.json", page: "data/page.json" }, layoutIn: "page",
+  label: "Analytics page", view: SITES.analytics.home + "/", tag: "analytics",
+}));
 
-defineTab("analytics", "lanes", "Lanes", async (panel) => {
+defineTab("analytics", "import", "Import from GitHub", async (panel) => {
   const entry = await loadData("data/lanes.json");
   const d = entry.data;
-  const card = h2card("Work lanes", "Each lane: name, intro, case-study cards, and the pipeline list.", SITES.analytics.home + "#talent");
-  panel.appendChild(card);
-  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title, story, links and cover image prefill from the repo README. Review the copy, then flip to live.", "https://github.com/lorisca-analytics");
+  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title, story, links and cover image prefill from the repo README. Review them in the Page tab, then set them to live.", "https://github.com/lorisca-analytics");
   panel.appendChild(syncCard);
   const syncBtn = document.createElement("button");
   syncBtn.className = "btn primary"; syncBtn.textContent = "Check for new repos";
@@ -1551,7 +1311,9 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
               lane.projects = lane.projects || []; lane.projects.push(p);
             }
             await saveData("data/lanes.json", d, "Deep-import org repos as drafts via editor");
-            status("Imported as drafts with README content — reload this tab to review them.");
+            status("Imported as drafts with README content. Open the Page tab, then Lanes and case studies, to review them.");
+            const pt = TABS.analytics.find((t) => t.id === "page");
+            if (pt) { pt.built = false; const pp = document.querySelector('[data-panel="page"]'); if (pp) pp.innerHTML = ""; }
             syncList.textContent = "";
           } catch (e) { status(e.message, false); }
           add.disabled = false; add.textContent = "Import selected as drafts";
@@ -1561,39 +1323,6 @@ defineTab("analytics", "lanes", "Lanes", async (panel) => {
     } catch (e) { syncList.textContent = "GitHub API error: " + e.message; }
     syncBtn.disabled = false; syncBtn.textContent = "Check for new repos";
   });
-  listEditor(card, d.lanes, (box, lane) => {
-    const row = document.createElement("div");
-    row.className = "ed-row";
-    const a = document.createElement("div"), b = document.createElement("div");
-    field(a, "Lane name", lane, "name");
-    field(b, "Page anchor (id)", lane, "id");
-    row.appendChild(a); row.appendChild(b);
-    box.appendChild(row);
-    field(box, "Intro", lane, "blurb", true);
-    embedField(box, "Embed link", lane, "embed");
-    mediaFields(box, lane, "analytics-lane-" + (lane.id || "lane"));
-    box.appendChild(lab("Case studies"));
-    listEditor(box, lane.projects || (lane.projects = []), (pb, p) => {
-      const t = document.createElement("div");
-      t.className = "ed-item-title";
-      t.style.marginBottom = ".6rem";
-      t.textContent = p.title || "(untitled)";
-      pb.appendChild(t);
-      projectForm(pb, p);
-    }, blankProject, "Add case study");
-    box.appendChild(lab("In the pipeline"));
-    listEditor(box, lane.pipeline || (lane.pipeline = []), (qb, item) => {
-      field(qb, "Title", item, "title");
-      field(qb, "Link (optional)", item, "link");
-    }, () => ({ title: "", link: "" }), "Add pipeline title");
-  }, () => ({ id: "lane-" + Date.now(), name: "", blurb: "", embed: "", projects: [], pipeline: [] }), "Add lane");
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/lanes.json", d, "Update analytics lanes via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save lanes");
 });
 
 defineTab("analytics", "sitelinks", "Site links", async (panel) => {
@@ -1617,48 +1346,10 @@ defineTab("analytics", "sitelinks", "Site links", async (panel) => {
 });
 
 /* ================= BUILDS tabs ================= */
-defineTab("builds", "header", "Header", async (panel) => {
-  const entry = await loadData("data/hero.json");
-  const d = entry.data;
-  const card = h2card("Page header", null, SITES.builds.home);
-  panel.appendChild(card);
-  field(card, "Eyebrow", d, "eyebrow");
-  field(card, "Headline", d, "headline");
-  field(card, "Intro", d, "lede", true);
-  mediaFields(card, d, "builds-hero");
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/hero.json", d, "Update builds header via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save header");
-});
-
-defineTab("builds", "builds", "Builds", async (panel) => {
-  const entry = await loadData("data/projects.json");
-  const d = entry.data;
-  const card = h2card("Builds", "One card per tool. A card earns its place with a live demo and a playbook.", SITES.builds.home);
-  panel.appendChild(card);
-  listEditor(card, d.projects, (box, p) => {
-    const t = document.createElement("div");
-    t.className = "ed-item-title";
-    t.style.marginBottom = ".6rem";
-    t.textContent = p.title || "(untitled)";
-    box.appendChild(t);
-    projectForm(box, p);
-  }, blankProject, "Add build");
-  const proto = h2card("Prototyping", "The honest one-liner under the builds.", SITES.builds.home);
-  panel.appendChild(proto);
-  field(proto, "Prototyping line", d, "prototyping", true);
-  saveBar(panel, async () => {
-    try {
-      status("Saving…");
-      await saveData("data/projects.json", d, "Update builds via editor");
-      status("Saved — live in about a minute.");
-    } catch (e) { status(e.message, false); }
-  }, "Save builds");
-});
+defineTab("builds", "page", "Page", (panel) => pageBuilder(panel, {
+  files: { hero: "data/hero.json", projects: "data/projects.json", page: "data/page.json" }, layoutIn: "page",
+  label: "Builds page", view: SITES.builds.home + "/", tag: "builds",
+}));
 
 defineTab("builds", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");

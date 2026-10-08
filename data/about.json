@@ -330,5 +330,65 @@
     "title": "The 5-9 stuff lives elsewhere.",
     "text": "Climbing, singing, snowboarding, and wherever I helped an event run.",
     "button": "Off the clock →"
+  },
+  "layout": {
+    "sections": [
+      {
+        "id": "top",
+        "type": "about-hero",
+        "menu": "About",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "thirties",
+        "type": "about-thirties",
+        "menu": "30 seconds",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "story",
+        "type": "about-story",
+        "menu": "Story",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "selected",
+        "type": "about-selected",
+        "menu": "",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "route",
+        "type": "about-route",
+        "menu": "The Route",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "toolbox",
+        "type": "about-toolbox",
+        "menu": "Toolbox",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "principle",
+        "type": "about-principle",
+        "menu": "",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "contact",
+        "type": "about-contact",
+        "menu": "Contact",
+        "hidden": false,
+        "style": {}
+      }
+    ]
   }
 }

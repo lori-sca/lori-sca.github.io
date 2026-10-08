@@ -94,20 +94,6 @@
     }
     legacyWriting(site, w);
   }
-  /* Preview: the admin sends unsaved edits here so you see them before saving. */
-  const PREVIEW = new URLSearchParams(location.search).has("preview");
-  let gotPreview = false;
-  if (PREVIEW) {
-    window.addEventListener("message", (e) => {
-      if (e.origin !== location.origin || !e.data || e.data.type !== "lc-preview") return;
-      gotPreview = true;
-      const y = window.scrollY;
-      renderWriting(e.data.site, e.data.data);
-      document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
-      window.scrollTo(0, y);
-    });
-    if (window.parent !== window) window.parent.postMessage({ type: "lc-preview-ready" }, location.origin);
-  }
   function legacyWriting(site, w) {
     {
       applySiteChrome(site);
@@ -148,7 +134,7 @@
     }
   }
   Promise.all([loadJSON("data/site.json"), loadJSON("data/writing.json")])
-    .then(([site, w]) => { if (!gotPreview) renderWriting(site, w); })
+    .then(([site, w]) => renderWriting(site, w))
     .catch(() => {
       document.getElementById("w-headline").textContent = "Content couldn't load — try refreshing.";
     });

@@ -330,11 +330,57 @@
     });
     if (root.Motion && root.Motion.refresh) root.Motion.refresh(main);
   }
+  /* Pages with built-in sections (Home, About, the sister sites) draw those
+     with their own code first; this then puts everything in layout order,
+     hides what's hidden, applies look overrides, and slots builder sections
+     in between. Built-in parts the layout doesn't mention stay, at the end. */
+  function styleNative(el, s) {
+    const st = s.style || {};
+    if (st.background) {
+      el.classList.remove("section", "band", "lc-dark");
+      if (st.background === "none") el.classList.add("section");
+      else el.classList.add("band");
+      if (st.background === "dark") el.classList.add("lc-dark");
+    }
+    if (st.spacing) el.classList.add("lc", "lc-sp-" + st.spacing);
+  }
+  function applyLayout(main, data, ctx) {
+    // ctx.layoutIn: when the page's data is several files ({ hero, lanes, page }),
+    // the name of the one holding `layout`
+    const host = ctx && ctx.layoutIn ? data[ctx.layoutIn] || {} : data;
+    const list = ((host.layout || {}).sections) || [];
+    if (!main || !list.length) return;
+    main.querySelectorAll(":scope > [data-lc-built]").forEach((e) => e.remove());
+    const byId = {};
+    Array.from(main.children).forEach((e) => { if (e.id) byId[e.id] = e; });
+    const order = [];
+    const fresh = [];
+    list.forEach((s) => {
+      const t = S.TYPES[s.type];
+      if (!t) return;
+      if (t.native) {
+        const e = byId[t.anchor];
+        if (!e || order.indexOf(e) >= 0) return;
+        e.style.display = s.hidden ? "none" : "";
+        styleNative(e, s);
+        order.push(e);
+      } else if (!s.hidden && R[s.type]) {
+        try {
+          const e = R[s.type](s, S.read(data, s), ctx || {});
+          e.setAttribute("data-lc-built", "");
+          order.push(e); fresh.push(e);
+        } catch (err) { console.error("Section " + s.id + " couldn't draw:", err); }
+      }
+    });
+    Array.from(main.children).forEach((e) => { if (order.indexOf(e) < 0) order.push(e); });
+    order.forEach((e) => main.appendChild(e));
+    if (root.Motion && root.Motion.refresh) fresh.forEach((e) => root.Motion.refresh(e));
+  }
   function menu(data) {
     return ((data.layout || {}).sections || [])
       .filter((s) => !s.hidden && s.menu)
-      .map((s) => ({ label: s.menu, href: "#" + s.id }));
+      .map((s) => ({ label: s.menu, href: "#" + ((S.TYPES[s.type] || {}).anchor || s.id) }));
   }
 
-  root.Theme = { renderPage: renderPage, menu: menu, embedSrc: embedSrc };
+  root.Theme = { renderPage: renderPage, applyLayout: applyLayout, menu: menu, embedSrc: embedSrc };
 })(window);

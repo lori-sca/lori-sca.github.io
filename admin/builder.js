@@ -72,19 +72,20 @@
     changed() {
       if (!this.on) return;
       clearTimeout(this.timer);
-      this.timer = setTimeout(() => this.send(), 250);
+      this.timer = setTimeout(() => this.send(), 700);
     },
+    origin() { try { return new URL(this.url, location.href).origin; } catch (e) { return location.origin; } },
     async send() {
       if (!this.on || !this.frame || !this.payload) return;
       try {
         const p = await this.payload();
-        this.frame.contentWindow.postMessage(Object.assign({ type: "lc-preview" }, clone(p)), location.origin);
+        this.frame.contentWindow.postMessage({ type: "lc-preview", files: clone(p.files) }, this.origin());
       } catch (e) { /* preview is best effort */ }
     },
   };
   window.BuilderPreview = Preview;
   window.addEventListener("message", (e) => {
-    if (e.origin === location.origin && e.data && e.data.type === "lc-preview-ready") Preview.send();
+    if (e.data && e.data.type === "lc-preview-ready" && (e.origin === location.origin || e.origin === Preview.origin())) Preview.send();
   });
 
   /* ---------------- formatted-text editor ---------------- */
@@ -257,6 +258,24 @@
     return render;
   }
 
+  /* ---------------- a set of fields, with collapsible groups ---------------- */
+  function renderFields(host, fields, get, set, ctx) {
+    const groups = {};
+    fields.forEach((f) => {
+      let h = host;
+      if (f.group) {
+        if (!groups[f.group]) {
+          const g = el("details", "ed-group");
+          g.appendChild(el("summary", "", f.group));
+          host.appendChild(g);
+          groups[f.group] = g;
+        }
+        h = groups[f.group];
+      }
+      fieldEditor(h, f, () => get(f.key), (v) => set(f.key, v), ctx);
+    });
+  }
+
   /* ---------------- one field, any kind ---------------- */
   function fieldEditor(host, f, get, set, ctx) {
     const v = get();
@@ -284,7 +303,7 @@
       host.appendChild(t);
     } else if (f.kind === "select") {
       const s = el("select", "ed-select");
-      (f.options || []).forEach((o) => { const op = el("option", "", o); op.value = o; s.appendChild(op); });
+      (f.options || []).forEach((o) => { const op = el("option", "", o === "" ? "(none)" : o); op.value = o; s.appendChild(op); });
       s.value = v == null || v === "" ? (f.default || f.options[0]) : v;
       s.addEventListener("change", () => set(s.value));
       host.appendChild(s);
@@ -302,6 +321,42 @@
       a.addEventListener("input", upd); b.addEventListener("input", upd);
       row.appendChild(a); row.appendChild(b);
       host.appendChild(row);
+    } else if (f.kind === "number") {
+      const i = el("input", "ed-input");
+      i.type = "number"; i.step = "any";
+      i.value = v == null ? "" : v;
+      i.addEventListener("input", () => { const n = parseFloat(i.value); set(i.value === "" || isNaN(n) ? "" : n); });
+      host.appendChild(i);
+    } else if (f.kind === "lines") {
+      const t = el("textarea", "ed-textarea");
+      t.placeholder = "One per line";
+      t.value = Array.isArray(v) ? v.join("\n") : v || "";
+      t.addEventListener("input", () => set(t.value.split("\n").map((x) => x.trim()).filter(Boolean)));
+      host.appendChild(t);
+    } else if (f.kind === "group") {
+      const box = el("div", "ed-subgroup");
+      const obj = v && typeof v === "object" && !Array.isArray(v) ? v : {};
+      let attached = obj === v;
+      renderFields(box, f.fields, (k) => obj[k], (k, nv) => { obj[k] = nv; if (!attached) { attached = true; set(obj); } ctx.changed(); }, ctx);
+      host.appendChild(box);
+    } else if (f.kind === "checklist") {
+      const opts = (ctx.sources && ctx.sources[f.source]) || [];
+      const picked = Array.isArray(v) ? v : [];
+      if (!opts.length) host.appendChild(el("p", "ed-hint", "Nothing to pick from yet."));
+      opts.forEach((o) => {
+        const row = el("label", "ed-check");
+        const cb = el("input", "");
+        cb.type = "checkbox"; cb.checked = picked.indexOf(o.id) >= 0;
+        cb.addEventListener("change", () => {
+          const i = picked.indexOf(o.id);
+          if (cb.checked && i < 0) picked.push(o.id);
+          if (!cb.checked && i >= 0) picked.splice(i, 1);
+          set(picked);
+        });
+        row.appendChild(cb);
+        row.appendChild(document.createTextNode(o.title));
+        host.appendChild(row);
+      });
     } else if (f.kind === "rich") {
       richEditor(host, v, set);
     } else if (f.kind === "image") {
@@ -315,10 +370,11 @@
       const openSet = new WeakSet();
       sortable(host, items, {
         onChange: touched,
-        title: (it, i) => ({ kind: "#" + (i + 1), summary: SK.plain(it.title || it.label || it.caption || it.alt || it.src || "") || "(empty)" }),
+        title: (it, i) => ({ kind: "#" + (i + 1), summary: SK.plain(it.title || it.name || it.label || it.city || it.group || it.when || it.caption || it.alt || it.k || it.src || "") || "(empty)",
+          badges: it.status && it.status !== "live" ? [it.status] : [] }),
         isOpen: (it) => openSet.has(it) || items.length <= 3,
         setOpen: (it, o) => { if (o) openSet.add(it); else openSet.delete(it); },
-        body: (box, it) => f.fields.forEach((sf) => fieldEditor(box, sf, () => it[sf.key], (nv) => { it[sf.key] = nv; ctx.changed(); }, ctx)),
+        body: (box, it) => renderFields(box, f.fields, (k) => it[k], (k, nv) => { it[k] = nv; ctx.changed(); }, ctx),
         tools: (it, i, render) => [btn("Copy", "ed-link", () => { const c = clone(it); items.splice(i + 1, 0, c); openSet.add(c); render(); touched(); }, "Duplicate")],
         after: (wrap, render) => {
           wrap.appendChild(btn("+ Add " + (f.item || "item"), "btn ghost ed-add", () => { const n = blank(); items.push(n); openSet.add(n); render(); touched(); }));
@@ -376,19 +432,34 @@
   }
 
   /* ---------------- the page builder ---------------- */
+  /* opts:
+       label, view (page URL for preview), tag (upload name prefix)
+       path: "data/x.json"                 one file, or
+       files: { alias: "data/x.json", … }  several files seen as one object
+       layoutIn: alias that holds layout + meta (with `files`)
+       sources: { name: [{id, title}] }    options for checklist fields
+       validate(data) -> error text or ""                                   */
   async function pageBuilder(panel, opts) {
-    const entry = await loadData(opts.path);
-    const d = entry.data;
-    const siteEntry = currentSite.id === "main" ? await loadData("data/site.json") : null;
-    d.layout = d.layout || { sections: [] };
-    d.layout.sections = d.layout.sections || [];
-    const sections = d.layout.sections;
+    const files = opts.files || { "": opts.path };
+    const entries = {};
+    for (const alias of Object.keys(files)) entries[alias] = await loadData(files[alias]);
+    let d;
+    if (files[""]) d = entries[""].data;
+    else { d = {}; Object.keys(entries).forEach((a) => { d[a] = entries[a].data; }); }
+    const host = opts.layoutIn ? d[opts.layoutIn] : d;
+    host.layout = host.layout || { sections: [] };
+    host.layout.sections = host.layout.sections || [];
+    const sections = host.layout.sections;
     const openSet = new Set();
     const changed = () => Preview.changed();
     panel.addEventListener("input", changed);
     panel.addEventListener("change", changed);
 
-    Preview.attach(opts.view, async () => ({ data: d, site: siteEntry ? siteEntry.data : {} }));
+    Preview.attach(opts.view, async () => {
+      const out = {};
+      Object.keys(files).forEach((a) => { out[files[a]] = entries[a].data; });
+      return { files: out };
+    });
 
     // --- page card
     const pc = h2card(opts.label, "Build the page from sections. Click a section to edit it, drag ⋮⋮ to move it. Changes go live when you save.", opts.view);
@@ -399,17 +470,22 @@
     pvBtn.setAttribute("data-preview-toggle", "");
     pbar.appendChild(pvBtn);
     pc.appendChild(pbar);
-    const meta = d.meta = d.meta || {};
-    const det = el("details", "ed-group");
-    det.appendChild(el("summary", "", "Page title and description (for search engines and link previews)"));
-    fieldEditor(det, { key: "title", label: "Browser tab title", kind: "text" }, () => meta.title, (v) => { meta.title = v; });
-    fieldEditor(det, { key: "description", label: "Description", kind: "textarea" }, () => meta.description, (v) => { meta.description = v; });
-    pc.appendChild(det);
+    if (host.meta || opts.meta !== false) {
+      const det = el("details", "ed-group");
+      det.appendChild(el("summary", "", "Page title and description (for search engines and link previews)"));
+      const metaGet = (k) => (host.meta || {})[k];
+      const metaSet = (k, v) => { host.meta = host.meta || {}; host.meta[k] = v; };
+      fieldEditor(det, { key: "title", label: "Browser tab title", kind: "text" }, () => metaGet("title"), (v) => metaSet("title", v));
+      fieldEditor(det, { key: "description", label: "Description", kind: "textarea" }, () => metaGet("description"), (v) => metaSet("description", v));
+      pc.appendChild(det);
+    }
 
     // --- sections
-    const sc = h2card("Sections", "Top to bottom, as they appear on the page. Sections that were part of the original page can be hidden but not deleted, so nothing else that reads them breaks.");
+    const sc = h2card("Sections", "Top to bottom, as they appear on the page. Built-in sections can be moved, hidden and restyled, but not deleted, so nothing that reads them breaks.");
     panel.appendChild(sc);
-    const typeLabel = (s) => (SK.TYPES[s.type] || {}).label || s.type;
+    const typeOf = (s) => SK.TYPES[s.type] || {};
+    const typeLabel = (s) => typeOf(s).label || s.type;
+    const fixed = (s) => !!(s.bind || typeOf(s).native);
     const summary = (s) => {
       const c = SK.read(d, s);
       const hl = c.headline && typeof c.headline === "object" ? (c.headline.main || "") + (c.headline.accent || "") : c.headline;
@@ -417,49 +493,40 @@
         const first = (c.blocks || []).map((b) => SK.plain((b.data || {}).html || (b.data || {}).text || "")).find(Boolean);
         return (first || (c.blocks || []).length + " blocks").slice(0, 80);
       }
-      return SK.plain(hl || c.heading || c.eyebrow || c.url || "").slice(0, 80);
+      return SK.plain(hl || c.heading || c.eyebrow || c.greeting || c.latin || c.url || "").slice(0, 80);
     };
     let renderSections;
     function sectionBody(box, s) {
       const t = SK.TYPES[s.type];
       if (!t) { box.appendChild(el("p", "ed-hint", "This section type isn't in the skeleton yet: " + s.type)); return; }
       box.appendChild(el("p", "ed-hint", t.about));
-      const ctx = { changed: changed, tag: (opts.tag || "page") + "-" + s.id };
-      const groups = {};
-      t.fields.forEach((f) => {
-        let host = box;
-        if (f.group) {
-          if (!groups[f.group]) {
-            const g = el("details", "ed-group");
-            g.appendChild(el("summary", "", f.group));
-            box.appendChild(g);
-            groups[f.group] = g;
-          }
-          host = groups[f.group];
-        }
-        fieldEditor(host, f, () => SK.get(d, s, f.key), (v) => { SK.set(d, s, f.key, v); changed(); }, ctx);
-      });
+      const ctx = { changed: changed, tag: (opts.tag || "page") + "-" + s.id, sources: opts.sources || {} };
+      renderFields(box, t.fields, (k) => SK.get(d, s, k), (k, v) => { SK.set(d, s, k, v); changed(); }, ctx);
       // look
       const lk = el("details", "ed-group");
       lk.appendChild(el("summary", "", "Look and placement"));
       s.style = s.style || {};
-      const row = el("div", "ed-row ed-row-auto");
-      (t.looks || []).forEach((k) => {
-        const c = el("div", "");
-        const def = SK.STYLE[k];
-        fieldEditor(c, { key: k, label: def.label, kind: "select", options: def.options, default: def.default },
-          () => s.style[k], (v) => { if (v === def.default) delete s.style[k]; else s.style[k] = v; changed(); }, ctx);
-        row.appendChild(c);
-      });
-      lk.appendChild(row);
+      if ((t.looks || []).length) {
+        const row = el("div", "ed-row ed-row-auto");
+        t.looks.forEach((k) => {
+          const c = el("div", "");
+          const def = SK.STYLE[k];
+          const dflt = SK.lookDefault(s, k);
+          fieldEditor(c, { key: k, label: def.label, kind: "select", options: def.options, default: dflt },
+            () => s.style[k], (v) => { if (v === dflt) delete s.style[k]; else s.style[k] = v; changed(); }, ctx);
+          row.appendChild(c);
+        });
+        lk.appendChild(row);
+      }
       fieldEditor(lk, { key: "menu", label: "Label in the page's top menu (blank = not listed)", kind: "text" }, () => s.menu, (v) => { s.menu = v; changed(); }, ctx);
-      if (!s.bind) {
+      if (!fixed(s)) {
         lk.appendChild(lab("Link name for this section (page.html#…)"));
         const idIn = el("input", "ed-input");
         idIn.value = s.id;
         idIn.addEventListener("change", () => {
           const v = idIn.value.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
-          if (!v || sections.some((x) => x !== s && x.id === v)) { idIn.value = s.id; status("That link name is empty or already used on this page.", false); return; }
+          const taken = sections.some((x) => x !== s && (x.id === v || typeOf(x).anchor === v));
+          if (!v || taken) { idIn.value = s.id; status("That link name is empty or already used on this page.", false); return; }
           openSet.delete(s.id); s.id = v; openSet.add(v); idIn.value = v; changed();
         });
         lk.appendChild(idIn);
@@ -472,7 +539,7 @@
       t.fields.forEach((f) => { content[f.key] = f.kind === "list" || f.kind === "blocks" ? [] : f.default || ""; });
       let id = type;
       let n = 2;
-      while (sections.some((x) => x.id === id)) id = type + "-" + n++;
+      while (sections.some((x) => x.id === id || typeOf(x).anchor === id)) id = type + "-" + n++;
       const s = { id: id, type: type, menu: "", hidden: false, style: {}, content: content };
       sections.splice(at == null ? sections.length : at, 0, s);
       openSet.add(id);
@@ -484,6 +551,7 @@
       const box = el("div", "ed-type-picker");
       Object.keys(SK.TYPES).forEach((k) => {
         const t = SK.TYPES[k];
+        if (t.native) return;
         if (t.single && sections.some((s) => s.type === k)) return;
         const b = btn("", "ed-type", () => addSection(k, at));
         b.appendChild(el("b", "", t.label));
@@ -497,16 +565,16 @@
       title: (s) => ({
         kind: typeLabel(s),
         summary: summary(s),
-        badges: [].concat(s.hidden ? ["hidden"] : [], s.bind ? ["original"] : []),
+        badges: [].concat(s.hidden ? ["hidden"] : [], fixed(s) ? ["built-in"] : []),
       }),
       isOpen: (s) => openSet.has(s.id),
       setOpen: (s, o) => { if (o) openSet.add(s.id); else openSet.delete(s.id); },
       body: sectionBody,
-      canDelete: (s) => !s.bind,
+      canDelete: (s) => !fixed(s),
       confirmDelete: (s) => "Delete the “" + typeLabel(s) + "” section? You can get it back from History & restore after saving.",
       tools: (s, i, render) => {
         const out = [btn(s.hidden ? "Show" : "Hide", "ed-link", () => { s.hidden = !s.hidden; render(); changed(); })];
-        if (!s.bind) out.push(btn("Copy", "ed-link", () => {
+        if (!fixed(s)) out.push(btn("Copy", "ed-link", () => {
           const c = clone(s);
           let id = s.id + "-copy", n = 2;
           while (sections.some((x) => x.id === id)) id = s.id + "-copy-" + n++;
@@ -527,13 +595,19 @@
       },
     });
 
-    // --- save
+    // --- save: every file of this page that changed, one commit each
     saveBar(panel, async () => {
       try {
-        status("Saving…");
-        // keep the old "subnav" key in step with the section menu labels
-        d.subnav = sections.filter((s) => !s.hidden && s.menu).map((s) => ({ label: s.menu, href: "#" + s.id }));
-        await saveData(opts.path, d, "Update " + opts.label.toLowerCase() + " via page builder");
+        const problem = opts.validate ? opts.validate(d) : "";
+        if (problem) { status(problem, false); return; }
+        // keep an existing "subnav" key in step with the section menu labels
+        if (Array.isArray(host.subnav)) host.subnav = sections.filter((s) => !s.hidden && s.menu).map((s) => ({ label: s.menu, href: "#" + (typeOf(s).anchor || s.id) }));
+        const todo = Object.keys(entries).filter((a) => isDirty(entries[a]));
+        if (!todo.length) { status("Nothing has changed since the last save."); return; }
+        for (const a of todo) {
+          status("Saving " + files[a] + "…");
+          await saveData(files[a], entries[a].data, "Update " + opts.label.toLowerCase() + " via page builder");
+        }
         status("Saved — live in about a minute.");
       } catch (e) { status(e.message, false); }
     }, "Save " + opts.label.toLowerCase());

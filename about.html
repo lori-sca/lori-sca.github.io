@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.css" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 <body data-page="about">
 
@@ -189,6 +190,8 @@
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
 <script src="site.js"></script>
+<script src="skeleton.js"></script>
+<script src="theme.js"></script>
 <script src="motion.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
@@ -328,6 +331,11 @@
       document.getElementById("fieldnotes").textContent = about.fieldnotes || "";
       // journey map
       initJourney(about.journey || []);
+      // section order, hidden sections, looks and builder-added sections (admin page builder)
+      if (window.Theme && Theme.applyLayout && about.layout) {
+        Theme.applyLayout(document.querySelector("main"), about, { site: site });
+        renderSubnav(Theme.menu(about));
+      }
       // wake up motion for everything just rendered
       if (window.Motion) Motion.refresh(document);
     })

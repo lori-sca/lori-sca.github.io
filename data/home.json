@@ -92,5 +92,44 @@
       "imageCaption": "",
       "links": []
     }
+  },
+  "layout": {
+    "sections": [
+      {
+        "id": "top",
+        "type": "home-hero",
+        "menu": "Top",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "start",
+        "type": "home-start",
+        "menu": "Start here",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "featured",
+        "type": "home-featured",
+        "menu": "Featured",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "about",
+        "type": "home-about",
+        "menu": "About",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "contact",
+        "type": "home-contact",
+        "menu": "Contact",
+        "hidden": false,
+        "style": {}
+      }
+    ]
   }
 }

@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 <body data-page="home">
 
@@ -127,6 +128,8 @@
 
 <script src="content.js"></script>
 <script src="site.js"></script>
+<script src="skeleton.js"></script>
+<script src="theme.js"></script>
 <script src="motion.js"></script>
 <script src="search.js"></script>
 <script>
@@ -192,6 +195,11 @@
       document.getElementById("about-teaser").textContent = home.aboutTeaser;
       const te = embedNode(home.aboutTeaserEmbed);
       if (te) document.getElementById("about-teaser").after(te);
+      // section order, hidden sections, looks and builder-added sections (admin page builder)
+      if (window.Theme && Theme.applyLayout && home.layout) {
+        Theme.applyLayout(document.querySelector("main"), home, { site: site });
+        renderSubnav(Theme.menu(home));
+      }
     })
     .catch(() => {
       document.getElementById("hero-headline").textContent = "Content couldn't load — try refreshing.";
