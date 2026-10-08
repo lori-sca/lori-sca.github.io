@@ -921,10 +921,14 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
       context: t ? t.context || "" : "",
       link: t ? t.link || "" : "",
       photo: t ? t.photo || "" : "",
+      badge: t ? t.badge || "" : "",
+      details: t ? t.details || "" : "",
     };
     field(tform, "Place (e.g. AWS Builder Loft)", draft, "place");
     field(tform, "Context (e.g. BuilderPub Buildathon · Volunteer)", draft, "context");
     field(tform, "Link (optional)", draft, "link");
+    field(tform, "Badge (e.g. SOON — optional)", draft, "badge");
+    field(tform, "Details — shows in the + panel (optional)", draft, "details", true);
     tform.appendChild(lab("Photo"));
     const fi = document.createElement("input");
     fi.className = "ed-input"; fi.type = "file"; fi.accept = "image/*";
@@ -991,6 +995,8 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
           context: draft.context.trim(),
           link: draft.link.trim(),
           photo: removePhoto ? "" : draft.photo,
+          badge: draft.badge.trim(),
+          details: draft.details.trim(),
         };
         if (tPendingPhoto) {
           const safe = tPendingPhoto.name.replace(/[^a-zA-Z0-9.\-]/g, "-").replace(/\.[^.]+$/, "");
