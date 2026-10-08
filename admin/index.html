@@ -50,6 +50,33 @@
   .ed-post .d { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--steel); margin-left: .7rem; }
   .ed-siteerr { border: 1px solid #e5b6b0; background: #fdf1f0; border-radius: 12px; padding: 1.4rem; color: #7a2e28; line-height: 1.6; }
   @media (max-width: 640px) { .ed-row { grid-template-columns: 1fr; } }
+  /* unsaved-changes bar + dots */
+  .ed-dirty { position: sticky; top: .6rem; z-index: 40; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;
+    background: #fff8e6; border: 1px solid #e8cf8a; color: #6b4e00; border-radius: 12px; padding: .8rem 1.1rem; margin-bottom: 1.2rem; font-size: .93rem; }
+  .ed-dirty[hidden] { display: none; }
+  .ed-tab.dirty::after, .ed-site.dirty::after { content: ""; display: inline-block; width: .45rem; height: .45rem; border-radius: 50%; background: #d08a00; margin-left: .45rem; vertical-align: middle; }
+  .ed-toolbar { display: flex; justify-content: flex-end; margin: -.6rem 0 1rem; }
+  /* history */
+  .ed-hist-row { padding: .9rem 0; border-bottom: 1px solid var(--hairline); }
+  .ed-hist-top { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; flex-wrap: wrap; }
+  .ed-hist-msg { font-weight: 700; }
+  .ed-hist-meta { font-family: var(--mono); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; color: var(--steel); margin-top: .25rem; }
+  .ed-diff { margin-top: .7rem; font-size: .88rem; background: var(--mist); border-radius: 10px; padding: .8rem 1rem; line-height: 1.55; }
+  .ed-diff div { margin-bottom: .35rem; overflow-wrap: anywhere; }
+  .ed-diff .lbl { font-weight: 700; }
+  .ed-diff del { color: #9b2c22; }
+  .ed-diff ins { color: #1d6b3a; text-decoration: none; }
+  /* conflict picker */
+  .ed-modal { position: fixed; inset: 0; background: rgba(20,24,32,.45); z-index: 100; display: flex; align-items: flex-start; justify-content: center; padding: 4vh 1rem; overflow-y: auto; }
+  .ed-modal-box { background: var(--white); border-radius: 14px; max-width: 760px; width: 100%; padding: 1.8rem; }
+  .ed-modal-box h2 { font-family: var(--display); font-weight: 800; font-size: 1.25rem; margin-bottom: .5rem; }
+  .ed-conf { border: 1px solid var(--hairline); border-radius: 12px; padding: 1rem; margin-top: 1rem; }
+  .ed-conf-lbl { font-weight: 800; margin-bottom: .6rem; overflow-wrap: anywhere; }
+  .ed-conf-opts { display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+  .ed-conf-opt { display: block; border: 1px solid var(--hairline); border-radius: 10px; padding: .7rem .8rem; cursor: pointer; font-size: .9rem; }
+  .ed-conf-opt input { margin-right: .4rem; }
+  .ed-conf-opt pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--body); margin-top: .4rem; max-height: 12rem; overflow: auto; color: var(--ink); }
+  @media (max-width: 640px) { .ed-conf-opts { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -89,7 +116,13 @@
     <section id="editor-view" hidden>
       <h1>Site editor</h1>
       <p class="ed-sub">Pick a site, then a page. Edit the words, hit Save — live in about a minute. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
+      <div class="ed-dirty" id="ed-dirty" hidden>
+        <span id="ed-dirty-text"></span>
+        <button class="ed-link" id="ed-dirty-discard">Discard unsaved changes</button>
+      </div>
       <div class="ed-sites" id="ed-sites"></div>
+      <div class="ed-toolbar"><button class="ed-link" id="ed-history-toggle">History &amp; restore</button></div>
+      <div class="ed-card" id="ed-history" hidden></div>
       <div class="ed-tabs" id="ed-tabs"></div>
       <div id="tab-panels"></div>
       <p class="ed-status" id="status"></p>
@@ -100,6 +133,7 @@
 </main>
 
 <script src="../content.js"></script>
+<script src="merge.js"></script>
 <script>
 /* ================= infra ================= */
 const SITES = {
@@ -128,9 +162,13 @@ function b64ToUtf8(b64) {
   const bin = atob(b64.replace(/\n/g, ""));
   return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
-async function gh(path, method, body) {
-  const res = await fetch("https://api.github.com/repos/" + currentSite.owner + "/" + currentSite.repo + "/contents/" + path, {
+/* Any repo endpoint for the current site, e.g. "commits?path=…". */
+async function ghRepo(sub, method, body) {
+  const res = await fetch("https://api.github.com/repos/" + currentSite.owner + "/" + currentSite.repo + "/" + sub, {
     method: method || "GET",
+    // no-store: GitHub lets browsers cache API reads for 60s, which would
+    // hide a change Muse pushed a moment ago.
+    cache: "no-store",
     headers: {
       "Authorization": "Bearer " + getToken(),
       "Accept": "application/vnd.github+json",
@@ -138,29 +176,89 @@ async function gh(path, method, body) {
     },
     body: body ? JSON.stringify(body) : undefined,
   });
-  if (!res.ok) throw new Error("GitHub " + res.status + " — " + (await res.text()).slice(0, 140));
+  if (!res.ok) {
+    const err = new Error("GitHub " + res.status + " — " + (await res.text()).slice(0, 140));
+    err.status = res.status;
+    throw err;
+  }
   return res.status === 204 ? null : res.json();
 }
+function gh(path, method, body) { return ghRepo("contents/" + path, method, body); }
+
+/* ---------- file cache ----------
+   Each loaded JSON file keeps three things:
+     data  — the copy the forms edit
+     base  — the file exactly as GitHub had it (for merging)
+     clean — data right after the tab finished drawing, as text
+             (for "unsaved changes"; the forms add empty fields
+             while drawing, so base can't be used for that)       */
 const fileCache = {};
+let buildingTab = null;
 function cacheKey(path) { return currentSite.id + ":" + path; }
+function isDirty(entry) { return !!entry && entry.clean != null && Merge.stable(entry.data) !== entry.clean; }
 async function loadData(path) {
   const k = cacheKey(path);
+  if (buildingTab) buildingTab.files.add(k);
   if (fileCache[k]) return fileCache[k];
   const f = await gh(path + "?ref=" + BRANCH);
-  const entry = { sha: f.sha, data: JSON.parse(b64ToUtf8(f.content)) };
+  const data = JSON.parse(b64ToUtf8(f.content));
+  const entry = { key: k, site: currentSite.id, path: path, sha: f.sha, data: data, base: Merge.clone(data), clean: null };
   fileCache[k] = entry;
   return entry;
 }
-async function saveData(path, data, message) {
-  const entry = await loadData(path);
+async function fetchLive(path) {
+  const f = await gh(path + "?ref=" + BRANCH);
+  return { sha: f.sha, data: JSON.parse(b64ToUtf8(f.content)) };
+}
+async function putJSON(path, data, sha, message) {
   const res = await gh(path, "PUT", {
     message: message,
     content: utf8ToB64(JSON.stringify(data, null, 2) + "\n"),
-    sha: entry.sha,
+    sha: sha,
     branch: BRANCH,
   });
-  entry.sha = res.content.sha;
-  entry.data = data;
+  return res.content.sha;
+}
+/* Save = fetch the live file first. If nobody else touched it, write.
+   If someone did (Muse, Claude, another tab), merge field by field and
+   ask only about fields you both changed. Never overwrites blindly. */
+async function saveData(path, data, message) {
+  const entry = await loadData(path);
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const live = await fetchLive(path);
+    let toWrite = data;
+    let merged = false;
+    if (live.sha !== entry.sha) {
+      let r = Merge.merge3(entry.base, data, live.data);
+      if (r.conflicts.length) {
+        const choices = await conflictDialog(path, r.conflicts);
+        if (!choices) throw new Error("Save cancelled. Nothing was changed on the site.");
+        r = Merge.merge3(entry.base, data, live.data, choices);
+      }
+      toWrite = r.value;
+      merged = true;
+    }
+    try {
+      entry.sha = await putJSON(path, toWrite, live.sha, message);
+    } catch (e) {
+      if (e.status === 409 || e.status === 422) continue; // changed again mid-save: retry
+      throw e;
+    }
+    entry.base = Merge.clone(toWrite);
+    if (merged) {
+      entry.data = toWrite;
+      entry.clean = Merge.stable(toWrite);
+      // redraw after the caller finishes, so the form shows the merged file
+      setTimeout(() => {
+        redrawCurrentTab();
+        status("Saved. Someone else had changed this file since you opened it, so both sets of changes were combined. The form now shows the result.");
+      }, 0);
+    } else {
+      entry.clean = Merge.stable(entry.data);
+    }
+    return;
+  }
+  throw new Error("The file kept changing while saving. Reload the page and try again.");
 }
 function processImage(file, maxSize) {
   return new Promise((resolve, reject) => {
@@ -548,16 +646,28 @@ function blankProject() {
 /* ================= tabs ================= */
 const TABS = { main: [], analytics: [], builds: [] };
 function defineTab(siteId, id, label, build) {
-  TABS[siteId].push({ id: id, label: label, build: build, built: false, siteId: siteId });
+  TABS[siteId].push({ id: id, label: label, build: build, built: false, siteId: siteId, files: new Set() });
 }
+let activeTab = null;
 function switchTab(tab) {
+  activeTab = tab;
   document.querySelectorAll(".ed-tab").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab.id));
   document.querySelectorAll("[data-panel]").forEach((p) => { p.hidden = p.dataset.panel !== tab.id; });
   if (!tab.built) {
     tab.built = true;
     const panel = document.querySelector('[data-panel="' + tab.id + '"]');
+    const dirtyBefore = new Set(Object.values(fileCache).filter(isDirty).map((e) => e.key));
+    buildingTab = tab;
     Promise.resolve()
       .then(() => tab.build(panel))
+      .then(() => {
+        // whatever the forms hold right after drawing counts as "no changes yet"
+        tab.files.forEach((k) => {
+          const e = fileCache[k];
+          if (e && !dirtyBefore.has(k)) e.clean = Merge.stable(e.data);
+        });
+      })
+      .finally(() => { if (buildingTab === tab) buildingTab = null; })
       .catch((e) => {
         panel.innerHTML = "";
         const err = document.createElement("div");
@@ -569,8 +679,21 @@ function switchTab(tab) {
   }
   status("");
 }
+function redrawCurrentTab() {
+  if (!activeTab) return;
+  const panel = document.querySelector('[data-panel="' + activeTab.id + '"]');
+  if (panel) panel.innerHTML = "";
+  activeTab.built = false;
+  switchTab(activeTab);
+}
 function switchSite(siteId) {
   currentSite = SITES[siteId];
+  // re-read files on every visit, except ones holding unsaved edits
+  Object.keys(fileCache).forEach((k) => {
+    if (fileCache[k].site === siteId && !isDirty(fileCache[k])) delete fileCache[k];
+  });
+  TABS[siteId].forEach((t) => { t.files = new Set(); });
+  closeHistory();
   document.querySelectorAll(".ed-site").forEach((b) => b.classList.toggle("active", b.dataset.site === siteId));
   const tabsEl = $("ed-tabs");
   const panelsEl = $("tab-panels");
@@ -746,7 +869,13 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   field(opc, "Headline", od.sections.contact.headline, "main");
   field(opc, "Headline accent (colored part)", od.sections.contact.headline, "accent");
   mediaFields(opc, od.sections.contact, "offclock-contact");
-  saveBar(opc, () => saveData("data/off-the-clock.json", od, "Update Off the clock page copy via editor"));
+  saveBar(opc, async () => {
+    try {
+      status("Saving…");
+      await saveData("data/off-the-clock.json", od, "Update Off the clock page copy via editor");
+      status("Saved — live in about a minute.");
+    } catch (e) { status(e.message, false); }
+  }, "Save page copy");
   const entry = await loadData("fun/posts.json");
   const store = entry;
   let editingId = null;
@@ -1044,8 +1173,8 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     const tmp = tiles[idx]; tiles[idx] = tiles[j]; tiles[j] = tmp;
     try {
       status("Reordering…");
-      await saveData("fun/tiles.json", { tiles: tiles }, "Reorder involvement tiles via editor");
       tstore.data.tiles = tiles;
+      await saveData("fun/tiles.json", tstore.data, "Reorder involvement tiles via editor");
       tRenderList();
       status("Reordered — live in about a minute.");
     } catch (e) { status(e.message, false); }
@@ -1584,6 +1713,289 @@ defineTab("builds", "sitelinks", "Site links", async (panel) => {
   }, "Save site links");
 });
 
+/* ================= safety: conflicts, unsaved changes, history ================= */
+const FILES = {
+  main: [
+    ["data/home.json", "Home page"],
+    ["data/about.json", "About page"],
+    ["data/writing.json", "Writing page"],
+    ["data/off-the-clock.json", "Off the clock: page copy"],
+    ["fun/posts.json", "Off the clock: posts"],
+    ["fun/tiles.json", "Off the clock: involvement tiles"],
+    ["fun/layout.json", "Off the clock: section order"],
+    ["data/site.json", "Site links"],
+  ],
+  analytics: [
+    ["data/hero.json", "Header"],
+    ["data/lanes.json", "Lanes and case studies"],
+    ["data/page.json", "Page extras (title, buttons, side card)"],
+    ["data/site.json", "Site links"],
+  ],
+  builds: [
+    ["data/hero.json", "Header"],
+    ["data/projects.json", "Builds"],
+    ["data/page.json", "Page extras (title, buttons, side card)"],
+    ["data/site.json", "Site links"],
+  ],
+};
+function fileLabel(siteId, path) {
+  const hit = (FILES[siteId] || []).find((f) => f[0] === path);
+  return hit ? hit[1] : path;
+}
+function showValue(v, max) {
+  if (v === undefined) return "(not there)";
+  if (v === "") return "(empty)";
+  const s = typeof v === "string" ? v : JSON.stringify(v, null, 2);
+  return s.length > (max || 1500) ? s.slice(0, max || 1500) + " …" : s;
+}
+
+/* ---- conflict picker: resolves to {path: "mine"|"theirs"} or null ---- */
+function conflictDialog(path, conflicts) {
+  return new Promise((resolve) => {
+    const choices = {};
+    const modal = document.createElement("div");
+    modal.className = "ed-modal";
+    const box = document.createElement("div");
+    box.className = "ed-modal-box";
+    modal.appendChild(box);
+    const h = document.createElement("h2");
+    h.textContent = "Someone else changed this too";
+    box.appendChild(h);
+    const p = document.createElement("p");
+    p.className = "ed-hint";
+    p.textContent = "Since you opened “" + fileLabel(currentSite.id, path) + "”, another edit went live (Muse, Claude, or another tab). " +
+      "Everything that doesn't overlap is combined automatically. For the " + conflicts.length +
+      (conflicts.length === 1 ? " spot" : " spots") + " below, you both changed the same thing. Pick which version to keep.";
+    box.appendChild(p);
+    conflicts.forEach((c, i) => {
+      choices[c.path] = "mine";
+      const wrap = document.createElement("div");
+      wrap.className = "ed-conf";
+      const l = document.createElement("div");
+      l.className = "ed-conf-lbl";
+      l.textContent = c.label;
+      wrap.appendChild(l);
+      const opts = document.createElement("div");
+      opts.className = "ed-conf-opts";
+      [["mine", "Keep mine", c.mine], ["theirs", "Keep the live version", c.theirs]].forEach(([val, title, v]) => {
+        const lab2 = document.createElement("label");
+        lab2.className = "ed-conf-opt";
+        const r = document.createElement("input");
+        r.type = "radio"; r.name = "conf-" + i; r.value = val; r.checked = val === "mine";
+        r.addEventListener("change", () => { choices[c.path] = val; });
+        lab2.appendChild(r);
+        const b = document.createElement("b");
+        b.textContent = title;
+        lab2.appendChild(b);
+        const pre = document.createElement("pre");
+        pre.textContent = showValue(v);
+        lab2.appendChild(pre);
+        opts.appendChild(lab2);
+      });
+      wrap.appendChild(opts);
+      box.appendChild(wrap);
+    });
+    const bar = document.createElement("div");
+    bar.className = "ed-actions";
+    const ok = document.createElement("button");
+    ok.className = "btn primary"; ok.textContent = "Save with these choices";
+    const no = document.createElement("button");
+    no.className = "btn ghost"; no.textContent = "Cancel, don't save";
+    bar.appendChild(ok); bar.appendChild(no);
+    box.appendChild(bar);
+    const done = (v) => { modal.remove(); resolve(v); };
+    ok.addEventListener("click", () => done(choices));
+    no.addEventListener("click", () => done(null));
+    document.body.appendChild(modal);
+    ok.focus();
+  });
+}
+
+/* ---- unsaved changes ---- */
+function dirtyEntries() { return Object.values(fileCache).filter(isDirty); }
+function updateDirty() {
+  const dirty = dirtyEntries();
+  const bar = $("ed-dirty");
+  if (!bar) return;
+  bar.hidden = !dirty.length;
+  if (dirty.length) {
+    $("ed-dirty-text").textContent = "Unsaved changes: " +
+      dirty.map((e) => fileLabel(e.site, e.path) + (e.site !== currentSite.id ? " (" + SITES[e.site].label + ")" : "")).join(", ") +
+      ". Use that tab's Save button to put them live.";
+  }
+  const keys = new Set(dirty.map((e) => e.key));
+  document.querySelectorAll(".ed-tab").forEach((b) => {
+    const t = (TABS[currentSite.id] || []).find((x) => x.id === b.dataset.tab);
+    b.classList.toggle("dirty", !!t && Array.from(t.files).some((k) => keys.has(k)));
+  });
+  document.querySelectorAll(".ed-site").forEach((b) => {
+    b.classList.toggle("dirty", dirty.some((e) => e.site === b.dataset.site));
+  });
+}
+setInterval(updateDirty, 800);
+window.addEventListener("beforeunload", (e) => {
+  if (dirtyEntries().length) { e.preventDefault(); e.returnValue = ""; }
+});
+$("ed-dirty-discard").addEventListener("click", () => {
+  const dirty = dirtyEntries();
+  if (!dirty.length) return;
+  if (!confirm("Throw away your unsaved changes to " + dirty.map((e) => fileLabel(e.site, e.path)).join(", ") + "? The live site stays as it is.")) return;
+  dirty.forEach((e) => { delete fileCache[e.key]; });
+  switchSite(currentSite.id);
+  updateDirty();
+  status("Unsaved changes discarded.");
+});
+
+/* ---- history & restore ---- */
+function closeHistory() {
+  const h = $("ed-history");
+  if (h) { h.hidden = true; h.innerHTML = ""; }
+}
+$("ed-history-toggle").addEventListener("click", () => {
+  const h = $("ed-history");
+  if (!h.hidden) { closeHistory(); return; }
+  h.hidden = false;
+  h.innerHTML = "";
+  const t = document.createElement("h2");
+  t.textContent = "History & restore · " + currentSite.label;
+  h.appendChild(t);
+  const hint = document.createElement("p");
+  hint.className = "ed-hint";
+  hint.textContent = "Every save is kept. Pick a part of the site to see its past versions. Restoring puts an old version live again. The version it replaces stays in this list, so a restore can be undone too.";
+  h.appendChild(hint);
+  const sel = document.createElement("select");
+  sel.className = "ed-select";
+  (FILES[currentSite.id] || []).forEach(([p, l]) => {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = l;
+    sel.appendChild(o);
+  });
+  h.appendChild(sel);
+  const list = document.createElement("div");
+  list.style.marginTop = "1rem";
+  h.appendChild(list);
+  const close = document.createElement("button");
+  close.className = "ed-link"; close.textContent = "Close history"; close.style.marginTop = "1rem";
+  close.addEventListener("click", closeHistory);
+  h.appendChild(close);
+  sel.addEventListener("change", () => renderHistory(sel.value, list));
+  renderHistory(sel.value, list);
+});
+async function renderHistory(path, list) {
+  list.textContent = "Loading versions…";
+  let commits;
+  try {
+    commits = await ghRepo("commits?path=" + encodeURIComponent(path) + "&sha=" + BRANCH + "&per_page=30");
+  } catch (e) { list.textContent = "Couldn't load history: " + e.message; return; }
+  list.innerHTML = "";
+  if (!commits.length) { list.textContent = "No saved versions yet."; return; }
+  commits.forEach((c, idx) => {
+    const when = new Date(c.commit.author.date);
+    const whenTxt = when.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" });
+    const row = document.createElement("div");
+    row.className = "ed-hist-row";
+    const top = document.createElement("div");
+    top.className = "ed-hist-top";
+    const left = document.createElement("div");
+    const msg = document.createElement("div");
+    msg.className = "ed-hist-msg";
+    msg.textContent = c.commit.message.split("\n")[0];
+    const meta = document.createElement("div");
+    meta.className = "ed-hist-meta";
+    meta.textContent = whenTxt + " · " + (c.commit.author.name || "") + (idx === 0 ? " · live now" : "");
+    left.appendChild(msg); left.appendChild(meta);
+    top.appendChild(left);
+    const out = document.createElement("div");
+    if (idx > 0) {
+      const btns = document.createElement("div");
+      btns.style.cssText = "display:flex;gap:.8rem;align-items:baseline;";
+      const cmp = document.createElement("button");
+      cmp.className = "ed-link"; cmp.textContent = "What would change";
+      cmp.addEventListener("click", () => showRestoreDiff(path, c.sha, out));
+      const rs = document.createElement("button");
+      rs.className = "ed-link danger"; rs.textContent = "Restore this version";
+      rs.addEventListener("click", () => restoreVersion(path, c.sha, whenTxt, list));
+      btns.appendChild(cmp); btns.appendChild(rs);
+      top.appendChild(btns);
+    }
+    row.appendChild(top);
+    row.appendChild(out);
+    list.appendChild(row);
+  });
+}
+async function readVersion(path, sha) {
+  const f = await gh(path + "?ref=" + sha);
+  return JSON.parse(b64ToUtf8(f.content));
+}
+async function showRestoreDiff(path, sha, out) {
+  if (out.childNodes.length) { out.innerHTML = ""; return; }
+  out.textContent = "Comparing…";
+  try {
+    const [old, live] = await Promise.all([readVersion(path, sha), fetchLive(path)]);
+    const d = Merge.diff(live.data, old);
+    out.innerHTML = "";
+    const box = document.createElement("div");
+    box.className = "ed-diff";
+    if (!d.length) box.textContent = "Same as what's live now.";
+    else {
+      const head = document.createElement("div");
+      head.textContent = "Restoring this would change " + d.length + (d.length === 1 ? " thing:" : " things:");
+      box.appendChild(head);
+    }
+    d.slice(0, 60).forEach((x) => {
+      const line = document.createElement("div");
+      const l = document.createElement("span");
+      l.className = "lbl";
+      l.textContent = x.label + ": ";
+      line.appendChild(l);
+      if (x.kind === "added") {
+        line.appendChild(document.createTextNode("comes back as "));
+        const ins = document.createElement("ins"); ins.textContent = showValue(x.to, 160); line.appendChild(ins);
+      } else if (x.kind === "removed") {
+        line.appendChild(document.createTextNode("is removed (now "));
+        const del = document.createElement("del"); del.textContent = showValue(x.from, 160); line.appendChild(del);
+        line.appendChild(document.createTextNode(")"));
+      } else if (x.from === "" && x.to === "") {
+        line.appendChild(document.createTextNode("order goes back"));
+      } else {
+        const del = document.createElement("del"); del.textContent = showValue(x.from, 160); line.appendChild(del);
+        line.appendChild(document.createTextNode(" → "));
+        const ins = document.createElement("ins"); ins.textContent = showValue(x.to, 160); line.appendChild(ins);
+      }
+      box.appendChild(line);
+    });
+    if (d.length > 60) {
+      const more = document.createElement("div");
+      more.textContent = "…and " + (d.length - 60) + " more.";
+      box.appendChild(more);
+    }
+    out.appendChild(box);
+  } catch (e) { out.textContent = "Couldn't compare: " + e.message; }
+}
+async function restoreVersion(path, sha, whenTxt, list) {
+  const label = fileLabel(currentSite.id, path);
+  const key = cacheKey(path);
+  let msg = "Put the " + whenTxt + " version of “" + label + "” live?\n\nThe current version stays in history, so you can undo this.";
+  if (isDirty(fileCache[key])) msg += "\n\nYou also have unsaved changes on this part. They will be thrown away.";
+  if (!confirm(msg)) return;
+  try {
+    status("Restoring…");
+    const [old, live] = await Promise.all([readVersion(path, sha), fetchLive(path)]);
+    await putJSON(path, old, live.sha, "Restore " + label + " to the " + whenTxt + " version via editor");
+    delete fileCache[key];
+    (TABS[currentSite.id] || []).forEach((t) => {
+      if (!t.files.has(key)) return;
+      t.built = false;
+      t.files = new Set();
+      const panel = document.querySelector('[data-panel="' + t.id + '"]');
+      if (panel) panel.innerHTML = "";
+    });
+    if (activeTab && !activeTab.built) switchTab(activeTab);
+    status("Restored — live in about a minute.");
+    renderHistory(path, list);
+  } catch (e) { status(e.message, false); }
+}
+
 /* ================= boot ================= */
 function showEditor(on) {
   $("setup-view").hidden = on;
@@ -1621,6 +2033,7 @@ $("token-save").addEventListener("click", async () => {
   await boot();
 });
 $("logout").addEventListener("click", () => {
+  if (dirtyEntries().length && !confirm("You have unsaved changes. Forget the key anyway? The changes will be lost.")) return;
   localStorage.removeItem("oc_pat");
   Object.keys(fileCache).forEach((k) => delete fileCache[k]);
   showEditor(false);
