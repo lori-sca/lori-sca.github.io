@@ -38,6 +38,7 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <span class="eyebrow" id="hero-eyebrow"></span>
+          <p class="hero-subtitle" id="hero-subtitle"></p>
           <h1 id="hero-headline"></h1>
           <p class="lede" id="hero-lede"></p>
           <p class="tagline" id="hero-tagline"></p>
@@ -134,6 +135,7 @@
       applySiteChrome(site);
       // hero
       document.getElementById("hero-eyebrow").textContent = home.hero.eyebrow;
+      document.getElementById("hero-subtitle").textContent = home.hero.subtitle || "";
       document.getElementById("hero-headline").textContent = home.hero.headline;
       document.getElementById("hero-lede").textContent = home.hero.lede;
       document.getElementById("hero-tagline").textContent = home.hero.tagline ? "\u201c" + home.hero.tagline + "\u201d" : "";
