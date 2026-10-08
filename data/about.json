@@ -3,7 +3,7 @@
     {
       "embed": "",
       "label": "Where I'm from",
-      "text": "I'm Minahasa, from North Sulawesi — a village kid from a place with almost no footprint in the rooms I work in now. First internet in 2011. Learned English properly in 2018. Put myself through a small unknown university. Then merantau: left home to find what's next. None of my peers made it abroad; most married young. If others were born way ahead, I just run my race at my own pace."
+      "text": "Manado, Indonesia. A village kid from a place with almost no footprint in the rooms I work in now. First time accessing internet in 2011. Only started learning English properly in 2018. Put myself through a small unknown university. Then 'merantau': left home to find what's next. None of my peers made it abroad; most married young. If others were born way ahead, I just run my race at my own pace."
     },
     {
       "embed": "",
@@ -28,8 +28,8 @@
   ],
   "fieldnotes": "4'11\". Climbs V4–V5. Bathroom singer, choir on weekends. Learning to snowboard. Second-generation K-pop fan.",
   "hero": {
-    "greeting": "Hi, you've found my 5-9 here.",
-    "lede": "I'm Lori. By day I build the systems behind hiring — the intake flows, the scorecards, the dashboards that decide who gets a chance. This page is the rest of me: where I come from, how I think, and what I do when nobody's paying me.",
+    "greeting": "Hi, I'm Lori.",
+    "lede": "you've found my 5-9 here. By day I build the systems behind hiring — the intake flows, the scorecards, the dashboards that decide who gets a chance. This page is the rest of me: where I come from, how I think, and what I do when nobody's paying me.",
     "tagline": "Use the data. Keep the human visible.",
     "eyebrow": "About · San Francisco",
     "image": "",
@@ -388,6 +388,23 @@
         "menu": "Contact",
         "hidden": false,
         "style": {}
+      },
+      {
+        "id": "page-header",
+        "type": "page-header",
+        "menu": "",
+        "hidden": false,
+        "style": {},
+        "content": {
+          "eyebrow": "",
+          "headline": "",
+          "lede": "",
+          "buttons": [],
+          "image": "",
+          "imageAlt": "",
+          "imageCaption": "",
+          "links": []
+        }
       }
     ]
   }
