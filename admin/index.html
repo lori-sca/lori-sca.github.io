@@ -1204,7 +1204,7 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
   card.appendChild(fi);
   const pv = document.createElement("img");
   pv.className = "ed-photo-preview";
-  if (d.portrait) { pv.src = d.portrait; } else { pv.hidden = true; }
+  if (d.portrait) { pv.src = /^(https?:|data:|\/)/.test(d.portrait) ? d.portrait : "../" + d.portrait; } else { pv.hidden = true; }
   card.appendChild(pv);
   let pendingPortrait = null;
   let removePortrait = false;
