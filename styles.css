@@ -4,21 +4,7 @@
    Type: Archivo (display) · Plus Jakarta Sans (body) · Martian Mono (micro-labels only)
    ============================================================ */
 
-:root {
-  --white: #ffffff;
-  --mist: #eef2f6;
-  --mist-deep: #e2e9f0;
-  --ink: #1e2d42;          /* 13.9:1 on white */
-  --steel: #4a6a8f;        /* 5.6:1 on white — secondary text */
-  --accent: #5b7fa6;       /* large/bold + interactive accents only */
-  --hairline: #d5dfe8;     /* structural rules, never text */
-  --display: "Archivo", system-ui, sans-serif;
-  --body: "Plus Jakarta Sans", system-ui, sans-serif;
-  --mono: "Martian Mono", ui-monospace, monospace;
-  --gutter: clamp(1.25rem, 4vw, 3rem);
-  --section-pad: clamp(4.5rem, 10vw, 9rem);
-  --measure: 66ch;
-}
+/* colors, fonts and spacing live in shared.css (loaded last on every page) */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -382,17 +368,7 @@ section[id], div[id] { scroll-margin-top: 104px; }
    ============================================================ */
 
 /* ---------- dark mode ---------- */
-:root { --nav-bg: rgba(255,255,255,.94); }
-[data-theme="dark"] {
-  --white: #1e2d42;
-  --mist: #26374d;
-  --mist-deep: #2c3f57;
-  --ink: #eef2f6;
-  --steel: #9db0c4;
-  --accent: #8fa9c9;
-  --hairline: #3b4f68;
-  --nav-bg: rgba(30,45,66,.94);
-}
+/* light and dark color values live in shared.css */
 .nav, .subnav { background: var(--nav-bg); }
 .theme-toggle {
   background: none; border: 1px solid var(--hairline); border-radius: 999px;

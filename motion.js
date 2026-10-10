@@ -91,40 +91,7 @@
     els.forEach(function (e) { io.observe(e); });
   }
 
-  /* ---------- dark mode ---------- */
-  var MOON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
-  var SUN = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
-  function paintThemeIcon() {
-    var btn = document.getElementById("theme-toggle");
-    if (!btn) return;
-    var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    btn.innerHTML = dark ? SUN : MOON;
-    btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-  }
-  function theme() {
-    try {
-      var stored = localStorage.getItem("lori-theme");
-      if (stored === "dark" || stored === "light") {
-        document.documentElement.setAttribute("data-theme", stored);
-      }
-    } catch (e) {}
-    paintThemeIcon();
-    var btn = document.getElementById("theme-toggle");
-    if (btn || !document.querySelector(".nav-inner")) return;
-    var b = document.createElement("button");
-    b.id = "theme-toggle";
-    b.className = "theme-toggle";
-    b.type = "button";
-    b.addEventListener("click", function () {
-      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", next);
-      try { localStorage.setItem("lori-theme", next); } catch (e) {}
-      paintThemeIcon();
-      document.dispatchEvent(new CustomEvent("lori-theme", { detail: next }));
-    });
-    document.querySelector(".nav-inner").appendChild(b);
-    paintThemeIcon();
-  }
+  /* dark mode now lives in header.js (shared by all three sites) */
 
   /* ---------- sparkles around a hero name ---------- */
   var SPARKLE = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 0c.7 6.5 5.5 11.3 12 12-6.5.7-11.3 5.5-12 12-.7-6.5-5.5-11.3-12-12C6.5 11.3 11.3 6.5 12 0z"/></svg>';
@@ -194,7 +161,6 @@
 
   /* ---------- boot ---------- */
   document.addEventListener("DOMContentLoaded", function () {
-    theme();
     reveals(document);
     tilt(document);
     expands(document);

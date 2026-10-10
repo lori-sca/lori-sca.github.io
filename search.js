@@ -77,6 +77,11 @@
         if (about.hero && about.hero.greeting) add(about.hero.greeting, about.hero.lede || "", A + "#top", "About");
         (about.thirties || []).forEach(function (c) { add(c.title, c.text, A + "#thirties", "About"); });
         (about.chapters || []).forEach(function (c) { add(c.label, c.text, A + "#story", "About"); });
+        (about.route || []).forEach(function (st) {
+          add(st.where, [st.role, st.when].concat(st.detail || []).filter(Boolean).join(" · "), A + "#route", "About");
+        });
+        var pr = about.principle;
+        if (pr && typeof pr === "object") add(pr.latin, [pr.translation, pr.note].filter(Boolean).join(" "), A + "#principle", "About");
         ["principle", "method", "proudest", "holdup"].forEach(function (k) {
           if (typeof about[k] === "string" && about[k]) add(k.charAt(0).toUpperCase() + k.slice(1), about[k], A + "#story", "About");
         });
