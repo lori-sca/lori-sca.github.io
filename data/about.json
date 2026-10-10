@@ -165,7 +165,7 @@
     {
       "when": "2022 – 2024 · Jakarta",
       "where": "PT Bank Mega Tbk",
-      "role": "Talent Acquisition & Development",
+      "role": "Talent Management · Acquisition & Development",
       "now": false,
       "detail": [],
       "roles": [
@@ -175,6 +175,7 @@
           "detail": [
             "Built difficulty-weighted KPI scorecards for 15 recruiters across six regions. Fair measurement where the hiring was hardest.",
             "Joined intake, exit interview, performance and training records into one view of frontline attrition. It contributed to department turnover falling about 15% in 2023 and 17% in 2024.",
+            "Advised the training team on scheduling, assessment and reporting. Training success rates rose about 27% without adding class hours.",
             "Built a referral anti-gaming system my successors ran and extended for 12+ months after I left."
           ]
         },
@@ -577,23 +578,23 @@
     "lede": "A little bit of everything. I connect ideas, spot patterns, and make sense of messy situations. Then I need the practical how, not generic shoulds. I have to build the vehicle before I drive it.",
     "items": [
       {
-        "title": "The translator",
+        "title": "Translate the problem",
         "text": "Business questions in, technical answers out. I live between the people who feel the problem and the systems that can fix it.",
         "hidden": false
       },
       {
-        "title": "The builder",
+        "title": "Build the system",
         "text": "I build the machine the work runs on, then leave behind something the team can run without me.",
         "hidden": false
       },
       {
-        "title": "The skeptic",
+        "title": "Test the model",
         "text": "Elegant frameworks make me suspicious. I cross-check every model against lived experience before I trust it.",
         "hidden": false
       },
       {
-        "title": "The king-maker",
-        "text": "I'm a king-maker, or trying to be: I want the people around me to feel more capable than they did yesterday. Leading from behind.",
+        "title": "Make others stronger",
+        "text": "I want the people around me to feel more capable than they did yesterday. Leading from behind.",
         "hidden": false
       }
     ]
