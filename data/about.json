@@ -55,7 +55,8 @@
       "city": "Manado",
       "lat": 1.4748,
       "lng": 124.8421,
-      "note": "Back again · Minahasa roots"
+      "note": "Back again · Minahasa roots",
+      "skip": true
     },
     {
       "city": "Jakarta",
@@ -70,16 +71,16 @@
       "note": "Hult MBA in Analytics"
     },
     {
-      "city": "San Francisco",
-      "lat": 37.7749,
-      "lng": -122.4194,
-      "note": "Now"
-    },
-    {
       "city": "London",
       "lat": 51.5074,
       "lng": -0.1278,
       "note": "Summer and Finance Adventure!"
+    },
+    {
+      "city": "San Francisco",
+      "lat": 37.7749,
+      "lng": -122.4194,
+      "note": "Now"
     }
   ],
   "method": [
@@ -407,5 +408,12 @@
         }
       }
     ]
+  },
+  "journeyMap": {
+    "avatar": "assets/journey-avatar.webp",
+    "avatarAlt": "Lorisca, arms crossed, smiling",
+    "text": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco, roughly {miles} away from your current location, according to your IP address.",
+    "textNoLocation": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco.",
+    "textNearby": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco, and according to your IP address, so are you."
   }
 }
