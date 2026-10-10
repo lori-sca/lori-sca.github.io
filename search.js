@@ -1,98 +1,118 @@
-/* search.js — site search palette. No build step: the index is built at
-   runtime from the same data/*.json files the admin edits, so it never
-   goes stale. Plain substring matching, title hits rank first. */
-
+/* search.js: one search box for all three sites. No build step: the index
+   is built at runtime from the same JSON files the admin edits, so it never
+   goes stale. Every word must match; title hits rank first.
+   Loaded by header.js on first use (also works if a page loads it directly).
+   Hub cards: only status "live" items are indexed, drafts and queued stay out. */
 (function () {
   "use strict";
+  if (window.LCSearch) return;
 
-  var index = null;   // [{t, s, u}]
-  var built = false;
+  var MAIN = "https://lori-sca.github.io";
+  var WORK = "https://lorisca-analytics.github.io";
+  var BUILDS = "https://lorisca-builds.github.io";
 
-  function add(t, s, u) {
-    if (t || s) index.push({ t: String(t || ""), s: String(s || ""), u: u });
+  var index = null;   // [{t, s, u, w}]
+  var building = null;
+  var seen = {};
+
+  function strip(html) { return String(html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
+  function hl(v) { return v && typeof v === "object" ? (v.main || "") + " " + (v.accent || "") : v || ""; }
+  function add(t, s, u, w) {
+    t = strip(hl(t)); s = strip(hl(s));
+    if (!t && !s) return;
+    var k = (t + "|" + u).toLowerCase();
+    if (seen[k]) return;
+    seen[k] = 1;
+    index.push({ t: t, s: s, u: u, w: w });
   }
 
   /* sections added in the admin's page builder (layout.sections[].content) */
-  function strip(html) { return String(html || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
-  function hl(v) { return v && typeof v === "object" ? (v.main || "") + " " + (v.accent || "") : v || ""; }
-  function layoutEntries(data, page) {
-    ((data.layout || {}).sections || []).forEach(function (s) {
+  function layoutEntries(data, page, where) {
+    ((data && data.layout || {}).sections || []).forEach(function (s) {
       if (s.hidden || !s.content) return;
       var c = s.content, url = page + "#" + s.id;
       var title = strip(hl(c.headline) || c.heading || c.eyebrow || "");
       var text = strip(c.body || c.caption || "");
-      (c.cards || []).forEach(function (cd) { add(cd.title, strip(cd.text), url); });
-      (c.items || []).forEach(function (it) { add(it.title, title, url); });
+      (c.cards || []).forEach(function (cd) { add(cd.title, cd.text, url, where); });
+      (c.items || []).forEach(function (it) { add(it.title, title, url, where); });
       (c.blocks || []).forEach(function (b) {
         var d = b.data || {};
-        if (b.type === "heading") add(d.text, title, url);
+        if (b.type === "heading") add(d.text, title, url, where);
         else if (b.type === "text" || b.type === "callout") text = text || strip(d.html);
-        else if (b.type === "file") add(d.label, d.note || "Document", url);
+        else if (b.type === "file") add(d.label, d.note || "Document", url, where);
       });
-      if (title || text) add(title || text.slice(0, 60), text.slice(0, 160), url);
+      if (title || text) add(title || text.slice(0, 60), text.slice(0, 160), url, where);
     });
   }
 
-  async function get(path) {
-    try {
-      var r = await fetch(path);
-      if (!r.ok) return null;
-      return await r.json();
-    } catch (e) { return null; }
+  function get(url) {
+    return fetch(url, { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
   }
 
-  async function buildIndex() {
-    if (built) return;
-    built = true;
+  function buildIndex() {
+    if (building) return building;
     index = [];
+    var M = MAIN + "/";
+    building = Promise.all([
+      get(M + "data/site.json"), get(M + "data/home.json"), get(M + "data/about.json"),
+      get(M + "data/writing.json"), get(M + "data/off-the-clock.json"), get(M + "fun/posts.json"), get(M + "fun/tiles.json"),
+      get(WORK + "/data/hero.json"), get(WORK + "/data/lanes.json"), get(WORK + "/data/page.json"),
+      get(BUILDS + "/data/hero.json"), get(BUILDS + "/data/projects.json"), get(BUILDS + "/data/page.json")
+    ]).then(function (r) {
+      var site = r[0], home = r[1], about = r[2], writing = r[3], oc = r[4], posts = r[5], tiles = r[6];
+      var wHero = r[7], lanes = r[8], wPage = r[9], bHero = r[10], projects = r[11], bPage = r[12];
 
-    var site = await get("data/site.json");
-    if (site && site.name) add(site.name + " — " + (site.role || ""), "Home", "index.html#top");
+      if (site && site.name) add(site.name, site.role || "", M, "Home");
 
-    var home = await get("data/home.json");
-    if (home) {
-      var h = home.hero || {};
-      if (h.headline) add(h.headline, h.lede || "", "index.html#top");
-      (home.startHere || []).forEach(function (c) { add(c.title, c.text, "index.html#start"); });
-      if (home.aboutTeaser) add("About — teaser", home.aboutTeaser, "index.html#about");
-      var byId = {};
-      if (typeof PROJECTS !== "undefined") {
-        ["analytics", "builds"].forEach(function (cat) {
-          (PROJECTS[cat] || []).forEach(function (p) { byId[p.id] = p; });
-        });
+      if (home) {
+        var h = home.hero || {};
+        if (h.headline) add(h.headline, h.lede || "", M + "#top", "Home");
+        (home.startHere || []).forEach(function (c) { add(c.title, c.text, M + "#start", "Home"); });
+        if (home.aboutTeaser) add("About", home.aboutTeaser, M + "#about", "Home");
+        layoutEntries(home, M, "Home");
       }
-      (home.featured || []).forEach(function (id) {
-        var p = byId[id];
-        if (p) add(p.title, p.hook, "index.html#featured");
+
+      if (about) {
+        var A = M + "about.html";
+        if (about.hero && about.hero.greeting) add(about.hero.greeting, about.hero.lede || "", A + "#top", "About");
+        (about.thirties || []).forEach(function (c) { add(c.title, c.text, A + "#thirties", "About"); });
+        (about.chapters || []).forEach(function (c) { add(c.label, c.text, A + "#story", "About"); });
+        ["principle", "method", "proudest", "holdup"].forEach(function (k) {
+          if (typeof about[k] === "string" && about[k]) add(k.charAt(0).toUpperCase() + k.slice(1), about[k], A + "#story", "About");
+        });
+        (about.toolbox || []).forEach(function (g) { add("Toolbox: " + g.group, (g.items || []).join(", "), A + "#toolbox", "About"); });
+        if (typeof about.fieldnotes === "string" && about.fieldnotes) add("Field notes", about.fieldnotes, A + "#fieldnotes", "About");
+        layoutEntries(about, A, "About");
+      }
+
+      if (writing) {
+        var W = M + "writing.html";
+        if (writing.headline) add(writing.headline, writing.lede || "", W + "#top", "Writing");
+        layoutEntries(writing, W, "Writing");
+      }
+
+      var O = M + "off-the-clock.html";
+      if (oc) { if (oc.title || oc.headline) add(oc.title || oc.headline, oc.lede || "", O + "#top", "Off the clock"); layoutEntries(oc, O, "Off the clock"); }
+      if (posts) (posts.posts || []).forEach(function (p) { add(p.title, p.text, O + "#fun", "Off the clock"); });
+      if (tiles) (tiles.tiles || []).forEach(function (t) { add(t.place, t.context, O + "#field", "Off the clock"); });
+
+      var WK = WORK + "/";
+      if (wHero && wHero.headline) add(wHero.headline, wHero.lede || "", WK + "#top", "Work");
+      ((lanes && lanes.lanes) || []).forEach(function (l) {
+        var live = (l.projects || []).filter(function (p) { return p.status === "live"; });
+        if (live.length) add(l.name, l.blurb || "", WK + "#" + l.id, "Work");
+        live.forEach(function (p) { add(p.title, [p.hook, p.metric, (p.tools || []).join ? (p.tools || []).join(", ") : p.tools].filter(Boolean).join(" · "), WK + "#card-" + p.id, "Work"); });
       });
-    }
+      layoutEntries(wPage, WK, "Work");
 
-    var about = await get("data/about.json");
-    if (about) {
-      if (about.hero && about.hero.greeting) add(about.hero.greeting, about.hero.lede || "", "about.html#top");
-      (about.thirties || []).forEach(function (c) { add(c.title, c.text, "about.html#thirties"); });
-      (about.chapters || []).forEach(function (c) { add(c.label, c.text, "about.html#story"); });
-      ["principle", "method", "proudest", "holdup"].forEach(function (k) {
-        if (typeof about[k] === "string" && about[k]) add(k.charAt(0).toUpperCase() + k.slice(1), about[k], "about.html#story");
+      var BK = BUILDS + "/";
+      if (bHero && bHero.headline) add(bHero.headline, bHero.lede || "", BK + "#top", "Builds");
+      ((projects && projects.projects) || []).filter(function (p) { return p.status === "live"; }).forEach(function (p) {
+        add(p.title, [p.hook, p.metric].filter(Boolean).join(" · "), BK + "#build-" + p.id, "Builds");
       });
-      (about.toolbox || []).forEach(function (g) {
-        add("Toolbox — " + g.group, (g.items || []).join(", "), "about.html#toolbox");
-      });
-      if (typeof about.fieldnotes === "string" && about.fieldnotes) add("Field notes", about.fieldnotes, "about.html#fieldnotes");
-    }
-
-    var writing = await get("data/writing.json");
-    if (writing) {
-      if (writing.headline) add(writing.headline, writing.lede || "", "writing.html#top");
-      (writing.pipeline || []).forEach(function (p) { add(p.title, "In the pipeline", "writing.html#pipeline"); });
-      layoutEntries(writing, "writing.html");
-    }
-
-    var posts = await get("fun/posts.json");
-    if (posts) (posts.posts || []).forEach(function (p) { add(p.title, p.text, "off-the-clock.html#fun"); });
-
-    var tiles = await get("fun/tiles.json");
-    if (tiles) (tiles.tiles || []).forEach(function (t) { add(t.place, t.context, "off-the-clock.html#field"); });
+      layoutEntries(bPage, BK, "Builds");
+    });
+    return building;
   }
 
   function search(q) {
@@ -102,22 +122,21 @@
     var out = [];
     index.forEach(function (e) {
       var t = e.t.toLowerCase(), s = e.s.toLowerCase(), score = 0;
-      words.forEach(function (w) {
+      for (var i = 0; i < words.length; i++) {
+        var w = words[i];
         if (t.indexOf(w) > -1) score += 2;
         else if (s.indexOf(w) > -1) score += 1;
-        else score = -99;
-      });
+        else { score = -1; break; }
+      }
       if (score > 0) out.push({ e: e, score: score });
     });
     out.sort(function (a, b) { return b.score - a.score; });
-    return out.slice(0, 8).map(function (r) { return r.e; });
+    return out.slice(0, 10).map(function (r) { return r.e; });
   }
 
-  function esc(s) {
-    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-  var pal = null, input = null, list = null;
+  var pal = null, input = null, list = null, active = -1, lastFocus = null;
 
   function ensurePal() {
     if (pal) return;
@@ -125,37 +144,56 @@
     pal.className = "search-pal";
     pal.innerHTML =
       '<div class="sp-backdrop"></div>' +
-      '<div class="sp-box" role="dialog" aria-label="Search this site">' +
-        '<input class="sp-input" type="search" placeholder="Search the site…" aria-label="Search the site">' +
-        '<div class="sp-results"></div>' +
+      '<div class="sp-box" role="dialog" aria-modal="true" aria-label="Search all three sites">' +
+        '<input class="sp-input" type="search" placeholder="Search work, builds, about…" aria-label="Search all three sites" autocomplete="off">' +
+        '<div class="sp-results" role="listbox"></div>' +
       "</div>";
     document.body.appendChild(pal);
     input = pal.querySelector(".sp-input");
     list = pal.querySelector(".sp-results");
     pal.querySelector(".sp-backdrop").addEventListener("click", close);
-    input.addEventListener("input", render);
-    input.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && pal.classList.contains("open")) close(); });
+    input.addEventListener("input", function () { buildIndex().then(render); render(); });
+    input.addEventListener("keydown", function (e) {
+      var hits = list.querySelectorAll(".sp-hit");
+      if (e.key === "Escape") { close(); }
+      else if (e.key === "ArrowDown" && hits.length) { e.preventDefault(); mark(Math.min(active + 1, hits.length - 1)); }
+      else if (e.key === "ArrowUp" && hits.length) { e.preventDefault(); mark(Math.max(active - 1, 0)); }
+      else if (e.key === "Enter" && hits.length) { e.preventDefault(); (hits[active > -1 ? active : 0]).click(); }
+    });
+  }
+
+  function mark(i) {
+    var hits = list.querySelectorAll(".sp-hit");
+    hits.forEach(function (h, n) { h.classList.toggle("active", n === i); });
+    active = i;
+    if (hits[i]) hits[i].scrollIntoView({ block: "nearest" });
   }
 
   function render() {
-    var hits = search(input.value);
-    if (!input.value.trim()) { list.innerHTML = ""; return; }
-    if (!hits.length) { list.innerHTML = '<p class="sp-empty">Nothing found — try another word.</p>'; return; }
+    active = -1;
+    var q = input.value;
+    if (!q.trim()) { list.innerHTML = ""; return; }
+    if (!index || !index.length) { list.innerHTML = '<p class="sp-empty">Loading…</p>'; return; }
+    var hits = search(q);
+    if (!hits.length) { list.innerHTML = '<p class="sp-empty">Nothing found. Try another word.</p>'; return; }
     list.innerHTML = "";
     hits.forEach(function (e) {
       var a = document.createElement("a");
       a.className = "sp-hit";
       a.href = e.u;
-      a.innerHTML = '<span class="sp-t">' + esc(e.t) + "</span>" +
-        (e.s ? '<span class="sp-s">' + esc(e.s.slice(0, 140)) + "</span>" : "");
+      a.setAttribute("role", "option");
+      a.innerHTML = (e.w ? '<span class="sp-where">' + esc(e.w) + "</span>" : "") +
+        '<span class="sp-t">' + esc(e.t) + "</span>" +
+        (e.s ? '<span class="sp-s">' + esc(e.s.slice(0, 160)) + "</span>" : "");
+      a.addEventListener("click", function () { setTimeout(close, 0); });
       list.appendChild(a);
     });
   }
 
   function open() {
     ensurePal();
-    buildIndex();
+    buildIndex().then(function () { if (pal.classList.contains("open")) render(); });
+    lastFocus = document.activeElement;
     pal.classList.add("open");
     document.body.classList.add("sp-lock");
     input.value = "";
@@ -167,10 +205,15 @@
     if (!pal) return;
     pal.classList.remove("open");
     document.body.classList.remove("sp-lock");
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
-    var btn = document.getElementById("nav-search");
-    if (btn) btn.addEventListener("click", open);
-  });
+  window.LCSearch = { open: open, close: close };
+
+  /* pages without the shared header: bind their own search button */
+  function bindOld() {
+    var b = document.getElementById("nav-search");
+    if (b && !document.querySelector(".nav-inner.lh-ready")) b.addEventListener("click", open);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bindOld); else bindOld();
 })();

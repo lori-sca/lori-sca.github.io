@@ -1194,7 +1194,7 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
   const card = h2card("Site links", "Name, contact links, and portrait. Used in the nav, footer, and contact buttons on every page.", MAIN_HOME);
   panel.appendChild(card);
   field(card, "Name", d, "name");
-  field(card, "Role line", d, "role");
+  field(card, "Role line (shown under your name in the header)", d, "role");
   field(card, "Email", d, "email");
   field(card, "LinkedIn URL", d, "linkedin");
   field(card, "GitHub URL", d, "github");
@@ -1229,9 +1229,61 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
     rl.appendChild(document.createTextNode("Remove the portrait"));
     card.appendChild(rl);
   }
+  /* ---- shared header: used on all three sites ---- */
+  const hc = h2card("Header", "The bar at the top of every page on all three sites. Drag ⋮⋮ or use the arrows to reorder. Links can point to a page here (about.html) or a full address (https://…).", MAIN_HOME);
+  panel.appendChild(hc);
+  field(hc, "Name in the header (blank = Lorisca Cessia)", d, "headerName");
+  if (!Array.isArray(d.nav)) d.nav = [];
+  hc.appendChild(lab("Header links"));
+  BuilderSortable(hc, d.nav, {
+    onChange: () => {},
+    title: (l) => ({ kind: l.label || "(no label)", summary: l.href || "", badges: l.hidden ? ["hidden"] : [] }),
+    isOpen: (l) => !l.label,
+    body: (box, l) => {
+      field(box, "Label", l, "label");
+      field(box, "Link", l, "href", false, "about.html or https://…");
+      const nt = document.createElement("label");
+      nt.style.cssText = "display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);";
+      const nc = document.createElement("input");
+      nc.type = "checkbox"; nc.checked = !!l.newTab;
+      nc.addEventListener("change", () => { if (nc.checked) l.newTab = true; else delete l.newTab; });
+      nt.appendChild(nc); nt.appendChild(document.createTextNode("Open in a new tab"));
+      box.appendChild(nt);
+    },
+    tools: (l, i, render) => [(() => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "ed-link"; b.textContent = l.hidden ? "Show" : "Hide";
+      b.addEventListener("click", () => { if (l.hidden) delete l.hidden; else l.hidden = true; render(); });
+      return b;
+    })()],
+    confirmDelete: (l) => "Remove the “" + (l.label || "link") + "” link from the header?",
+    after: (wrap, render) => {
+      const add = document.createElement("button");
+      add.type = "button"; add.className = "btn ghost"; add.textContent = "+ Add a link";
+      add.style.marginTop = ".8rem";
+      add.addEventListener("click", () => { d.nav.push({ label: "", href: "" }); render(); });
+      wrap.appendChild(add);
+    },
+  });
+  if (!d.cta || typeof d.cta !== "object") d.cta = {};
+  hc.appendChild(lab("Button on the right"));
+  field(hc, "Button text (blank = Get in touch)", d.cta, "label");
+  field(hc, "Button link (blank = the contact section of the page)", d.cta, "href", false, "#contact, mailto:…, or https://…");
+  const ch = document.createElement("label");
+  ch.style.cssText = "display:flex;gap:.6rem;align-items:center;margin-top:.8rem;font-size:.9rem;color:var(--steel);";
+  const cc = document.createElement("input");
+  cc.type = "checkbox"; cc.checked = !!d.cta.hidden;
+  cc.addEventListener("change", () => { if (cc.checked) d.cta.hidden = true; else delete d.cta.hidden; });
+  ch.appendChild(cc); ch.appendChild(document.createTextNode("Hide the button"));
+  hc.appendChild(ch);
+
   saveBar(panel, async () => {
     try {
       status("Saving…");
+      for (let i = d.nav.length - 1; i >= 0; i--) {
+        const l = d.nav[i];
+        if (!l || !(l.label || "").trim() || !(l.href || "").trim()) d.nav.splice(i, 1);
+      }
       if (pendingPortrait && fi.files[0]) {
         await uploadPhoto("assets/portrait.jpg", fi.files[0], "Update portrait via editor");
         d.portrait = "assets/portrait.jpg";
@@ -1239,7 +1291,7 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
         d.portrait = "";
       }
       await saveData("data/site.json", d, "Update site links via editor");
-      status("Saved — live in about a minute.");
+      status("Saved. All three sites pick it up shortly.");
     } catch (e) { status(e.message, false); }
   }, "Save site links");
 });
@@ -1328,7 +1380,7 @@ defineTab("analytics", "import", "Import from GitHub", async (panel) => {
 defineTab("analytics", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");
   const d = entry.data;
-  const card = h2card("Site links", "Shown in the nav and footer.", SITES.analytics.home);
+  const card = h2card("Site links", "Shown in the footer of this site. The header on all three sites is edited under Main site, Site links.", SITES.analytics.home);
   panel.appendChild(card);
   field(card, "Site name", d, "orgLabel");
   field(card, "Org id", d, "org");
@@ -1354,7 +1406,7 @@ defineTab("builds", "page", "Page", (panel) => pageBuilder(panel, {
 defineTab("builds", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");
   const d = entry.data;
-  const card = h2card("Site links", "Shown in the nav and footer.", SITES.builds.home);
+  const card = h2card("Site links", "Shown in the footer of this site. The header on all three sites is edited under Main site, Site links.", SITES.builds.home);
   panel.appendChild(card);
   field(card, "Site name", d, "orgLabel");
   field(card, "Org id", d, "org");

@@ -614,4 +614,5 @@
   }
 
   window.pageBuilder = pageBuilder;
+  window.BuilderSortable = sortable;
 })();
