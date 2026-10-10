@@ -4,14 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>/* theme before first paint: ?theme= from another of the three sites, else stored choice, else device */(function(){try{var d=document.documentElement,u=new URL(location.href),q=u.searchParams.get("theme");if(q==="dark"||q==="light"){localStorage.setItem("lori-theme",q);u.searchParams.delete("theme");history.replaceState(history.state,"",u.pathname+u.search+u.hash);}var s=localStorage.getItem("lori-theme");d.setAttribute("data-theme",s==="dark"||s==="light"?s:(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));}catch(e){}})();</script>
-<title>Lorisca Cessia — People Analytics & Operations</title>
-<meta name="description" content="I build the hiring systems behind high-growth teams. People Analytics & Operations, MBA in Analytics.">
+<title>Lorisca Cessia Tuuk | People, operations and the data behind them</title>
+<meta name="description" content="I build hiring, sales and operations systems, then use the data to see what works.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=2">
 <link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="shared.css?v=2">
+<link rel="stylesheet" href="shared.css?v=3">
+<link rel="stylesheet" href="home.css?v=1">
 </head>
 <body data-page="home">
 
@@ -20,182 +21,371 @@
     <a class="lh-brand" href="https://lori-sca.github.io/"><b>Lorisca Cessia</b><span>People, operations and the data behind them</span></a>
     <div class="lh-links" id="lh-links"><a href="https://lori-sca.github.io/">Home</a><a href="https://lorisca-analytics.github.io/">Work</a><a href="https://lorisca-builds.github.io/">Builds</a><a href="https://lori-sca.github.io/off-the-clock.html">Off the clock</a><a href="https://lori-sca.github.io/about.html">About</a></div>
   </div>
-<div class="subnav"><div class="subnav-inner"><a href="#top">Top</a><a href="#start">Start here</a><a href="#featured">Featured</a><a href="#about">About</a><a href="#contact">Contact</a></div></div>
+<div class="subnav" style="display:none"><div class="subnav-inner"></div></div>
 </nav>
 
-<main>
+<main class="hm">
   <!-- HERO -->
-  <section class="hero" id="top">
-    <div class="hero-bg" id="hero-bg" aria-hidden="true"></div>
-    <div class="wrap">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow" id="hero-eyebrow"></span>
-          <p class="hero-subtitle" id="hero-subtitle"></p>
-          <h1 id="hero-headline"></h1>
-          <p class="lede" id="hero-lede"></p>
-          <p class="tagline" id="hero-tagline"></p>
-          <div class="cta-row" id="hero-ctas"></div>
-        </div>
+  <section class="hm-hero" id="top">
+    <div class="hm-wrap">
+      <span class="ds-label hm-hero-label" id="hero-eyebrow">Open to what's next · San Francisco</span>
+      <div class="hm-hero-text">
+        <h1 id="hero-headline"><span class="l">Fix the system.</span> <span class="l"><em>Grow the people.</em></span> <span class="l">Both.</span></h1>
+        <p class="hm-sub" id="hero-subtitle" hidden></p>
+        <p class="hm-lede" id="hero-lede">I live between business language and technical language. Banking, logistics, food-tech, construction, different industries, same problem: things breaking the moment they scale. I rebuild the flow and leave behind a system people keep using.</p>
+        <div class="hm-ctas" id="hero-ctas"><a class="ds-btn ds-btn-dark" href="https://lorisca-analytics.github.io">See the work <span aria-hidden="true">→</span></a><a class="ds-btn ds-btn-line" href="about.html">More about me</a></div>
+        <div class="hm-links" id="hero-links" hidden></div>
       </div>
+      <figure class="hm-photo">
+        <img id="hero-photo" src="assets/portrait.jpg" alt="Lori smiling, arms crossed, in a navy blazer" width="1448" height="1086">
+        <figcaption class="hm-principle" id="hero-principle">
+          <span class="ds-label" id="hero-principle-label">Operating principle</span>
+          <p id="hero-tagline">Use the data. Keep the human visible.</p>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- START HERE -->
-  <div class="band" id="start">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-start-eyebrow">Start here</span>
-          <h2 id="sec-start-headline">The 30-second <em>version.</em></h2>
-        </div>
-        <p class="sh-side" id="sec-start-side">Three ideas behind everything else here.</p>
-      </div>
-      <div class="card-grid cols-3" id="starthere-grid"></div>
-    </div>
-  </div>
+  <!-- STAT STRIP -->
+  <section class="hm-stats" id="stats" aria-label="Results from past roles">
+    <div class="hm-wrap" id="stats-row"></div>
+  </section>
 
-  <!-- FEATURED WORK -->
-  <section class="section" id="featured">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-featured-eyebrow">Featured work</span>
-          <h2 id="sec-featured-headline">Proof, <em>not promises.</em></h2>
-        </div>
-        <p class="sh-side" id="sec-featured-side">One analysis, one working tool. Each opens into the full evidence — repos, demos, diagrams.</p>
+  <!-- KEYWORD RIBBON -->
+  <section class="hm-ribbon" id="ribbon" aria-label="Kinds of work">
+    <div class="hm-ribbon-track"><ul id="ribbon-list"></ul><ul aria-hidden="true" id="ribbon-copy"></ul></div>
+  </section>
+
+  <!-- SELECTED WORK -->
+  <section class="hm-featured" id="featured">
+    <div class="hm-wrap">
+      <div class="hm-head">
+        <h2 id="sec-featured-headline">Selected work</h2>
+        <span id="featured-links"></span>
       </div>
-      <div id="featured-grid"></div>
-      <p style="margin-top:2rem;">
-        <a class="text-link" href="https://lorisca-analytics.github.io">All case studies →</a>
-        &nbsp;&nbsp;
-        <a class="text-link" href="https://lorisca-builds.github.io">All builds →</a>
-      </p>
+      <p class="hm-side" id="sec-featured-side" hidden></p>
+      <div class="wc-list" id="featured-grid"></div>
     </div>
   </section>
 
-  <!-- ABOUT TEASER -->
-  <div class="band" id="about">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-about-eyebrow">About</span>
-          <h2 id="sec-about-headline">Who this <em>is.</em></h2>
-        </div>
-      </div>
-      <p class="lede" id="about-teaser"></p>
-      <p style="margin-top:1.6rem;"><a class="text-link" href="about.html">More about me →</a></p>
+  <!-- HOW I TEND TO WORK -->
+  <section class="hm-method" id="method" aria-labelledby="sec-method-headline">
+    <div class="hm-wrap">
+      <div class="hm-head"><h2 id="sec-method-headline">How I tend to work</h2></div>
+      <div class="hm-method-grid" id="method-grid"></div>
     </div>
-  </div>
+  </section>
+
+  <!-- START HERE (hidden on Home since Oct 9, kept in the file) -->
+  <section class="hm-method" id="start" style="display:none">
+    <div class="hm-wrap">
+      <div class="hm-head"><h2 id="sec-start-headline">Start here</h2></div>
+      <div class="hm-method-grid" id="starthere-grid"></div>
+    </div>
+  </section>
+
+  <!-- WHO THIS IS -->
+  <section class="hm-bridge" id="about" aria-labelledby="sec-about-headline">
+    <div class="hm-wrap">
+      <h2 id="sec-about-headline">Who this is</h2>
+      <div class="hm-bridge-text">
+        <p id="about-teaser"></p>
+        <a class="ds-btn ds-btn-line" href="about.html" id="about-button"><span id="about-button-label">More about me</span> <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
 
   <!-- CONTACT -->
-  <section class="section" id="contact">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
-          <h2 id="sec-contact-headline">Get in <em>touch.</em></h2>
+  <section class="hm-foot" id="contact">
+    <div class="hm-wrap">
+      <div class="hm-foot-main">
+        <h2 id="sec-contact-headline">Open to roles in people, operations and analytics at growing companies.</h2>
+        <p id="sec-contact-side">Based in San Francisco.</p>
+        <div class="hm-copy" id="copy-mail">
+          <code id="mail-addr">loriscatuuk@gmail.com</code>
+          <button type="button" id="mail-copy">Copy email</button>
+          <span class="hm-copy-status" id="mail-status" role="status" aria-live="polite"></span>
         </div>
-        <p class="sh-side" id="sec-contact-side">Currently in San Francisco. Happy to walk through any of this live.</p>
       </div>
-      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
+      <div class="hm-foot-ctas" id="contact-ctas"><a class="ds-btn ds-btn-dark" href="mailto:loriscatuuk@gmail.com">Get in touch</a></div>
     </div>
   </section>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-links">
-      <a href="https://lori-sca.github.io">Lorisca Cessia</a>
-      <a href="https://lorisca-analytics.github.io">Analytics Work</a>
-      <a href="https://lorisca-builds.github.io">Builds</a>
-      <a href="https://lori-sca.github.io/about.html">About</a>
-      <a href="mailto:loriscatuuk@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/lorisca" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/lori-sca" target="_blank" rel="noopener">GitHub</a>
-    </div>
-    <p class="fine">&copy; <span id="year"></span> Lorisca Cessia</p>
-  </div>
-</footer>
-
 <script src="content.js"></script>
-<script src="site.js"></script>
-<script src="https://lori-sca.github.io/header.js?v=2"></script>
-<script src="skeleton.js"></script>
+<script src="site.js?v=2"></script>
+<script src="https://lori-sca.github.io/header.js?v=3"></script>
+<script src="skeleton.js?v=2"></script>
 <script src="theme.js"></script>
 <script src="motion.js?v=2"></script>
 <script>
-  Promise.all([loadJSON("data/site.json"), loadJSON("data/home.json")])
-    .then(([site, home]) => {
-      applySiteChrome(site);
-      // hero
-      document.getElementById("hero-eyebrow").textContent = home.hero.eyebrow;
-      document.getElementById("hero-subtitle").textContent = home.hero.subtitle || "";
-      document.getElementById("hero-headline").textContent = home.hero.headline;
-      document.getElementById("hero-lede").textContent = home.hero.lede;
-      document.getElementById("hero-tagline").textContent = home.hero.tagline ? "\u201c" + home.hero.tagline + "\u201d" : "";
-      var hbg = document.getElementById("hero-bg");
-      if (home.hero.background) hbg.style.backgroundImage = "url(" + home.hero.background + ")";
-      else hbg.style.display = "none";
-      const ctas = document.getElementById("hero-ctas");
-      (home.hero.ctas || []).forEach((c, i) => {
-        const a = document.createElement("a");
-        a.className = "btn" + (i === 0 ? " primary" : " ghost");
-        a.href = c.href;
-        a.textContent = c.label;
-        ctas.appendChild(a);
-      });
-      // section headings (editable in the admin)
-      const S = home.sections || {};
-      ["start", "featured", "about", "contact"].forEach((k) => {
-        const s = S[k];
-        if (!s) return;
-        setText("sec-" + k + "-eyebrow", s.eyebrow);
-        setHeadline(document.getElementById("sec-" + k + "-headline"), s.headline);
-        setText("sec-" + k + "-side", s.side);
-      });
-      // editor-added picture + links per section
-      mountSectionMedia("top", home.hero);
-      ["start", "featured", "about", "contact"].forEach((k) => mountSectionMedia(k, S[k]));
-      // start here
-      const sh = document.getElementById("starthere-grid");
-      (home.startHere || []).forEach((s) => {
-        const card = document.createElement("div");
-        card.className = "card";
-        const body = document.createElement("div");
-        body.className = "card-body";
-        const h = document.createElement("h3");
-        h.className = "card-h"; h.textContent = s.title;
-        const p = document.createElement("p");
-        p.className = "card-hook"; p.textContent = s.text;
-        body.appendChild(h); body.appendChild(p);
-        const emb = embedNode(s.embed);
-        if (emb) body.appendChild(emb);
-        card.appendChild(body);
-        sh.appendChild(card);
-      });
-      // featured (ids chosen in the editor; bodies live in content.js)
-      const byId = {};
-      ["analytics", "builds"].forEach((cat) =>
-        (PROJECTS[cat] || []).forEach((p) => { byId[p.id] = p; })
-      );
-      const feat = (home.featured || []).map((id) => byId[id]).filter(Boolean);
-      const fg = document.getElementById("featured-grid");
-      fg.className = "card-grid cols-" + Math.min(3, Math.max(2, feat.length));
-      feat.slice(0, 3).forEach((p) => fg.appendChild(cardNode(p)));
-      // about teaser
-      document.getElementById("about-teaser").textContent = home.aboutTeaser;
-      const te = embedNode(home.aboutTeaserEmbed);
-      if (te) document.getElementById("about-teaser").after(te);
-      // section order, hidden sections, looks and builder-added sections (admin page builder)
-      if (window.Theme && Theme.applyLayout && home.layout) {
-        Theme.applyLayout(document.querySelector("main"), home, { site: site });
-        renderSubnav(Theme.menu(home));
-      }
-    })
-    .catch(() => {
-      document.getElementById("hero-headline").textContent = "Content couldn't load — try refreshing.";
+(function () {
+  "use strict";
+  var WORK = "https://lorisca-analytics.github.io", BUILDS = "https://lorisca-builds.github.io";
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function $(id) { return document.getElementById(id); }
+  function h(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
+  function has(v) { return v != null && String(v).trim() !== ""; }
+  function plainHead(v) { return v && typeof v === "object" ? (v.main || "") + (v.accent || "") : v || ""; }
+  function hubJSON(url) { return fetch(url, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); }); }
+  function btn(label, href, dark) {
+    var a = h("a", "ds-btn " + (dark ? "ds-btn-dark" : "ds-btn-line"), label);
+    var safe = window.Skeleton ? Skeleton.safeHref(href) : href;
+    a.href = safe || "#";
+    if (/^https?:/i.test(a.getAttribute("href")) && a.hostname !== location.hostname) { a.target = "_blank"; a.rel = "noopener"; }
+    return a;
+  }
+
+  /* ---------- hero ---------- */
+  function drawHero(hero) {
+    hero = hero || {};
+    $("hero-eyebrow").textContent = hero.eyebrow || "";
+    $("hero-eyebrow").hidden = !has(hero.eyebrow);
+    var h1 = $("hero-headline"); h1.innerHTML = "";
+    var accent = (hero.headlineAccent || "").trim();
+    String(hero.headline || "").split(/\n+/).map(function (s) { return s.trim(); }).filter(Boolean).forEach(function (line, i) {
+      if (i) h1.appendChild(document.createTextNode(" "));
+      var span = h("span", "l");
+      var at = accent ? line.indexOf(accent) : -1;
+      if (at >= 0) {
+        if (at) span.appendChild(document.createTextNode(line.slice(0, at)));
+        span.appendChild(h("em", "", accent));
+        if (at + accent.length < line.length) span.appendChild(document.createTextNode(line.slice(at + accent.length)));
+      } else span.textContent = line;
+      h1.appendChild(span);
     });
+    $("hero-subtitle").textContent = hero.subtitle || ""; $("hero-subtitle").hidden = !has(hero.subtitle);
+    $("hero-lede").textContent = hero.lede || ""; $("hero-lede").hidden = !has(hero.lede);
+    var ctas = $("hero-ctas"); ctas.innerHTML = "";
+    (hero.ctas || []).filter(function (c) { return c && (c.label || c.href); }).forEach(function (c, i) {
+      var a = btn(c.label || c.href, c.href, i === 0);
+      if (i === 0) { var arrow = h("span", "", " →"); arrow.setAttribute("aria-hidden", "true"); a.appendChild(arrow); }
+      ctas.appendChild(a);
+    });
+    ctas.hidden = !ctas.children.length;
+    var links = $("hero-links"); links.innerHTML = "";
+    (hero.links || []).filter(function (l) { return l && (l.label || l.href); }).forEach(function (l) {
+      var a = h("a", "", (l.label || l.href) + " →"); a.href = (window.Skeleton ? Skeleton.safeHref(l.href) : l.href) || "#";
+      if (l.newTab) { a.target = "_blank"; a.rel = "noopener"; }
+      links.appendChild(a);
+    });
+    links.hidden = !links.children.length;
+    var src = hero.image || hero.background;
+    var photo = $("hero-photo");
+    if (src) { photo.src = src; photo.alt = hero.imageAlt || ""; photo.parentNode.hidden = false; }
+    else photo.parentNode.hidden = true;
+    $("hero-principle-label").textContent = hero.principleLabel || "";
+    $("hero-principle-label").hidden = !has(hero.principleLabel);
+    $("hero-tagline").textContent = hero.tagline || "";
+    $("hero-principle").hidden = !has(hero.principleLabel) && !has(hero.tagline);
+  }
+
+  /* ---------- stat strip and ribbon ---------- */
+  function drawStats(stats) {
+    var row = $("stats-row"); row.innerHTML = "";
+    (stats || []).filter(function (s) { return s && (has(s.value) || has(s.label)); }).forEach(function (s) {
+      var d = h("div", "hm-stat");
+      d.appendChild(h("b", "", s.value || ""));
+      var sp = h("span", "");
+      if (has(s.label)) sp.appendChild(h("strong", "", s.label));
+      if (has(s.detail)) sp.appendChild(document.createTextNode((has(s.label) ? " " : "") + s.detail));
+      d.appendChild(sp);
+      row.appendChild(d);
+    });
+    if (!row.children.length) $("stats").style.display = "none";
+  }
+  function drawRibbon(r) {
+    r = r || {};
+    var list = $("ribbon-list"); list.innerHTML = "";
+    (r.items || []).filter(has).forEach(function (t) { list.appendChild(h("li", "", t)); });
+    $("ribbon-copy").innerHTML = list.innerHTML;
+    $("ribbon").classList.toggle("still", !!r.still);
+    if (!list.children.length) $("ribbon").style.display = "none";
+  }
+
+  /* ---------- selected work ---------- */
+  function hubIndex(lanes, projects) {
+    var idx = {};
+    ((lanes && lanes.lanes) || []).forEach(function (l) {
+      (l.projects || []).forEach(function (p) { if (p.status === "live") idx[p.id] = { site: "work", lane: l.name || "", card: p, href: WORK + "/#card-" + p.id }; });
+    });
+    ((projects && projects.projects) || []).forEach(function (p) { if (p.status === "live") idx[p.id] = { site: "builds", lane: "", card: p, href: BUILDS + "/#card-" + p.id }; });
+    return idx;
+  }
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? null : n; }
+  function barRow(label, text, bar) {
+    var row = h("div", "wc-bar-row");
+    var lab = h("span", "ds-label"); lab.appendChild(h("span", "", label || "")); lab.appendChild(h("span", "", text || ""));
+    row.appendChild(lab); row.appendChild(bar);
+    return row;
+  }
+  function visual(t, fallbackBig) {
+    var box = h("div", "wc-visual"); box.setAttribute("aria-hidden", "true");
+    var kind = t.visual || "number";
+    var a = num(t.aValue), b = num(t.bValue);
+    if (kind === "editor") {
+      var ed = h("div", "wc-editor"), tabs = h("div", "wc-editor-tabs"), body = h("div", "wc-editor-body");
+      (t.editorTabs || []).forEach(function (x, i) { tabs.appendChild(h("span", i === 0 ? "on" : "", x)); });
+      (t.editorRows || []).forEach(function (x) {
+        var on = has(t.editorActive) && x === t.editorActive;
+        var r = h("div", "wc-blk" + (on ? " sel" : "")); r.appendChild(h("span", "", x)); r.appendChild(h("span", "", on ? "editing" : "edit")); body.appendChild(r);
+      });
+      if (tabs.children.length) ed.appendChild(tabs);
+      ed.appendChild(body); box.appendChild(ed);
+      if (has(t.editorNote)) box.appendChild(h("span", "wc-saved", t.editorNote));
+      return box;
+    }
+    if (has(t.visualLabel)) box.appendChild(h("span", "ds-label", t.visualLabel));
+    if (kind === "swing" && a != null && b != null && a < 0 && b > 0) {
+      var total = Math.abs(a) + b, zero = (Math.abs(a) / total * 100).toFixed(1) + "%";
+      var wrap = h("div", "wc-bars");
+      var t1 = h("div", "wc-track"), t2 = h("div", "wc-track");
+      t1.style.setProperty("--zero", zero); t2.style.setProperty("--zero", zero);
+      var neg = h("div", "wc-bar"); neg.style.left = "0"; neg.style.width = zero; t1.appendChild(neg);
+      var pos = h("div", "wc-bar after"); pos.style.left = zero; pos.style.width = (b / total * 100).toFixed(1) + "%"; t2.appendChild(pos);
+      wrap.appendChild(barRow(t.aLabel, t.aText || String(a), t1));
+      wrap.appendChild(barRow(t.bLabel, t.bText || String(b), t2));
+      var z = h("div", "wc-zero ds-label"); z.style.setProperty("--zero", zero); z.appendChild(h("span", "", "$0")); wrap.appendChild(z);
+      box.appendChild(wrap);
+    } else if ((kind === "bars" || kind === "swing") && a != null && b != null) {
+      var max = Math.max(Math.abs(a), Math.abs(b)) || 1;
+      var bars = h("div", "wc-bars");
+      var b1 = h("div", "wc-bar"); b1.style.width = (Math.abs(a) / max * 100).toFixed(1) + "%";
+      var b2 = h("div", "wc-bar after"); b2.style.width = (Math.abs(b) / max * 100).toFixed(1) + "%";
+      bars.appendChild(barRow(t.aLabel, t.aText || String(a), b1));
+      bars.appendChild(barRow(t.bLabel, t.bText || String(b), b2));
+      box.appendChild(bars);
+    }
+    var big = has(t.big) ? t.big : fallbackBig;
+    if (has(big)) box.appendChild(h("span", "wc-big" + (String(big).length > 9 ? " sm" : ""), big));
+    return box;
+  }
+  function cardNodeHome(id, t, hub) {
+    var c = hub ? hub.card : {};
+    var art = h("article", "wc"); art.id = "home-card-" + String(id).replace(/[^\w-]/g, "-");
+    var body = h("div", "wc-body");
+    var label = has(t.label) ? t.label : hub ? (hub.site === "work" ? "Work" + (hub.lane ? " · " + hub.lane : "") : "Builds") : "";
+    if (has(label)) body.appendChild(h("span", "ds-label", label));
+    body.appendChild(h("h3", "wc-title", has(t.title) ? t.title : c.title || ""));
+    var sum = has(t.summary) ? t.summary : c.hook;
+    if (has(sum)) body.appendChild(h("p", "wc-sum", sum));
+    if (has(t.problem) || has(t.move) || has(t.result)) {
+      var ol = h("ol", "wc-trace"); ol.setAttribute("aria-label", "Problem, move and result");
+      [["Problem", t.problem], ["Move", t.move], ["Result", t.result]].forEach(function (p) {
+        var li = h("li", ""); li.appendChild(h("span", "ds-label", p[0])); li.appendChild(h("span", "", p[1] || "")); ol.appendChild(li);
+      });
+      body.appendChild(ol);
+    }
+    var foot = h("div", "wc-foot");
+    var href = has(t.href) ? t.href : hub ? hub.href : "";
+    if (!t.noButton && has(href)) foot.appendChild(btn(t.button || "Deep dive", href, true));
+    if (has(t.note)) foot.appendChild(h("span", "wc-note", t.note));
+    if (foot.children.length) body.appendChild(foot);
+    art.appendChild(body);
+    art.appendChild(visual(has(t.visual) || has(t.big) ? t : { visual: "number" }, hub && !has(t.big) && !has(t.visual) ? c.metric : ""));
+    return art;
+  }
+  function drawFeatured(home, hubs) {
+    var grid = $("featured-grid"); grid.innerHTML = "";
+    var texts = {}; (home.featuredCards || []).forEach(function (t) { if (t && t.id) texts[t.id] = t; });
+    var idx = hubIndex(hubs.lanes, hubs.projects);
+    (home.featured || []).slice(0, 3).forEach(function (id) {
+      var t = texts[id] || {};
+      var homeOnly = /^home:/.test(id) || t.source === "home";
+      var hub = homeOnly ? null : idx[id];
+      var hubMissing = t.source === "builds" ? hubs.buildsFailed : t.source === "work" ? hubs.workFailed : (hubs.workFailed || hubs.buildsFailed);
+      if (!hub && !has(t.title)) return;                 // nothing to draw
+      if (!hub && !homeOnly && !hubMissing) return;      // the hub loaded and this card isn't live: leave it off
+      grid.appendChild(cardNodeHome(id, t, hub));
+    });
+    if (!grid.children.length) $("featured").style.display = "none";
+  }
+
+  /* ---------- method, about, contact ---------- */
+  function drawMethod(items) {
+    var g = $("method-grid"); g.innerHTML = "";
+    (items || []).filter(function (m) { return m && (has(m.title) || has(m.text)); }).forEach(function (m) {
+      var d = h("div", "hm-way"); d.appendChild(h("h3", "", m.title || "")); if (has(m.text)) d.appendChild(h("p", "", m.text)); g.appendChild(d);
+    });
+    if (!g.children.length) $("method").style.display = "none";
+  }
+  function drawContact(c, site) {
+    c = c || {}; site = site || {};
+    var side = $("sec-contact-side"); side.textContent = c.side || ""; side.hidden = !has(c.side);
+    var copy = $("copy-mail");
+    copy.hidden = c.copyEmail === false || !has(site.email);
+    if (has(site.email)) $("mail-addr").textContent = site.email;
+    var row = $("contact-ctas"); row.innerHTML = "";
+    if (has(site.email)) row.appendChild(btn(c.ctaLabel || "Get in touch", "mailto:" + site.email, true));
+    [["Email", has(site.email) ? "mailto:" + site.email : ""], ["LinkedIn", site.linkedin], ["GitHub", site.github]].forEach(function (p) {
+      if (has(p[1])) row.appendChild(btn(p[0], p[1], false));
+    });
+  }
+  function setHead(id, v) { var e = $(id); if (e && plainHead(v)) setHeadline(e, v); }
+
+  /* copy email: clipboard, else select the address */
+  $("mail-copy").addEventListener("click", function () {
+    var ma = $("mail-addr"), ms = $("mail-status"), mc = $("mail-copy");
+    function done() { ms.textContent = "Copied"; mc.textContent = "Copied"; setTimeout(function () { mc.textContent = "Copy email"; ms.textContent = ""; }, 2000); }
+    function fail() { var r = document.createRange(); r.selectNodeContents(ma); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); ms.textContent = "Selected. Press Ctrl+C or Cmd+C to copy."; }
+    try { navigator.clipboard.writeText(ma.textContent.trim()).then(done, fail); } catch (e) { fail(); }
+  });
+
+  /* one fade-in per section, only below the first screen */
+  function reveals() {
+    if (reduce || !("IntersectionObserver" in window)) return;
+    var targets = document.querySelectorAll(".wc, .hm-method-grid, .hm-bridge > .hm-wrap");
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { rootMargin: "0px 0px -8% 0px" });
+    targets.forEach(function (t, i) {
+      if (t.getBoundingClientRect().top > window.innerHeight) { t.classList.add("hm-rv"); t.style.transitionDelay = (i % 2) * 80 + "ms"; io.observe(t); }
+    });
+    setTimeout(function () { targets.forEach(function (t) { t.classList.add("in"); }); }, 2500);
+  }
+
+  var hubs = { workFailed: false, buildsFailed: false };
+  Promise.all([
+    loadJSON("data/site.json"), loadJSON("data/home.json"),
+    hubJSON(WORK + "/data/lanes.json").catch(function () { hubs.workFailed = true; return null; }),
+    hubJSON(BUILDS + "/data/projects.json").catch(function () { hubs.buildsFailed = true; return null; })
+  ]).then(function (r) {
+    var site = r[0], home = r[1];
+    hubs.lanes = r[2]; hubs.projects = r[3];
+    applySiteChrome(site);
+    setMeta(home.meta);
+    var S = home.sections || {};
+    drawHero(home.hero);
+    drawStats(home.stats);
+    drawRibbon(home.ribbon);
+    setHead("sec-featured-headline", (S.featured || {}).headline);
+    var fside = $("sec-featured-side"); fside.textContent = (S.featured || {}).side || ""; fside.hidden = !has((S.featured || {}).side);
+    var fl = $("featured-links"); fl.innerHTML = "";
+    ((S.featured || {}).links || []).filter(function (l) { return l && (l.label || l.href); }).forEach(function (l) {
+      var a = h("a", "", (l.label || l.href) + " →"); a.href = Skeleton.safeHref(l.href) || "#";
+      if (l.newTab) { a.target = "_blank"; a.rel = "noopener"; }
+      fl.appendChild(a);
+    });
+    drawFeatured(home, hubs);
+    setHead("sec-method-headline", (S.method || {}).headline);
+    drawMethod(home.method);
+    setHead("sec-about-headline", (S.about || {}).headline);
+    $("about-teaser").textContent = home.aboutTeaser || "";
+    if (has((S.about || {}).buttonLabel)) $("about-button-label").textContent = S.about.buttonLabel;
+    var te = embedNode(home.aboutTeaserEmbed); if (te) $("about-teaser").after(te);
+    setHead("sec-contact-headline", (S.contact || {}).headline);
+    drawContact(S.contact, site);
+    ["about", "contact"].forEach(function (k) { mountSectionMedia(k, S[k]); });
+    // section order, hidden sections and looks from the admin page builder
+    if (window.Theme && Theme.applyLayout && home.layout) Theme.applyLayout(document.querySelector("main"), home, { site: site });
+    var menu = home.layout && home.layout.showMenu === false ? [] : (window.Theme ? Theme.menu(home) : []);
+    renderSubnav(menu);
+    reveals();
+  }).catch(function (e) {
+    console.error(e);
+    $("hero-lede").textContent = "Content couldn't load. Try refreshing.";
+  });
+})();
 </script>
 </body>
 </html>

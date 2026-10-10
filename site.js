@@ -83,7 +83,11 @@ function setMeta(meta) {
 }
 function renderSubnav(items) {
   const sn = document.querySelector(".subnav-inner");
-  if (!sn || !items || !items.length) return;
+  if (!sn) return;
+  const row = sn.closest(".subnav");
+  // no items (or the page switched the menu off in the admin): hide the row
+  if (!items || !items.length) { if (row) row.style.display = "none"; return; }
+  if (row) row.style.display = "";
   sn.innerHTML = "";
   items.forEach((s) => {
     const a = document.createElement("a");

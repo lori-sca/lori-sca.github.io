@@ -14,7 +14,7 @@
   var MAIN = "https://lori-sca.github.io";
   var SITES = [MAIN, "https://lorisca-analytics.github.io", "https://lorisca-builds.github.io"];
   var KEY = "lori-theme";
-  var VER = "2";
+  var VER = "3";
   var root = document.documentElement;
 
   /* ---------------- theme ---------------- */

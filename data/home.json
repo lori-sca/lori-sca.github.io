@@ -1,31 +1,34 @@
 {
-  "aboutTeaser": "I build the systems I needed when I was starting out — clear intake, honest measurement, and room for people to grow into them.",
+  "aboutTeaser": "I build the systems I needed when I was starting out: clear intake, honest measurement, and room for people to grow into them.",
   "aboutTeaserEmbed": "",
   "featured": [
-    "h1b-sponsorship",
-    "adhd-project-manager"
+    "home:recruitment-front-door",
+    "bike-venture-turnaround",
+    "site-cms"
   ],
   "hero": {
     "ctas": [
       {
         "href": "https://lorisca-analytics.github.io",
-        "label": "See the builds"
+        "label": "See the work"
       },
       {
-        "href": "about.html#contact",
-        "label": "Get in touch"
+        "href": "about.html",
+        "label": "More about me"
       }
     ],
-    "eyebrow": "PEOPLE ANALYTICS & OPERATIONS",
-    "subtitle": "Most companies can't choose whether we fix the system OR the people. I build for both.",
-    "headline": "Balancing Process Improvement & People Development",
-    "lede": " Operational problem-solver who defaults to building systems. Banking, logistics, food-tech, construction — different industries, same problem: things breaking the moment they scale.",
+    "eyebrow": "Open to what's next · San Francisco",
+    "subtitle": "",
+    "headline": "Fix the system.\nGrow the people.\nBoth.",
+    "lede": "I live between business language and technical language. Banking, logistics, food-tech, construction, different industries, same problem: things breaking the moment they scale. I rebuild the flow and leave behind a system people keep using.",
     "tagline": "Use the data. Keep the human visible.",
     "background": "assets/portrait.jpg",
     "image": "assets/sections/home-top-1791534459733-6BB0599D-1BCA-4FDB-BE9F-E719EE5A8359.jpg",
-    "imageAlt": "",
-    "imageCaption": " I live between business language and technical language: rigorous enough to understand the technical side, fluent enough to translate it for any audience.",
-    "links": []
+    "imageAlt": "Lori smiling, arms crossed, in a navy blazer",
+    "imageCaption": "",
+    "links": [],
+    "headlineAccent": "Grow the people.",
+    "principleLabel": "Operating principle"
   },
   "startHere": [
     {
@@ -58,39 +61,46 @@
       "links": []
     },
     "featured": {
-      "eyebrow": "Featured work",
-      "headline": {
-        "main": "Selected ",
-        "accent": "work."
-      },
-      "side": "One analysis, one working tool. Each opens into the full evidence — repos, demos, diagrams.",
+      "eyebrow": "",
+      "headline": "Selected work",
+      "side": "",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [
+        {
+          "label": "All work",
+          "href": "https://lorisca-analytics.github.io",
+          "newTab": false
+        }
+      ]
     },
     "about": {
-      "eyebrow": "About",
-      "headline": {
-        "main": "Who this ",
-        "accent": "is."
-      },
+      "eyebrow": "",
+      "headline": "Who this is",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [],
+      "buttonLabel": "More about me"
     },
     "contact": {
-      "eyebrow": "Contact",
+      "eyebrow": "",
       "headline": {
-        "main": "Get in ",
-        "accent": "touch."
+        "main": "Open to roles in people, operations and analytics at growing companies.",
+        "accent": ""
       },
-      "side": "Currently in San Francisco. Happy to walk through any of this live.",
+      "side": "Based in San Francisco.",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [],
+      "ctaLabel": "Get in touch",
+      "copyEmail": true
+    },
+    "method": {
+      "eyebrow": "",
+      "headline": "How I tend to work"
     }
   },
   "layout": {
@@ -103,9 +113,16 @@
         "style": {}
       },
       {
-        "id": "start",
-        "type": "home-start",
-        "menu": "Start here",
+        "id": "stats",
+        "type": "home-stats",
+        "menu": "",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "ribbon",
+        "type": "home-ribbon",
+        "menu": "",
         "hidden": false,
         "style": {}
       },
@@ -113,6 +130,13 @@
         "id": "featured",
         "type": "home-featured",
         "menu": "Featured",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "method",
+        "type": "home-method",
+        "menu": "How I work",
         "hidden": false,
         "style": {}
       },
@@ -129,7 +153,163 @@
         "menu": "Contact",
         "hidden": false,
         "style": {}
+      },
+      {
+        "id": "start",
+        "type": "home-start",
+        "menu": "Start here",
+        "hidden": true,
+        "style": {}
       }
-    ]
+    ],
+    "showMenu": false
+  },
+  "stats": [
+    {
+      "value": "−80%",
+      "label": "Hiring turnaround",
+      "detail": "after one intake gate, with 10,000+ CVs a year"
+    },
+    {
+      "value": "−17%",
+      "label": "Turnover",
+      "detail": "after linking recruitment and training at Bank Mega"
+    },
+    {
+      "value": "+27%",
+      "label": "Training success",
+      "detail": "from the same Recruit, Develop, Nurture program"
+    },
+    {
+      "value": "+40%",
+      "label": "Merchant acquisition",
+      "detail": "with one shared field dashboard at DigiResto"
+    }
+  ],
+  "ribbon": {
+    "items": [
+      "People Operations",
+      "People Analytics",
+      "Recruiting Operations",
+      "Talent Ops",
+      "Business Operations",
+      "Learning & Development",
+      "HR Business Partner",
+      "Strategy & Ops",
+      "Revenue Operations",
+      "KPI scorecards",
+      "Dashboards",
+      "SQL"
+    ],
+    "still": false
+  },
+  "featuredCards": [
+    {
+      "label": "People systems · Bank Mega",
+      "title": "The recruitment front door",
+      "summary": "One intake gate for high-volume hiring at a bank.",
+      "problem": "10,000+ CVs a year",
+      "move": "One intake gate",
+      "result": "−80% hiring turnaround",
+      "note": "Admin work also down about 60%",
+      "button": "Deep dive",
+      "href": "",
+      "visualLabel": "Hiring turnaround",
+      "aLabel": "Before",
+      "aText": "100",
+      "bLabel": "After",
+      "bText": "20",
+      "big": "−80%",
+      "editorActive": "",
+      "editorNote": "",
+      "noButton": true,
+      "aValue": 100,
+      "bValue": 20,
+      "editorTabs": [],
+      "editorRows": [],
+      "id": "home:recruitment-front-door",
+      "source": "home",
+      "visual": "bars"
+    },
+    {
+      "label": "Strategy & Operations · Harvard Business Venture",
+      "title": "The Bounce-Back",
+      "summary": "A marketing performance audit that pulled a team out of a Q3 collapse and back to profitability by Q6.",
+      "problem": "−$360K operating profit in Q3",
+      "move": "Diagnostic audit of every marketing dimension",
+      "result": "+$703K operating profit in Q6",
+      "note": "Six quarters of a Harvard Business Publishing Venture simulation",
+      "button": "Deep dive",
+      "href": "",
+      "visualLabel": "Operating profit",
+      "aLabel": "Q3",
+      "aText": "−$360K",
+      "bLabel": "Q6",
+      "bText": "+$703K",
+      "big": "+$703K",
+      "editorActive": "",
+      "editorNote": "",
+      "noButton": false,
+      "aValue": -360,
+      "bValue": 703,
+      "editorTabs": [],
+      "editorRows": [],
+      "id": "bike-venture-turnaround",
+      "source": "work",
+      "visual": "swing"
+    },
+    {
+      "label": "Builds · This site",
+      "title": "The editor behind this site",
+      "summary": "I built one editor that runs all three of my sites. I change the copy, swap a photo or rearrange a section, and it publishes when I save.",
+      "problem": "3 sites to keep current",
+      "move": "One editor with a site switcher",
+      "result": "Edits publish on save",
+      "note": "Plain HTML, CSS and JavaScript",
+      "button": "Deep dive",
+      "href": "",
+      "visualLabel": "",
+      "aLabel": "",
+      "aText": "",
+      "bLabel": "",
+      "bText": "",
+      "big": "",
+      "editorActive": "Stat strip",
+      "editorNote": "Saved and live",
+      "noButton": false,
+      "aValue": "",
+      "bValue": "",
+      "editorTabs": [
+        "lori-sca",
+        "analytics",
+        "builds"
+      ],
+      "editorRows": [
+        "Hero",
+        "Stat strip",
+        "Selected work"
+      ],
+      "id": "site-cms",
+      "source": "builds",
+      "visual": "editor"
+    }
+  ],
+  "method": [
+    {
+      "title": "Tools-agnostic",
+      "text": "Sheets to SQL. I build in whatever stack the team uses."
+    },
+    {
+      "title": "Diagnose before building",
+      "text": "Find where the work breaks under scale, then rebuild the operating flow."
+    },
+    {
+      "title": "Systems that outlast their builder",
+      "text": "Documented well enough that successors run it. The best systems don't need their builder in the room."
+    }
+  ],
+  "meta": {
+    "title": "Lorisca Cessia Tuuk | People, operations and the data behind them",
+    "description": "I build hiring, sales and operations systems, then use the data to see what works."
   }
 }

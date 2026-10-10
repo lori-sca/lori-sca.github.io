@@ -66,9 +66,23 @@
 
       if (home) {
         var h = home.hero || {};
-        if (h.headline) add(h.headline, h.lede || "", M + "#top", "Home");
-        (home.startHere || []).forEach(function (c) { add(c.title, c.text, M + "#start", "Home"); });
-        if (home.aboutTeaser) add("About", home.aboutTeaser, M + "#about", "Home");
+        // sections hidden in the admin are left out, so no result points at something you can't see
+        var shown = function (id) { return !((home.layout || {}).sections || []).some(function (x) { return x.id === id && x.hidden; }); };
+        var one = function (v) { return String(v || "").replace(/\s*\n\s*/g, " ").trim(); };
+        if (h.headline && shown("top")) add(one(h.headline), h.lede || "", M + "#top", "Home");
+        if (h.tagline && shown("top")) add(h.principleLabel || "Principle", h.tagline, M + "#top", "Home");
+        if (shown("start")) (home.startHere || []).forEach(function (c) { add(c.title, c.text, M + "#start", "Home"); });
+        if (shown("stats")) (home.stats || []).forEach(function (st) { add([st.value, st.label].filter(Boolean).join(" "), st.detail, M + "#stats", "Home"); });
+        if (shown("ribbon")) ((home.ribbon || {}).items || []).forEach(function (k) { add(k, "Kind of work I do", M + "#ribbon", "Home"); });
+        if (shown("featured")) {
+          var picked = (home.featured || []).slice(0, 3);
+          (home.featuredCards || []).forEach(function (fc) {
+            if (!fc || picked.indexOf(fc.id) < 0 || !fc.title) return;
+            add(fc.title, [fc.summary, fc.problem, fc.move, fc.result, fc.note].filter(Boolean).join(" · "), M + "#featured", "Home");
+          });
+        }
+        if (shown("method")) (home.method || []).forEach(function (m) { add(m.title, m.text, M + "#method", "Home"); });
+        if (home.aboutTeaser && shown("about")) add("About", home.aboutTeaser, M + "#about", "Home");
         layoutEntries(home, M, "Home");
       }
 

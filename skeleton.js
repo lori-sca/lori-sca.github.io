@@ -45,7 +45,9 @@
      number    a number (saved as a number)
      lines     a list of short texts, one per line
      group     a small set of `fields` kept together in one object
-     checklist pick several ids from a `source` the admin provides       */
+     checklist pick several ids from a `source` the admin provides
+     picks     like checklist, but ordered (arrows) and capped at `max`
+     cardref   one id from a `source`, or a new Home-only card ("home:…")   */
 
   const MEDIA = [
     { key: "image", label: "Picture", kind: "image", group: "Picture & links" },
@@ -241,28 +243,74 @@
   const ORG_HERO_BIND = Object.assign({ eyebrow: "hero.eyebrow", headline: "hero.headline", lede: "hero.lede", ctas: "page.heroCtas",
     backLabel: "page.backLink.label", backHref: "page.backLink.href" }, mediaBind("hero"));
 
+  /* Home's own text for a Selected work card. `id` points at a Work or
+     Builds card (or a Home-only card, id "home:…"). Empty fields fall back
+     to the hub card. The picture panel is drawn from the color tokens. */
+  const FEATURED_CARD = [
+    F("id", "Card", "cardref", { source: "projects" }),
+    F("label", "Small label (e.g. People systems · Bank Mega)", "text"),
+    F("title", "Title", "text"),
+    F("summary", "One-line summary", "textarea"),
+    F("problem", "Problem", "text", { group: "Problem > move > result" }),
+    F("move", "Move", "text", { group: "Problem > move > result" }),
+    F("result", "Result", "text", { group: "Problem > move > result" }),
+    F("note", "Note next to the button", "text"),
+    F("button", "Button label", "text", { group: "Button" }),
+    F("href", "Button link (blank = the card on Work or Builds)", "url", { group: "Button" }),
+    F("noButton", "Hide the button", "toggle", { group: "Button" }),
+    F("visual", "Picture panel", "select", { group: "Picture panel", options: ["bars", "swing", "editor", "number"], default: "number",
+      hint: "bars = before and after bars, swing = a loss turning into a profit, editor = the small editor window, number = a big number only" }),
+    F("visualLabel", "Panel label", "text", { group: "Picture panel" }),
+    F("aLabel", "First bar: label (e.g. Before, Q3)", "text", { group: "Picture panel" }),
+    F("aValue", "First bar: value (a number, negative for a loss)", "number", { group: "Picture panel" }),
+    F("aText", "First bar: value as shown (e.g. −$360K)", "text", { group: "Picture panel" }),
+    F("bLabel", "Second bar: label", "text", { group: "Picture panel" }),
+    F("bValue", "Second bar: value (a number)", "number", { group: "Picture panel" }),
+    F("bText", "Second bar: value as shown", "text", { group: "Picture panel" }),
+    F("big", "Big number", "text", { group: "Picture panel" }),
+    F("editorTabs", "Editor window: tabs (one per line)", "lines", { group: "Picture panel" }),
+    F("editorRows", "Editor window: rows (one per line)", "lines", { group: "Picture panel" }),
+    F("editorActive", "Editor window: row being edited", "text", { group: "Picture panel" }),
+    F("editorNote", "Editor window: line under it", "text", { group: "Picture panel" }),
+    F("source", "Where the card lives", "select", { group: "Advanced", options: ["", "work", "builds", "home"], default: "" }),
+  ];
+
   const NATIVE = {
     /* ---- main site: Home ---- */
     "home-hero": { label: "Home hero", anchor: "top", about: "The big opening block with your photo background and buttons.",
-      fields: [F("eyebrow", "Eyebrow", "text"), F("subtitle", "Subtitle", "text"), F("headline", "Headline", "textarea"), F("lede", "Intro", "textarea"),
-        F("tagline", "Tagline", "text"), F("background", "Background photo", "image"),
-        F("ctas", "Buttons", "list", { item: "button", fields: [F("label", "Label", "text"), F("href", "Link", "url")] })].concat(MEDIA),
-      bind: Object.assign({ eyebrow: "hero.eyebrow", subtitle: "hero.subtitle", headline: "hero.headline", lede: "hero.lede",
-        tagline: "hero.tagline", background: "hero.background", ctas: "hero.ctas" }, mediaBind("hero")) },
+      fields: [F("eyebrow", "Small line above the headline", "text"), F("subtitle", "Subtitle (optional, under the headline)", "text"),
+        F("headline", "Headline (one line per row)", "textarea"), F("headlineAccent", "Words in the accent color (copy them exactly from the headline)", "text"),
+        F("lede", "Intro", "textarea"),
+        F("principleLabel", "Photo card: small label", "text"), F("tagline", "Photo card: text", "text"),
+        F("background", "Photo (used if Picture below is empty)", "image"),
+        F("ctas", "Buttons (first one is filled)", "list", { item: "button", fields: [F("label", "Label", "text"), F("href", "Link", "url")] })].concat(MEDIA),
+      bind: Object.assign({ eyebrow: "hero.eyebrow", subtitle: "hero.subtitle", headline: "hero.headline", headlineAccent: "hero.headlineAccent", lede: "hero.lede",
+        principleLabel: "hero.principleLabel", tagline: "hero.tagline", background: "hero.background", ctas: "hero.ctas" }, mediaBind("hero")) },
+    "home-stats": { label: "Stat strip", anchor: "stats", about: "The row of numbers under the hero. Numbers are typed as text, e.g. −80%.",
+      fields: [F("stats", "Numbers", "list", { item: "number", fields: [F("value", "Number", "text"), F("label", "Bold label", "text"), F("detail", "Detail", "text")] })],
+      bind: { stats: "stats" }, looks: ["spacing"] },
+    "home-ribbon": { label: "Keyword ribbon", anchor: "ribbon", about: "The slow scrolling line of kinds of work.",
+      fields: [F("items", "Keywords (one per line)", "lines"), F("still", "Keep still (no scrolling)", "toggle")],
+      bind: { items: "ribbon.items", still: "ribbon.still" }, looks: [] },
     "home-start": { label: "Start here", anchor: "start", about: "The three cards under the hero.",
       fields: HEAD.concat([F("cards", "Cards", "list", { item: "card", fields: [F("title", "Title", "text"), F("text", "Text", "textarea"), F("embed", "Embed link (optional)", "url")] })], MEDIA),
       bind: Object.assign(headBind("sections.start", true), { cards: "startHere" }),
       looks: ["background", "spacing"], styleDefaults: { background: "tint" } },
     "home-featured": { label: "Featured work", anchor: "featured", about: "Project cards picked from your work.",
-      fields: HEAD.concat([F("featured", "Projects shown (up to 3)", "checklist", { source: "projects" })], MEDIA),
-      bind: Object.assign(headBind("sections.featured", true), { featured: "featured" }),
+      fields: HEAD.concat([F("featured", "Cards shown (up to 3, in this order)", "picks", { source: "projects", max: 3 }),
+        F("cards", "Card text on Home", "list", { item: "card", fields: FEATURED_CARD })], MEDIA),
+      bind: Object.assign(headBind("sections.featured", true), { featured: "featured", cards: "featuredCards" }),
       looks: ["background", "spacing"] },
     "home-about": { label: "About teaser", anchor: "about", about: "A short line pointing to the About page.",
-      fields: HEAD_NOSIDE.concat([F("teaser", "Teaser", "textarea"), F("teaserEmbed", "Embed link (optional)", "url")], MEDIA),
-      bind: Object.assign(headBind("sections.about"), { teaser: "aboutTeaser", teaserEmbed: "aboutTeaserEmbed" }),
+      fields: HEAD_NOSIDE.concat([F("teaser", "Teaser", "textarea"), F("buttonLabel", "Button label (links to About)", "text"), F("teaserEmbed", "Embed link (optional)", "url")], MEDIA),
+      bind: Object.assign(headBind("sections.about"), { teaser: "aboutTeaser", buttonLabel: "sections.about.buttonLabel", teaserEmbed: "aboutTeaserEmbed" }),
       looks: ["background", "spacing"], styleDefaults: { background: "tint" } },
+    "home-method": { label: "How I tend to work", anchor: "method", about: "Three short ways of working, side by side.",
+      fields: HEAD_NOSIDE.concat([F("items", "Items", "list", { item: "item", fields: [F("title", "Title", "text"), F("text", "Text", "textarea")] })]),
+      bind: Object.assign({ eyebrow: "sections.method.eyebrow", headline: "sections.method.headline" }, { items: "method" }), looks: ["spacing"] },
     "home-contact": { label: "Contact", anchor: "contact", about: "Heading plus email, LinkedIn and GitHub buttons (links come from Site links).",
-      fields: HEAD.concat(MEDIA), bind: headBind("sections.contact", true), looks: ["background", "spacing"] },
+      fields: HEAD.concat([F("ctaLabel", "Filled button label (opens an email)", "text"), F("copyEmail", "Show the copy-email box", "toggle")], MEDIA),
+      bind: Object.assign(headBind("sections.contact", true), { ctaLabel: "sections.contact.ctaLabel", copyEmail: "sections.contact.copyEmail" }), looks: ["background", "spacing"] },
 
     /* ---- main site: About ---- */
     "about-hero": { label: "About hero", anchor: "top", about: "Greeting, intro and tagline. The portrait comes from Site links.",
