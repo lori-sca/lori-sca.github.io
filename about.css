@@ -1,0 +1,142 @@
+/* ============================================================
+   about.css: the About page, redesign thread 5 (Oct 10).
+   Loaded by about.html only, after shared.css. Tokens only, no hex.
+   ab- = About pieces. Buttons and labels (ds-) live in shared.css.
+   The two old sections kept for the admin (thirties, selected) still
+   use the old styles.css classes and are hidden by default.
+   ============================================================ */
+body[data-page="about"] { line-height: 1.6; }
+.ab-wrap { max-width: 1180px; margin: 0 auto; padding-inline: var(--gutter); }
+.ab h1, .ab h2, .ab h3, .ab p, .ab figure, .ab ul, .ab ol { margin: 0; }
+.ab a:not(.ds-btn) { color: inherit; }
+.ab h2 { font-family: var(--display); font-weight: 800; letter-spacing: -0.025em; font-size: clamp(1.7rem, 3vw, 2.3rem); line-height: 1.1; color: var(--ink); text-wrap: balance; }
+.ab h1 em, .ab h2 em { font-style: normal; color: var(--accent); }
+.ab-sec { padding-block: clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
+.ab-sec.band { background: var(--surface); }
+.ab-head { display: grid; gap: .6rem; margin-bottom: 1.8rem; }
+.ab-head .ab-side { color: var(--steel); max-width: 56ch; }
+.ab [hidden] { display: none !important; }
+.ab .sec-media { margin-block: 0 1.5rem; }
+.ab .sec-links { margin-bottom: 1.5rem; }
+
+/* ---------- hero: photo runs from the greeting to the quote ---------- */
+.ab-hero { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 6vw, 4.5rem); }
+.ab-hero .ab-wrap { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .62fr); grid-template-areas: "label ." "text photo"; column-gap: clamp(2rem, 5vw, 4.5rem); row-gap: 1.2rem; align-items: stretch; }
+.ab-hero-label { grid-area: label; }
+.ab-hero-text { grid-area: text; min-width: 0; display: grid; gap: 1.4rem; align-content: start; }
+.ab-hero h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(2.4rem, 5vw, 4.2rem); text-wrap: balance; color: var(--ink); }
+.ab-lede { color: var(--steel); font-size: clamp(1.02rem, 1.4vw, 1.15rem); max-width: 56ch; }
+.ab-tagline { color: var(--accent); font-weight: 600; font-size: clamp(1.05rem, 1.5vw, 1.2rem); }
+.ab-photo { grid-area: photo; position: relative; width: 100%; max-width: 360px; justify-self: end; min-height: 240px; }
+.ab-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; border-radius: var(--radius); display: block; background: var(--surface); }
+.ab-hero.no-photo .ab-wrap { grid-template-columns: 1fr; grid-template-areas: "label" "text"; }
+@media (max-width: 820px) {
+  .ab-hero .ab-wrap { grid-template-columns: 1fr; grid-template-areas: "label" "text" "photo"; }
+  .ab-photo { min-height: 0; max-width: 300px; justify-self: start; }
+  .ab-photo img { position: static; height: auto; aspect-ratio: 4 / 3.4; }
+}
+
+/* ---------- how I think and work ---------- */
+.ab-ways-lede { font-size: clamp(1.1rem, 1.7vw, 1.3rem); line-height: 1.5; color: var(--ink); max-width: 60ch; }
+.ab-ways-lede b { color: var(--accent); font-weight: 700; }
+.ab-ways { display: grid; grid-template-columns: repeat(var(--ab-cols, 4), minmax(0, 1fr)); gap: 1.5rem clamp(1.25rem, 3vw, 2.5rem); margin-top: 2rem; }
+.ab-way { display: grid; gap: .55rem; align-content: start; min-width: 0; border-top: 1px solid var(--line); padding-top: 1.1rem; }
+.ab-way h3 { font-family: var(--display); font-weight: 800; letter-spacing: -0.02em; font-size: 1.2rem; line-height: 1.2; color: var(--ink); }
+.ab-way p { color: var(--steel); }
+@media (max-width: 980px) { .ab-ways { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .ab-ways { grid-template-columns: 1fr; } }
+
+/* ---------- rows: label left, text right (timeline, toolbox) ---------- */
+.ab-rows { display: grid; }
+.ab-row { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 2.2fr); gap: .5rem clamp(1.5rem, 4vw, 3.5rem); padding-block: 1.4rem; border-top: 1px solid var(--line); align-items: start; }
+.ab-rows > .ab-row:first-child { border-top: 0; padding-top: 0; }
+.ab-row-key { min-width: 0; }
+.ab-row-body { display: grid; gap: .8rem; min-width: 0; }
+@media (max-width: 720px) { .ab-row { grid-template-columns: 1fr; } }
+.ab-now { display: inline-flex; align-items: center; gap: .45rem; }
+.ab-now::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: none; }
+
+/* timeline stops: details open on a click */
+.ab-stop-head { display: grid; gap: .3rem; min-width: 0; }
+.ab-stop-head h3 { font-family: var(--display); font-weight: 800; letter-spacing: -0.02em; font-size: 1.25rem; line-height: 1.2; color: var(--ink); }
+.ab-role { color: var(--ink); font-weight: 600; font-size: .98rem; }
+.ab-stop > summary, .ab-sub > summary { list-style: none; cursor: pointer; display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.ab-stop > summary::-webkit-details-marker, .ab-sub > summary::-webkit-details-marker { display: none; }
+.ab-plus { font-style: normal; width: 1.8rem; height: 1.8rem; flex: none; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; color: var(--steel); line-height: 1; transition: background .2s, color .2s, border-color .2s; }
+summary:hover > .ab-plus { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.ab-plus::before { content: "+"; display: block; transition: transform .25s var(--ease); }
+details[open] > summary > .ab-plus::before { transform: rotate(45deg); }
+.ab-stop ul, .ab-sub ul { margin-top: .8rem; padding-left: 1.1rem; color: var(--steel); display: grid; gap: .35rem; max-width: 64ch; }
+.ab-subs { display: grid; gap: .1rem; }
+.ab-sub { border-top: 1px dashed var(--line); padding-block: .75rem; }
+.ab-sub:last-child { padding-bottom: 0; }
+.ab-sub-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .2rem .8rem; min-width: 0; }
+.ab-sub-head b { font-weight: 600; color: var(--ink); }
+
+/* ---------- journey map: same map, shared tokens ---------- */
+.ab .journey-map { border-color: var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 2.2rem; }
+.ab .journey-legend { background: var(--bg); border-color: var(--line); }
+.ab .journey-legend .journey-stop { font-family: var(--body); font-size: .74rem; font-weight: 600; letter-spacing: .09em; color: var(--steel); }
+.ab .journey-caption { background: var(--bg); color: var(--ink); }
+.ab .map-pin { background: var(--accent); border-color: var(--bg); }
+.ab .map-visitor::before { background: var(--steel); }
+.ab .map-visitor::after { background: var(--bg); }
+
+/* ---------- story: short, two columns ---------- */
+.ab-story { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 1.2rem clamp(2rem, 5vw, 4.5rem); align-items: start; }
+.ab-story .ab-head { margin-bottom: 0; }
+.ab-story-body { display: grid; gap: .9rem; min-width: 0; }
+.ab-chapter { display: grid; gap: .3rem; }
+.ab-chapter p { font-size: clamp(1.08rem, 1.6vw, 1.25rem); line-height: 1.5; color: var(--ink); max-width: 46ch; }
+.ab-asides { display: grid; gap: 1rem; margin-top: .8rem; }
+.ab-aside { display: grid; gap: .35rem; border-top: 1px solid var(--line); padding-top: 1rem; }
+.ab-aside p { color: var(--steel); max-width: 56ch; }
+@media (max-width: 820px) { .ab-story { grid-template-columns: 1fr; } }
+
+/* ---------- toolbox ---------- */
+.ab-tools { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: .3rem .5rem; color: var(--ink); }
+.ab-tools li { display: inline-flex; align-items: center; gap: .5rem; font-weight: 500; }
+.ab-tools li + li::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); opacity: .7; }
+
+/* ---------- motto, field notes, off the clock ---------- */
+.ab-motto { background: var(--surface); }
+.ab-motto .ab-wrap { display: grid; gap: .8rem; justify-items: center; text-align: center; }
+.ab-latin { font-family: var(--display); font-weight: 800; letter-spacing: -0.02em; font-size: clamp(1.6rem, 3.5vw, 2.4rem); line-height: 1.15; color: var(--ink); cursor: pointer; }
+.ab-latin .hannibal img { max-width: none; border-color: var(--line); background: var(--bg); }
+.ab-trans { color: var(--steel); font-size: 1.05rem; }
+.ab-fieldnotes { color: var(--steel); max-width: 60ch; margin-top: 1rem; }
+.ab-oct { width: 100%; margin-top: 2rem; padding-top: 1.6rem; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; text-align: left; }
+.ab-oct > div { display: grid; gap: .3rem; min-width: 0; }
+.ab-oct h3 { font-family: var(--display); font-weight: 800; letter-spacing: -0.02em; font-size: 1.3rem; line-height: 1.2; color: var(--ink); }
+.ab-oct p { color: var(--steel); }
+
+/* ---------- footer contact (same as Home) ---------- */
+.ab-foot { border-top: 1px solid var(--line); background: var(--surface); }
+.ab-foot > .ab-wrap { padding-block: clamp(2.5rem, 6vw, 4rem); display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: end; justify-content: space-between; }
+.ab-foot h2 { max-width: 20ch; }
+.ab-foot-main { min-width: 0; }
+.ab-foot-main > p { margin-top: .6rem; color: var(--steel); }
+.ab-foot-side { display: grid; gap: 1rem; justify-items: start; }
+.ab-foot-ctas { display: flex; flex-wrap: wrap; gap: .6rem; }
+.ab-copy { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .6rem; margin-top: 1rem; }
+.ab-copy code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92rem; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: .5rem .75rem; user-select: all; overflow-wrap: anywhere; min-width: 0; }
+.ab-copy button { border: 1px solid var(--line); background: none; color: var(--ink); border-radius: 999px; padding: .5rem .95rem; font: inherit; font-size: .85rem; font-weight: 600; cursor: pointer; transition: border-color .2s; }
+.ab-copy button:hover { border-color: var(--ink); }
+.ab-copy-status { font-size: .84rem; color: var(--steel); }
+
+/* ---------- motion: first screen rises once ---------- */
+.ab-hero-label, .ab-hero-text > *, .ab-photo { animation: ab-rise .6s var(--ease) both; }
+.ab-hero-text > :nth-child(2) { animation-delay: .06s; }
+.ab-hero-text > :nth-child(3) { animation-delay: .12s; }
+.ab-photo { animation-delay: .1s; }
+@keyframes ab-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ab *, .ab *::before, .ab *::after { animation: none !important; transition: none !important; }
+}
+
+/* the old .section-head grid (styles.css) must not lay out the new heads */
+.ab .ab-head.section-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; margin: 0 0 1.8rem; align-items: start; }
+.ab .ab-story .ab-head.section-head { margin-bottom: 0; }
+.ab .ab-foot-main.section-head { display: block; margin: 0; }
+.ab .section-head h2 { margin: 0; max-width: none; }
+.ab .ab-foot .section-head h2 { max-width: 20ch; }

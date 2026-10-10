@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>/* theme before first paint: ?theme= from another of the three sites, else stored choice, else device */(function(){try{var d=document.documentElement,u=new URL(location.href),q=u.searchParams.get("theme");if(q==="dark"||q==="light"){localStorage.setItem("lori-theme",q);u.searchParams.delete("theme");history.replaceState(history.state,"",u.pathname+u.search+u.hash);}var s=localStorage.getItem("lori-theme");d.setAttribute("data-theme",s==="dark"||s==="light"?s:(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));}catch(e){}})();</script>
-<title>About — Lorisca Cessia</title>
-<meta name="description" content="Hi, you've found my 5-9 here. Use the data. Keep the human visible.">
+<title>About · Lorisca Cessia</title>
+<meta name="description" content="Hi, I'm Lori. Where I come from, how I think, and how I got here.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="styles.css?v=2">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="shared.css?v=3">
+<link rel="stylesheet" href="about.css?v=1">
 </head>
 <body data-page="about">
 
@@ -21,31 +22,127 @@
     <a class="lh-brand" href="https://lori-sca.github.io/"><b>Lorisca Cessia</b><span>People, operations and the data behind them</span></a>
     <div class="lh-links" id="lh-links"><a href="https://lori-sca.github.io/">Home</a><a href="https://lorisca-analytics.github.io/">Work</a><a href="https://lorisca-builds.github.io/">Builds</a><a href="https://lori-sca.github.io/off-the-clock.html">Off the clock</a><a href="https://lori-sca.github.io/about.html">About</a></div>
   </div>
-<div class="subnav"><div class="subnav-inner" id="subnav-inner"><a href="#top">About</a><a href="#thirties">30 seconds</a><a href="#story">Story</a><a href="#route">The Route</a><a href="#toolbox">Toolbox</a><a href="#contact">Contact</a></div></div>
+<div class="subnav" style="display:none"><div class="subnav-inner" id="subnav-inner"></div></div>
 </nav>
 
-<main>
+<main class="ab">
   <!-- HERO -->
-  <section class="hero" id="top">
-    <div class="wrap">
-      <div class="hero-grid">
-        <div class="hero-copy">
-          <span class="eyebrow" id="about-eyebrow">About · San Francisco</span>
-          <h1 id="about-greeting" data-sparkles></h1>
-          <p class="lede" id="about-lede"></p>
-          <p class="tagline" id="about-tagline"></p>
-        </div>
-        <div class="hero-side">
-          <div class="portrait tilt" id="portrait-block" style="display:none;">
-            <img id="portrait-img" alt="Portrait of Lorisca Cessia">
+  <section class="ab-hero" id="top">
+    <div class="ab-wrap">
+      <span class="ds-label ab-hero-label" id="about-eyebrow">About · San Francisco</span>
+      <div class="ab-hero-text">
+        <h1 id="about-greeting" data-sparkles>Hi, I'm Lori.</h1>
+        <p class="ab-lede" id="about-lede"></p>
+        <p class="ab-tagline" id="about-tagline"></p>
+      </div>
+      <figure class="ab-photo" id="portrait-block" hidden>
+        <img id="portrait-img" alt="Portrait of Lorisca Cessia">
+      </figure>
+    </div>
+  </section>
+
+  <!-- HOW I THINK AND WORK -->
+  <section class="ab-sec" id="ways">
+    <div class="ab-wrap">
+      <div class="ab-head">
+        <span class="ds-label" id="sec-ways-eyebrow" hidden></span>
+        <h2 id="sec-ways-headline">How I think and work</h2>
+      </div>
+      <p class="ab-ways-lede" id="ways-lede"></p>
+      <div class="ab-ways" id="ways-grid"></div>
+    </div>
+  </section>
+
+  <!-- ROUTE: JOURNEY MAP + TIMELINE -->
+  <section class="ab-sec" id="route">
+    <div class="ab-wrap">
+      <div class="ab-head section-head">
+        <span class="ds-label" id="sec-route-eyebrow">Timeline</span>
+        <h2 id="sec-route-headline">The route</h2>
+        <p class="ab-side" id="sec-route-side" hidden></p>
+      </div>
+      <div class="journey-map" id="journey-map">
+        <div class="map-canvas" id="journey-canvas"></div>
+        <div class="journey-legend" id="journey-legend"></div>
+      </div>
+      <div class="ab-rows" id="route-stops"></div>
+    </div>
+  </section>
+
+  <!-- STORY -->
+  <section class="ab-sec" id="story">
+    <div class="ab-wrap ab-story">
+      <div class="ab-head section-head">
+        <span class="ds-label" id="sec-story-eyebrow">The story</span>
+        <h2 id="sec-story-headline">From Manado to San Francisco.</h2>
+      </div>
+      <div class="ab-story-body">
+        <div class="ab-story-body" id="chapters"></div>
+        <div class="ab-asides" id="story-asides" hidden>
+          <div class="ab-aside" id="holdup-card" hidden>
+            <span class="ds-label">Hold up</span>
+            <p id="holdup-text"></p>
+          </div>
+          <div class="ab-aside" id="proudest-card" hidden>
+            <span class="ds-label" id="proudest-title"></span>
+            <p id="proudest-text"></p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 30-SECOND VERSION -->
-  <section class="section" id="thirties" style="padding-top:0;">
+  <!-- TOOLBOX -->
+  <section class="ab-sec" id="toolbox">
+    <div class="ab-wrap">
+      <div class="ab-head section-head">
+        <span class="ds-label" id="sec-toolbox-eyebrow">Toolbox</span>
+        <h2 id="sec-toolbox-headline">What I <em>reach for.</em></h2>
+        <p class="ab-side" id="sec-toolbox-side" hidden></p>
+      </div>
+      <div class="ab-rows" id="toolbox-grid"></div>
+    </div>
+  </section>
+
+  <!-- MOTTO + FIELD NOTES + OFF THE CLOCK -->
+  <section class="ab-sec ab-motto" id="principle">
+    <div class="ab-wrap">
+      <p class="ab-latin" id="principle-latin"></p>
+      <p class="ab-trans" id="principle-trans"></p>
+      <p class="ds-label" id="principle-note"></p>
+      <p class="ab-fieldnotes" id="fieldnotes"></p>
+      <div class="ab-oct" id="oct">
+        <div>
+          <h3 id="oct-title">The 5-9 stuff lives elsewhere.</h3>
+          <p id="oct-text">Climbing, singing, snowboarding, and wherever I helped an event run.</p>
+        </div>
+        <a class="ds-btn ds-btn-dark" href="off-the-clock.html"><span id="oct-btn">Off the clock →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT (same block as Home) -->
+  <section class="ab-foot" id="contact">
+    <div class="ab-wrap">
+      <div class="ab-foot-main section-head">
+        <span class="ds-label" id="sec-contact-eyebrow" hidden></span>
+        <h2 id="sec-contact-headline">Open to roles in people, operations and analytics at growing companies.</h2>
+        <p id="sec-contact-side">Based in San Francisco.</p>
+        <div class="ab-copy" id="copy-mail">
+          <code id="mail-addr">loriscatuuk@gmail.com</code>
+          <button type="button" id="mail-copy">Copy email</button>
+          <span class="ab-copy-status" id="mail-status" role="status" aria-live="polite"></span>
+        </div>
+      </div>
+      <div class="ab-foot-side">
+        <div class="ab-foot-ctas" id="contact-ctas"><a class="ds-btn ds-btn-dark" href="mailto:loriscatuuk@gmail.com">Get in touch</a></div>
+        <button data-like-heart type="button"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kept for the admin, hidden by default: 30-second cards and the three work cards -->
+  <section class="section" id="thirties" style="display:none">
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
@@ -56,289 +153,239 @@
       <div class="card-grid cols-3" id="thirties-grid"></div>
     </div>
   </section>
-
-  <!-- STORY -->
-  <div class="band" id="story">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-story-eyebrow">So, what's the problem?</span>
-          <h2 id="sec-story-headline">The longer <em>version.</em></h2>
-        </div>
-      </div>
-      <div class="about-grid">
-        <div class="about-main" id="chapters"></div>
-        <aside class="about-side">
-          <div class="aside-card reveal" id="holdup-card">
-            <span class="k">Hold up</span>
-            <p id="holdup-text"></p>
-          </div>
-          <div class="aside-card reveal" id="proudest-card">
-            <span class="k" id="proudest-title"></span>
-            <p id="proudest-text"></p>
-          </div>
-        </aside>
-      </div>
-    </div>
-  </div>
-
-  <!-- SELECTED WORK -->
-  <section class="section" id="selected">
+  <section class="section" id="selected" style="display:none">
     <div class="wrap">
       <div class="section-head">
         <div class="sh-main">
           <span class="eyebrow" id="sec-selected-eyebrow">Selected work</span>
-          <h2 id="sec-selected-headline">Proof, <em>not promises.</em></h2>
+          <h2 id="sec-selected-headline">Selected work</h2>
         </div>
-        <p class="sh-side" id="sec-selected-side">The 10-second version. Open any card on the Work hub for the deep dive.</p>
+        <p class="sh-side" id="sec-selected-side"></p>
       </div>
       <div class="card-grid cols-3" id="selected-grid"></div>
       <p style="margin-top:1.6rem;"><a class="text-link" id="link-see-all" href="https://lorisca-analytics.github.io">See all cases →</a></p>
     </div>
   </section>
-
-  <!-- ROUTE + JOURNEY MAP -->
-  <section class="section" id="route">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-route-eyebrow">The route</span>
-          <h2 id="sec-route-headline">Every stop taught me <em>how hiring actually works.</em></h2>
-        </div>
-        <p class="sh-side" id="sec-route-side">Seven years across four industries. The industries changed; the problem didn't.</p>
-      </div>
-      <div class="journey-map reveal" id="journey-map">
-        <div class="map-canvas" id="journey-canvas"></div>
-        <div class="journey-legend" id="journey-legend"></div>
-      </div>
-      <div id="route-stops" style="margin-top:2.5rem;"></div>
-    </div>
-  </section>
-
-  <!-- TOOLBOX -->
-  <div class="band" id="toolbox">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-toolbox-eyebrow">Toolbox</span>
-          <h2 id="sec-toolbox-headline">What I <em>reach for.</em></h2>
-        </div>
-        <p class="sh-side" id="sec-toolbox-side">Tools-agnostic by principle. These are just the current defaults.</p>
-      </div>
-      <div class="card-grid cols-3" id="toolbox-grid"></div>
-    </div>
-  </div>
-
-  <!-- PRINCIPLE + FIELD NOTES -->
-  <section class="section" id="principle">
-    <div class="wrap">
-      <div class="principle-block reveal">
-        <p class="principle-latin" id="principle-latin"></p>
-        <p class="principle-trans" id="principle-trans"></p>
-        <p class="principle-note" id="principle-note"></p>
-      </div>
-      <p class="fieldnotes reveal" id="fieldnotes"></p>
-      <div class="offclock-teaser reveal">
-        <div>
-          <h3 id="oct-title">The 5-9 stuff lives elsewhere.</h3>
-          <p id="oct-text">Climbing, singing, snowboarding, and wherever I helped an event run.</p>
-        </div>
-        <a class="btn primary" id="oct-btn" href="off-the-clock.html">Off the clock →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <div class="band" id="contact">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-contact-eyebrow">Contact</span>
-          <h2 id="sec-contact-headline">Say <em>hi.</em></h2>
-        </div>
-        <p class="sh-side" id="sec-contact-side">Currently in San Francisco. Happy to walk through any of this live.</p>
-      </div>
-      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
-      <div style="margin-top:1.6rem;">
-        <button data-like-heart type="button"></button>
-      </div>
-    </div>
-  </div>
 </main>
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="foot-links">
-      <a href="https://lori-sca.github.io">Lorisca Cessia</a>
-      <a href="https://lorisca-analytics.github.io">Analytics Work</a>
-      <a href="https://lorisca-builds.github.io">Builds</a>
-      <a href="https://lori-sca.github.io/about.html">About</a>
-      <a href="mailto:loriscatuuk@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/lorisca" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/lori-sca" target="_blank" rel="noopener">GitHub</a>
-    </div>
-    <p class="fine">&copy; <span id="year"></span> Lorisca Cessia</p>
-  </div>
-</footer>
 
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
 <script src="site.js?v=2"></script>
-<script src="https://lori-sca.github.io/header.js?v=3"></script>
-<script src="skeleton.js?v=4"></script>
+<script src="https://lori-sca.github.io/header.js?v=4"></script>
+<script src="skeleton.js?v=5"></script>
 <script src="theme.js"></script>
-<script src="journey.js"></script>
+<script src="journey.js?v=2"></script>
 <script src="motion.js?v=2"></script>
 <script>
-  Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
-    .then(([site, about]) => {
-      applySiteChrome(site);
-      setMeta(about.meta);
-      renderSubnav(about.subnav);
-      // hero eyebrow
-      setText("about-eyebrow", (about.hero || {}).eyebrow);
-      // section headings
-      const S = about.sections || {};
-      ["thirties", "story", "selected", "route", "toolbox", "contact"].forEach((k) => {
-        const s = S[k];
-        if (!s) return;
-        setText("sec-" + k + "-eyebrow", s.eyebrow);
-        setHeadline(document.getElementById("sec-" + k + "-headline"), s.headline);
-        setText("sec-" + k + "-side", s.side);
-      });
-      // off-clock teaser
-      const ot = about.offclockTeaser || {};
-      setText("oct-title", ot.title);
-      setText("oct-text", ot.text);
-      setText("oct-btn", ot.button);
-      // editor-added picture + links per section
-      mountSectionMedia("top", about.hero);
-      ["thirties", "story", "selected", "route", "toolbox", "contact"].forEach((k) => mountSectionMedia(k, S[k]));
-      // labels
-      const L = about.labels || {};
-      setText("link-see-all", L.seeAllCases);
-      // portrait — hidden entirely until site.portrait is set
-      if (site.portrait) {
-        document.getElementById("portrait-block").style.display = "block";
-        document.getElementById("portrait-img").src = site.portrait;
-      }
-      // hero
-      const hero = about.hero || {};
-      document.getElementById("about-greeting").textContent = hero.greeting || "";
-      document.getElementById("about-lede").textContent = hero.lede || "";
-      document.getElementById("about-tagline").textContent = hero.tagline ? "\u201c" + hero.tagline + "\u201d" : "";
-      // 30-second cards
-      const tg = document.getElementById("thirties-grid");
-      (about.thirties || []).forEach((t) => {
-        const d = document.createElement("div");
-        d.className = "method tilt reveal";
-        const h = document.createElement("h3"); h.textContent = t.title;
-        const p = document.createElement("p"); p.textContent = t.text;
-        d.appendChild(h); d.appendChild(p);
-        tg.appendChild(d);
-      });
-      // chapters
-      const ch = document.getElementById("chapters");
-      (about.chapters || []).forEach((c) => {
-        const d = document.createElement("div");
-        d.className = "chapter reveal";
-        const k = document.createElement("span");
-        k.className = "k"; k.textContent = c.label;
-        const p = document.createElement("p");
-        p.textContent = c.text;
-        d.appendChild(k); d.appendChild(p);
-        const emb = embedNode(c.embed);
-        if (emb) d.appendChild(emb);
-        ch.appendChild(d);
-      });
-      // hold up + proudest
-      document.getElementById("holdup-text").textContent = about.holdup || "";
-      document.getElementById("proudest-title").textContent = (about.proudest || {}).title || "";
-      document.getElementById("proudest-text").textContent = (about.proudest || {}).text || "";
-      // selected work — 10-second cards with count-up numbers
-      const sg = document.getElementById("selected-grid");
-      (about.selected || []).forEach((s) => {
-        const d = document.createElement("div");
-        d.className = "method tilt reveal sel-card";
-        const tag = document.createElement("span");
-        tag.className = "k"; tag.textContent = s.tag || "";
-        const big = document.createElement("div");
-        big.className = "sel-big";
-        big.setAttribute("data-countup", s.num);
-        big.setAttribute("data-prefix", s.prefix || "");
-        big.setAttribute("data-suffix", s.suffix || "");
-        big.setAttribute("data-decimals", s.decimals || 0);
-        const lab = document.createElement("div");
-        lab.className = "sel-label"; lab.textContent = s.label || "";
-        const h = document.createElement("h3"); h.textContent = s.title;
-        const p = document.createElement("p"); p.textContent = s.outcome;
-        const a = document.createElement("a");
-        a.className = "text-link"; a.href = s.url || "https://lorisca-analytics.github.io";
-        a.target = "_blank"; a.rel = "noopener"; a.textContent = (about.labels || {}).deepDive || "Deep dive →";
-        d.appendChild(tag); d.appendChild(big); d.appendChild(lab);
-        d.appendChild(h); d.appendChild(p); d.appendChild(a);
-        sg.appendChild(d);
-      });
-      // route
-      renderRoute("route-stops", about.route);
-      // toolbox
-      const bx = document.getElementById("toolbox-grid");
-      (about.toolbox || []).forEach((g) => {
-        const d = document.createElement("div");
-        d.className = "method tilt reveal";
-        const h = document.createElement("h3"); h.textContent = g.group;
-        d.appendChild(h);
-        const ul = document.createElement("ul");
-        ul.className = "tool-list";
-        (g.items || []).forEach((it) => {
-          const li = document.createElement("li"); li.textContent = it; ul.appendChild(li);
+(function () {
+  "use strict";
+  function $(id) { return document.getElementById(id); }
+  function h(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null && text !== "") e.textContent = text; return e; }
+  function has(v) { return v != null && String(v).trim() !== ""; }
+  function plainHead(v) { return v && typeof v === "object" ? (v.main || "") + (v.accent || "") : v || ""; }
+  function show(e, on) { if (e) e.hidden = !on; }
+  function label(id, v) { var e = $(id); if (!e) return; e.textContent = v || ""; e.hidden = !has(v); }
+  function head(key, sec) {
+    sec = sec || {};
+    label("sec-" + key + "-eyebrow", sec.eyebrow);
+    var hd = $("sec-" + key + "-headline");
+    if (hd) { if (has(plainHead(sec.headline))) { setHeadline(hd, sec.headline); hd.hidden = false; } else hd.hidden = true; }
+    if ($("sec-" + key + "-side")) label("sec-" + key + "-side", sec.side);
+  }
+  function list(items) { var ul = h("ul"); (items || []).filter(has).forEach(function (d) { ul.appendChild(h("li", "", d)); }); return ul; }
+  function plus() { var i = h("i", "ab-plus"); i.setAttribute("aria-hidden", "true"); return i; }
+
+  /* ---------- timeline: one row per stop, details open on a click ---------- */
+  function drawRoute(stops) {
+    var box = $("route-stops"); box.innerHTML = "";
+    (stops || []).forEach(function (s) {
+      if (!s || (!has(s.where) && !has(s.role) && !has(s.when))) return;
+      var row = h("div", "ab-row");
+      var key = h("div", "ab-row-key");
+      key.appendChild(h("span", "ds-label" + (s.now ? " ab-now" : ""), s.when || ""));
+      var body = h("div", "ab-row-body");
+      var hd = h("div", "ab-stop-head");
+      hd.appendChild(h("h3", "", s.where || ""));
+      if (has(s.role)) hd.appendChild(h("p", "ab-role", s.role));
+      var detail = (s.detail || []).filter(has);
+      var roles = (s.roles || []).filter(function (r) { return r && (has(r.role) || has(r.when)); });
+      if (detail.length) {
+        var d = h("details", "ab-stop");
+        var sm = h("summary"); sm.appendChild(hd); sm.appendChild(plus());
+        d.appendChild(sm); d.appendChild(list(detail));
+        body.appendChild(d);
+      } else body.appendChild(hd);
+      if (roles.length) {
+        var subs = h("div", "ab-subs");
+        roles.forEach(function (r) {
+          var rh = h("span", "ab-sub-head");
+          rh.appendChild(h("b", "", r.role || ""));
+          if (has(r.when)) rh.appendChild(h("span", "ds-label", r.when));
+          var rd = (r.detail || []).filter(has);
+          if (rd.length) {
+            var sub = h("details", "ab-sub");
+            var ssm = h("summary"); ssm.appendChild(rh); ssm.appendChild(plus());
+            sub.appendChild(ssm); sub.appendChild(list(rd));
+            subs.appendChild(sub);
+          } else { var plain = h("div", "ab-sub"); plain.appendChild(rh); subs.appendChild(plain); }
         });
-        d.appendChild(ul);
-        bx.appendChild(d);
-      });
-      // principle — latin gets the hannibal easter egg
-      const pr = about.principle || {};
-      const latEl = document.getElementById("principle-latin");
-      latEl.innerHTML = "";
-      const hw = document.createElement("span");
-      hw.className = "hannibal";
-      hw.textContent = pr.latin || "";
-      const him = document.createElement("img");
-      him.src = "assets/hannibal.png";
-      him.alt = "Hannibal of Carthage";
-      hw.appendChild(him);
-      // the whole latin line is the button: bigger target, same easter egg
-      latEl.classList.add("hannibal-line");
-      latEl.tabIndex = 0;
-      latEl.setAttribute("role", "button");
-      latEl.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
-      function toggleHannibal() {
-        const on = hw.classList.toggle("show");
-        if (!on) latEl.blur(); // release focus so :focus doesn't keep it visible
+        body.appendChild(subs);
       }
-      latEl.addEventListener("click", toggleHannibal);
-      latEl.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleHannibal(); }
-      });
-      latEl.appendChild(hw);
-      document.getElementById("principle-trans").textContent = pr.translation || "";
-      document.getElementById("principle-note").textContent = pr.note || "";
-      // field notes
-      document.getElementById("fieldnotes").textContent = about.fieldnotes || "";
-      // journey map
-      if (window.Journey) Journey.init(about);
-      // section order, hidden sections, looks and builder-added sections (admin page builder)
-      if (window.Theme && Theme.applyLayout && about.layout) {
-        Theme.applyLayout(document.querySelector("main"), about, { site: site });
-        renderSubnav(Theme.menu(about));
-      }
-      // wake up motion for everything just rendered
-      if (window.Motion) Motion.refresh(document);
-    })
-    .catch(() => {
-      document.getElementById("chapters").innerHTML =
-        "<p class='lede'>Content couldn't load — try refreshing.</p>";
+      row.appendChild(key); row.appendChild(body);
+      box.appendChild(row);
+    });
+  }
+
+  function drawContact(c, site) {
+    c = c || {}; site = site || {};
+    var copy = $("copy-mail");
+    copy.hidden = c.copyEmail === false || !has(site.email);
+    if (has(site.email)) $("mail-addr").textContent = site.email;
+    var row = $("contact-ctas"); row.innerHTML = "";
+    function btn(text, href, dark) {
+      var a = h("a", "ds-btn " + (dark ? "ds-btn-dark" : "ds-btn-line"), text); a.href = href;
+      if (/^https?:/.test(href)) { a.target = "_blank"; a.rel = "noopener"; }
+      return a;
+    }
+    if (has(site.email)) row.appendChild(btn(c.ctaLabel || "Get in touch", "mailto:" + site.email, true));
+    [["Email", has(site.email) ? "mailto:" + site.email : ""], ["LinkedIn", site.linkedin], ["GitHub", site.github]].forEach(function (p) {
+      if (has(p[1])) row.appendChild(btn(p[0], p[1], false));
+    });
+  }
+  /* copy email: clipboard, else select the address */
+  $("mail-copy").addEventListener("click", function () {
+    var ma = $("mail-addr"), ms = $("mail-status"), mc = $("mail-copy");
+    function done() { ms.textContent = "Copied"; mc.textContent = "Copied"; setTimeout(function () { mc.textContent = "Copy email"; ms.textContent = ""; }, 2000); }
+    function fail() { var r = document.createRange(); r.selectNodeContents(ma); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); ms.textContent = "Selected. Press Ctrl+C or Cmd+C to copy."; }
+    try { navigator.clipboard.writeText(ma.textContent.trim()).then(done, fail); } catch (e) { fail(); }
+  });
+
+  Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")]).then(function (r) {
+    var site = r[0], about = r[1];
+    var S = about.sections || {};
+    applySiteChrome(site);
+    setMeta(about.meta);
+
+    /* hero */
+    var hero = about.hero || {};
+    label("about-eyebrow", hero.eyebrow);
+    $("about-greeting").textContent = hero.greeting || "";
+    label("about-lede", hero.lede);
+    label("about-tagline", has(hero.tagline) ? "\u201c" + hero.tagline + "\u201d" : "");
+    var photo = has(hero.image) ? hero.image : site.portrait;
+    if (has(photo)) { $("portrait-img").src = photo; if (has(hero.imageAlt)) $("portrait-img").alt = hero.imageAlt; show($("portrait-block"), true); }
+    else $("top").classList.add("no-photo");
+    mountSectionMedia("top", { links: hero.links });
+
+    /* how I think and work */
+    var ways = about.ways || {};
+    head("ways", S.ways);
+    var wl = $("ways-lede"); wl.innerHTML = "";
+    if (has(ways.lead)) { wl.appendChild(h("b", "", ways.lead)); wl.appendChild(document.createTextNode(" ")); }
+    wl.appendChild(document.createTextNode(ways.lede || ""));
+    wl.hidden = !has(ways.lead) && !has(ways.lede);
+    var wg = $("ways-grid"); wg.innerHTML = "";
+    (ways.items || []).filter(function (w) { return w && !w.hidden && (has(w.title) || has(w.text)); }).forEach(function (w) {
+      var d = h("div", "ab-way"); d.appendChild(h("h3", "", w.title || "")); if (has(w.text)) d.appendChild(h("p", "", w.text)); wg.appendChild(d);
+    });
+    wg.style.setProperty("--ab-cols", String(Math.min(4, Math.max(1, wg.children.length))));
+    wg.hidden = !wg.children.length;
+
+    /* route */
+    head("route", S.route);
+    mountSectionMedia("route", S.route);
+    drawRoute(about.route);
+
+    /* story: short paragraphs, hidden ones stay in the file */
+    head("story", S.story);
+    var ch = $("chapters"); ch.innerHTML = "";
+    (about.chapters || []).filter(function (c) { return c && !c.hidden && (has(c.text) || has(c.label)); }).forEach(function (c) {
+      var d = h("div", "ab-chapter");
+      if (has(c.label)) d.appendChild(h("span", "ds-label", c.label));
+      if (has(c.text)) d.appendChild(h("p", "", c.text));
+      var emb = embedNode(c.embed); if (emb) d.appendChild(emb);
+      ch.appendChild(d);
+    });
+    var st = S.story || {}, pr0 = about.proudest || {};
+    var showHold = st.showHoldup === true && has(about.holdup);
+    var showProud = st.showProudest === true && (has(pr0.title) || has(pr0.text));
+    $("holdup-text").textContent = about.holdup || "";
+    $("proudest-title").textContent = pr0.title || ""; $("proudest-text").textContent = pr0.text || "";
+    show($("holdup-card"), showHold); show($("proudest-card"), showProud); show($("story-asides"), showHold || showProud);
+    mountSectionMedia("story", S.story);
+
+    /* toolbox */
+    head("toolbox", S.toolbox);
+    mountSectionMedia("toolbox", S.toolbox);
+    var bx = $("toolbox-grid"); bx.innerHTML = "";
+    (about.toolbox || []).forEach(function (g) {
+      var items = (g && g.items || []).filter(has);
+      if (!g || (!has(g.group) && !items.length)) return;
+      var row = h("div", "ab-row");
+      var key = h("div", "ab-row-key"); key.appendChild(h("span", "ds-label", g.group || ""));
+      var body = h("div", "ab-row-body"); var ul = h("ul", "ab-tools");
+      items.forEach(function (it) { ul.appendChild(h("li", "", it)); });
+      body.appendChild(ul); row.appendChild(key); row.appendChild(body); bx.appendChild(row);
     });
 
+    /* motto: the whole latin line is the button for the hannibal easter egg */
+    var pr = about.principle || {};
+    var latEl = $("principle-latin"); latEl.innerHTML = "";
+    var hw = h("span", "hannibal", pr.latin || "");
+    var him = document.createElement("img"); him.src = "assets/hannibal.png"; him.alt = "Hannibal of Carthage"; hw.appendChild(him);
+    latEl.classList.add("hannibal-line"); latEl.tabIndex = 0;
+    latEl.setAttribute("role", "button"); latEl.setAttribute("aria-label", "A certain Carthaginian. Activate to reveal.");
+    function toggleHannibal() { if (!hw.classList.toggle("show")) latEl.blur(); }
+    latEl.addEventListener("click", toggleHannibal);
+    latEl.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleHannibal(); } });
+    latEl.appendChild(hw); latEl.hidden = !has(pr.latin);
+    label("principle-trans", pr.translation);
+    label("principle-note", pr.note);
+    label("fieldnotes", about.fieldnotes);
+    var ot = about.offclockTeaser || {};
+    setText("oct-title", ot.title); setText("oct-text", ot.text); setText("oct-btn", ot.button);
+    show($("oct"), has(ot.title) || has(ot.text) || has(ot.button));
+
+    /* contact */
+    head("contact", S.contact);
+    mountSectionMedia("contact", S.contact);
+    drawContact(S.contact, site);
+
+    /* kept for the admin, hidden by default */
+    ["thirties", "selected"].forEach(function (k) {
+      var s = S[k]; if (!s) return;
+      setText("sec-" + k + "-eyebrow", s.eyebrow);
+      setHeadline($("sec-" + k + "-headline"), s.headline);
+      setText("sec-" + k + "-side", s.side);
+      mountSectionMedia(k, s);
+    });
+    var L = about.labels || {};
+    setText("link-see-all", L.seeAllCases);
+    var tg = $("thirties-grid");
+    (about.thirties || []).forEach(function (t) {
+      var d = h("div", "method"); d.appendChild(h("h3", "", t.title)); d.appendChild(h("p", "", t.text)); tg.appendChild(d);
+    });
+    var sg = $("selected-grid");
+    (about.selected || []).forEach(function (s) {
+      var d = h("div", "method sel-card");
+      d.appendChild(h("span", "k", s.tag || ""));
+      d.appendChild(h("div", "sel-big", (s.prefix || "") + (s.num != null ? Number(s.num).toFixed(s.decimals || 0) : "") + (s.suffix || "")));
+      d.appendChild(h("div", "sel-label", s.label || ""));
+      d.appendChild(h("h3", "", s.title)); d.appendChild(h("p", "", s.outcome));
+      var a = h("a", "text-link", L.deepDive || "Deep dive →"); a.href = s.url || "https://lorisca-analytics.github.io"; a.target = "_blank"; a.rel = "noopener";
+      d.appendChild(a); sg.appendChild(d);
+    });
+
+    /* journey map */
+    if (window.Journey) Journey.init(about);
+    /* section order, hidden sections, looks and builder-added sections (admin page builder) */
+    if (window.Theme && Theme.applyLayout && about.layout) Theme.applyLayout(document.querySelector("main"), about, { site: site });
+    renderSubnav(about.layout && about.layout.showMenu === false ? [] : (window.Theme ? Theme.menu(about) : about.subnav));
+    if (window.Motion) Motion.refresh(document);
+  }).catch(function (e) {
+    console.error(e);
+    $("chapters").innerHTML = "<p class='ab-lede'>Content couldn't load. Try refreshing.</p>";
+  });
+})();
 </script>
 </body>
 </html>

@@ -135,7 +135,7 @@
 
 <script src="../content.js"></script>
 <script src="merge.js"></script>
-<script src="../skeleton.js?v=4"></script>
+<script src="../skeleton.js?v=5"></script>
 <script src="builder.js?v=2"></script>
 <script>
 /* ================= infra ================= */
@@ -1221,7 +1221,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
 });
 
 defineTab("main", "about", "About", (panel) => pageBuilder(panel, {
-  path: "data/about.json", label: "About page", view: "../about.html", tag: "about",
+  path: "data/about.json", label: "About page", view: "../about.html", tag: "about", menuSwitch: true,
 }));
 
 defineTab("main", "sitelinks", "Site links", async (panel) => {

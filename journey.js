@@ -29,7 +29,11 @@
   };
   var SPACE = { dark: "#1e2d42", light: "#eef2f6" };
   var ROUTE_COLOR = "#8fa9c9";
-  var ARC_COLOR = "#ff4f6d";
+  var ARC_FALLBACK = "#3f5fd0";
+  // the arc to the visitor uses the site's accent color, in either theme
+  function arcColor() {
+    try { return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || ARC_FALLBACK; } catch (e) { return ARC_FALLBACK; }
+  }
   var NEARBY_MILES = 30;
 
   function theme() {
@@ -217,7 +221,7 @@
           map.addSource("visitor-arc", { type: "geojson", data: line([home, home]) });
           map.addLayer({ id: "visitor-arc", type: "line", source: "visitor-arc",
             layout: { "line-cap": "round", "line-join": "round" },
-            paint: { "line-color": ARC_COLOR, "line-width": 3.5, "line-dasharray": [0, 2] } });
+            paint: { "line-color": arcColor(), "line-width": 3.5, "line-dasharray": [0, 2] } });
         }
         drawRoute(state.routeTo);
         drawArc(state.arcProgress);
@@ -269,7 +273,7 @@
         } else {
           el.className = "map-pin";
         }
-        el.setAttribute("aria-label", s.city + (s.note ? " — " + s.note : ""));
+        el.setAttribute("aria-label", s.city + (s.note ? ", " + s.note : ""));
         var pop = new mapboxgl.Popup({ offset: isHome && cfg.avatar ? 40 : 14, closeButton: false })
           .setHTML("<strong>" + escapeHTML(s.city) + "</strong>" + (s.note ? "<br>" + escapeHTML(s.note) : ""));
         var m = new mapboxgl.Marker({ element: el, anchor: isHome && cfg.avatar ? "bottom" : "center" })

@@ -2,34 +2,63 @@
   "chapters": [
     {
       "embed": "",
+      "label": "",
+      "text": "Manado, Indonesia. First time accessing internet in 2011. Only started learning English properly in 2018.",
+      "hidden": false
+    },
+    {
+      "embed": "",
+      "label": "",
+      "text": "Then 'merantau': left home to find what's next. What came next was a hotel construction site, a choir, cosmetics, logistics, food-tech and a bank.",
+      "hidden": false
+    },
+    {
+      "embed": "",
+      "label": "",
+      "text": "I kept getting pulled into the same mess: a process has grown, information is scattered, and the team spends its time chasing updates instead of making decisions.",
+      "hidden": false
+    },
+    {
+      "embed": "",
+      "label": "",
+      "text": "I did the MBA in Analytics to gain the language for problems I was already solving.",
+      "hidden": false
+    },
+    {
+      "embed": "",
       "label": "Where I'm from",
-      "text": "Manado, Indonesia. A village kid from a place with almost no footprint in the rooms I work in now. First time accessing internet in 2011. Only started learning English properly in 2018. Put myself through a small unknown university. Then 'merantau': left home to find what's next. None of my peers made it abroad; most married young. If others were born way ahead, I just run my race at my own pace."
+      "text": "Manado, Indonesia. A village kid from a place with almost no footprint in the rooms I work in now. First time accessing internet in 2011. Only started learning English properly in 2018. Put myself through a small unknown university. Then 'merantau': left home to find what's next. None of my peers made it abroad. Most married young. If others were born way ahead, I just run my race at my own pace.",
+      "hidden": true
     },
     {
       "embed": "",
       "label": "The business side",
-      "text": "I started as the stakeholder who needed bankers, not the HR staff doing paperwork. I kept getting pulled into the same mess: a process has grown, information is scattered, and the team spends its time chasing updates instead of making decisions. I trace where the work breaks, rebuild the flow, and leave behind a system people can keep using."
+      "text": "I started as the stakeholder who needed bankers, not the HR staff doing paperwork. I kept getting pulled into the same mess: a process has grown, information is scattered, and the team spends its time chasing updates instead of making decisions. I trace where the work breaks, rebuild the flow, and leave behind a system people can keep using.",
+      "hidden": true
     },
     {
       "embed": "",
       "label": "Why analytics",
-      "text": "I did the MBA in Analytics to gain the language for problems I was already solving — not to change lanes. Generalist background, technical fluency on purpose."
+      "text": "I did the MBA in Analytics to gain the language for problems I was already solving. Generalist background, technical fluency on purpose.",
+      "hidden": true
     },
     {
       "embed": "",
       "label": "How I think",
-      "text": "ENTP-T. A little bit of everything. I connect ideas, spot patterns, and make sense of messy situations — then I need the practical how, not generic shoulds. Elegant frameworks make me suspicious; I cross-check every model against lived experience. I have to build the vehicle before I drive it."
+      "text": "ENTP-T. A little bit of everything. I connect ideas, spot patterns, and make sense of messy situations. Then I need the practical how, not generic shoulds. Elegant frameworks make me suspicious. I cross-check every model against lived experience. I have to build the vehicle before I drive it.",
+      "hidden": true
     },
     {
       "embed": "",
       "label": "How I lead",
-      "text": "I'm a king-maker, or trying to be: I want the people around me to feel more capable than they did yesterday. Leading from behind."
+      "text": "I'm a king-maker, or trying to be: I want the people around me to feel more capable than they did yesterday. Leading from behind.",
+      "hidden": true
     }
   ],
   "fieldnotes": "4'11\". Climbs V4–V5. Bathroom singer, choir on weekends. Learning to snowboard. Second-generation K-pop fan.",
   "hero": {
     "greeting": "Hi, I'm Lori.",
-    "lede": "you've found my 5-9 here. By day I build the systems behind hiring — the intake flows, the scorecards, the dashboards that decide who gets a chance. This page is the rest of me: where I come from, how I think, and what I do when nobody's paying me.",
+    "lede": "By day I build the systems behind hiring: the intake flows, the scorecards, the dashboards that decide who gets a chance. This page is the rest of me. Where I come from, how I think, and how I got here.",
     "tagline": "Use the data. Keep the human visible.",
     "eyebrow": "About · San Francisco",
     "image": "",
@@ -68,7 +97,7 @@
       "city": "Boston",
       "lat": 42.3601,
       "lng": -71.0589,
-      "note": "Hult MBA in Analytics"
+      "note": "MBA in Analytics"
     },
     {
       "city": "London",
@@ -85,7 +114,7 @@
   ],
   "method": [
     {
-      "text": "Sheets to SQL — I build in whatever stack the team uses. Constraints are a design input, not an excuse.",
+      "text": "Sheets to SQL. I build in whatever stack the team uses. Constraints are a design input, not an excuse.",
       "title": "Tools-agnostic"
     },
     {
@@ -99,7 +128,7 @@
   ],
   "principle": {
     "latin": "Aut viam inveniam aut faciam",
-    "note": "My operating principle, courtesy of Hannibal — the Carthaginian one. Hover if you know, you know.",
+    "note": "My motto, courtesy of Hannibal, the Carthaginian one. Hover if you know, you know.",
     "translation": "I shall either find a way or make one."
   },
   "proudest": {
@@ -110,31 +139,53 @@
     {
       "when": "Now · San Francisco",
       "where": "Open to what's next",
-      "role": "Talent systems · People analytics · Sourcing leadership",
+      "role": "People, operations and analytics",
       "now": true,
       "detail": [
-        "MBA in Analytics (STEM), Hult International Business School, 2026.",
-        "Building a people-analytics portfolio in public — and shipping the tools I build along the way."
-      ]
+        "Building a people-analytics portfolio in public, and shipping the tools I build along the way."
+      ],
+      "roles": []
     },
     {
-      "when": "2023 – 2024 · Jakarta",
-      "where": "PT Bank Mega Tbk",
-      "role": "Senior Sales Resourcing & Development",
+      "when": "2025 – 2026 · Boston",
+      "where": "MBA in Analytics (STEM)",
+      "role": "",
       "now": false,
-      "detail": [
-        "Cut turnover 15% in 2023 and 17% in 2024 with difficulty-weighted KPI scorecards for 15 recruiters across six regions — fair measurement where the hiring was hardest.",
-        "Built a referral anti-gaming system my successors ran and extended for 12+ months after I left."
-      ]
+      "detail": [],
+      "roles": []
     },
     {
-      "when": "2022 – 2023 · Jakarta",
-      "where": "PT Bank Mega Tbk",
-      "role": "Resourcing Specialist",
+      "when": "2025 · Silicon Valley",
+      "where": "Career break",
+      "role": "",
       "now": false,
-      "detail": [
-        "Cut hiring SLA 80% and recruiter admin workload 60% by replacing scattered intake with a single gate handling 10,000+ CVs a year.",
-        "Recruiters stopped retyping and started deciding."
+      "detail": [],
+      "roles": []
+    },
+    {
+      "when": "2022 – 2024 · Jakarta",
+      "where": "PT Bank Mega Tbk",
+      "role": "Talent Acquisition & Development",
+      "now": false,
+      "detail": [],
+      "roles": [
+        {
+          "role": "Senior Sales Resourcing & Development",
+          "when": "2023 – 2024",
+          "detail": [
+            "Built difficulty-weighted KPI scorecards for 15 recruiters across six regions. Fair measurement where the hiring was hardest.",
+            "Joined intake, exit interview, performance and training records into one view of frontline attrition. It contributed to department turnover falling about 15% in 2023 and 17% in 2024.",
+            "Built a referral anti-gaming system my successors ran and extended for 12+ months after I left."
+          ]
+        },
+        {
+          "role": "Resourcing Specialist",
+          "when": "2022 – 2023",
+          "detail": [
+            "Cut hiring SLA 80% and recruiter admin workload 60% by replacing scattered intake with a single gate handling 10,000+ CVs a year.",
+            "Recruiters stopped retyping and started deciding."
+          ]
+        }
       ]
     },
     {
@@ -145,7 +196,48 @@
       "detail": [
         "Lifted merchant acquisitions 40% with a real-time dashboard across field sales and partnerships.",
         "One shared view of the field, instead of everyone running their own numbers."
-      ]
+      ],
+      "roles": []
+    },
+    {
+      "when": "2021 · Jakarta",
+      "where": "SiCepat Ekspres",
+      "role": "Executive Assistant to GM Sales",
+      "now": false,
+      "detail": [
+        "Standardized sales workflows in Odoo across 7 subsidiaries."
+      ],
+      "roles": []
+    },
+    {
+      "when": "2020",
+      "where": "Boke Group",
+      "role": "Marketing Associate",
+      "now": false,
+      "detail": [
+        "Market entry for a cosmetics line."
+      ],
+      "roles": []
+    },
+    {
+      "when": "2018 – 2020",
+      "where": "Miracle Choir",
+      "role": "Program Secretary",
+      "now": false,
+      "detail": [
+        "3-week, 3-country tour. Gold Medal at Canta al Mar, Spain."
+      ],
+      "roles": []
+    },
+    {
+      "when": "2017 – 2018 · Manado",
+      "where": "Lion Air Group",
+      "role": "Project Administrator, hotel construction project",
+      "now": false,
+      "detail": [
+        "Finances and payroll for 100+ construction workers, plus vendor contracts."
+      ],
+      "roles": []
     }
   ],
   "thirties": [
@@ -164,25 +256,79 @@
   ],
   "toolbox": [
     {
-      "group": "Analytics",
-      "items": [
-        "SQL",
-        "Spreadsheets",
-        "Python"
-      ]
-    },
-    {
-      "group": "Workflow",
-      "items": [
-        "Apps Script",
-        "Notion"
-      ]
-    },
-    {
-      "group": "AI",
+      "group": "AI, daily",
       "items": [
         "Claude",
-        "ChatGPT"
+        "Claude Code",
+        "Claude API",
+        "Custom Claude skills",
+        "ChatGPT",
+        "Codex",
+        "Gemini",
+        "Perplexity",
+        "Muse",
+        "Lovable",
+        "Wispr Flow",
+        "NotebookLM",
+        "Gamma"
+      ]
+    },
+    {
+      "group": "Data and analysis",
+      "items": [
+        "SQL",
+        "MySQL",
+        "CTEs",
+        "Window functions",
+        "Python",
+        "pandas",
+        "scikit-learn",
+        "XGBoost",
+        "Excel Solver",
+        "Spreadsheets"
+      ]
+    },
+    {
+      "group": "Dashboards",
+      "items": [
+        "Power BI",
+        "DAX",
+        "Power Query",
+        "Tableau",
+        "Looker Studio"
+      ]
+    },
+    {
+      "group": "Workflow and automation",
+      "items": [
+        "Google Apps Script",
+        "Odoo",
+        "Smartsheet",
+        "Microsoft 365",
+        "Slack",
+        "Notion",
+        "n8n",
+        "Zapier"
+      ]
+    },
+    {
+      "group": "Recruiting",
+      "items": [
+        "LinkedIn Recruiter",
+        "Boolean search",
+        "Clay"
+      ]
+    },
+    {
+      "group": "This site",
+      "items": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "JSON",
+        "GitHub",
+        "GitHub API",
+        "Mapbox"
       ]
     }
   ],
@@ -205,7 +351,7 @@
       "decimals": 0,
       "label": "turnover",
       "title": "Attrition was a promotion problem",
-      "outcome": "The obvious metric pointed one way; the mechanism underneath pointed the other.",
+      "outcome": "The obvious metric pointed one way. The mechanism underneath pointed the other.",
       "url": "https://lorisca-analytics.github.io",
       "tag": "On the job · 2024"
     },
@@ -216,14 +362,14 @@
       "decimals": 2,
       "label": "federal filings analyzed",
       "title": "Which employers reliably sponsor H-1B business roles",
-      "outcome": "The business-role wage premium survives on medians — then breaks honestly.",
+      "outcome": "The business-role wage premium survives on medians, then flips when IT managers are excluded.",
       "url": "https://lorisca-analytics.github.io#card-h1b-sponsorship",
       "tag": "MBA · 2026"
     }
   ],
   "meta": {
-    "title": "About — Lorisca Cessia",
-    "description": "Hi, you've found my 5-9 here. Use the data. Keep the human visible."
+    "title": "About · Lorisca Cessia",
+    "description": "Hi, I'm Lori. Where I come from, how I think, and how I got here."
   },
   "subnav": [
     {
@@ -264,15 +410,14 @@
       "links": []
     },
     "story": {
-      "eyebrow": "So, what's the problem?",
-      "headline": {
-        "main": "The longer ",
-        "accent": "version."
-      },
+      "eyebrow": "The story",
+      "headline": "From Manado to San Francisco.",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [],
+      "showHoldup": false,
+      "showProudest": false
     },
     "selected": {
       "eyebrow": "Selected work",
@@ -287,12 +432,9 @@
       "links": []
     },
     "route": {
-      "eyebrow": "The route",
-      "headline": {
-        "main": "Every stop taught me ",
-        "accent": "how hiring actually works."
-      },
-      "side": "Seven years across four industries. The industries changed; the problem didn't.",
+      "eyebrow": "Timeline",
+      "headline": "The route",
+      "side": "",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
@@ -304,23 +446,29 @@
         "main": "What I ",
         "accent": "reach for."
       },
-      "side": "Tools-agnostic by principle. These are just the current defaults.",
+      "side": "",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
       "links": []
     },
     "contact": {
-      "eyebrow": "Contact",
+      "eyebrow": "",
       "headline": {
-        "main": "Say ",
-        "accent": "hi."
+        "main": "Open to roles in people, operations and analytics at growing companies.",
+        "accent": ""
       },
-      "side": "Currently in San Francisco. Happy to walk through any of this live.",
+      "side": "Based in San Francisco.",
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [],
+      "ctaLabel": "Get in touch",
+      "copyEmail": true
+    },
+    "ways": {
+      "eyebrow": "",
+      "headline": "How I think and work"
     }
   },
   "labels": {
@@ -342,23 +490,9 @@
         "style": {}
       },
       {
-        "id": "thirties",
-        "type": "about-thirties",
-        "menu": "30 seconds",
-        "hidden": false,
-        "style": {}
-      },
-      {
-        "id": "story",
-        "type": "about-story",
-        "menu": "Story",
-        "hidden": false,
-        "style": {}
-      },
-      {
-        "id": "selected",
-        "type": "about-selected",
-        "menu": "",
+        "id": "ways",
+        "type": "about-ways",
+        "menu": "How I think",
         "hidden": false,
         "style": {}
       },
@@ -366,6 +500,13 @@
         "id": "route",
         "type": "about-route",
         "menu": "The Route",
+        "hidden": false,
+        "style": {}
+      },
+      {
+        "id": "story",
+        "type": "about-story",
+        "menu": "Story",
         "hidden": false,
         "style": {}
       },
@@ -391,10 +532,24 @@
         "style": {}
       },
       {
+        "id": "thirties",
+        "type": "about-thirties",
+        "menu": "30 seconds",
+        "hidden": true,
+        "style": {}
+      },
+      {
+        "id": "selected",
+        "type": "about-selected",
+        "menu": "",
+        "hidden": true,
+        "style": {}
+      },
+      {
         "id": "page-header",
         "type": "page-header",
         "menu": "",
-        "hidden": false,
+        "hidden": true,
         "style": {},
         "content": {
           "eyebrow": "",
@@ -407,7 +562,8 @@
           "links": []
         }
       }
-    ]
+    ],
+    "showMenu": false
   },
   "journeyMap": {
     "avatar": "assets/journey-avatar.webp",
@@ -415,5 +571,31 @@
     "text": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco, roughly {miles} away from your current location, according to your IP address.",
     "textNoLocation": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco.",
     "textNearby": "My journey: Born in Manado, been in Pangkalan Bun, Jakarta, Boston and London. Now in San Francisco, and according to your IP address, so are you."
+  },
+  "ways": {
+    "lead": "ENTP-T.",
+    "lede": "A little bit of everything. I connect ideas, spot patterns, and make sense of messy situations. Then I need the practical how, not generic shoulds. I have to build the vehicle before I drive it.",
+    "items": [
+      {
+        "title": "The translator",
+        "text": "Business questions in, technical answers out. I live between the people who feel the problem and the systems that can fix it.",
+        "hidden": false
+      },
+      {
+        "title": "The builder",
+        "text": "I build the machine the work runs on, then leave behind something the team can run without me.",
+        "hidden": false
+      },
+      {
+        "title": "The skeptic",
+        "text": "Elegant frameworks make me suspicious. I cross-check every model against lived experience before I trust it.",
+        "hidden": false
+      },
+      {
+        "title": "The king-maker",
+        "text": "I'm a king-maker, or trying to be: I want the people around me to feel more capable than they did yesterday. Leading from behind.",
+        "hidden": false
+      }
+    ]
   }
 }

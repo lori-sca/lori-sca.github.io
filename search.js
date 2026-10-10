@@ -89,14 +89,23 @@
       if (about) {
         var A = M + "about.html";
         if (about.hero && about.hero.greeting) add(about.hero.greeting, about.hero.lede || "", A + "#top", "About");
-        (about.thirties || []).forEach(function (c) { add(c.title, c.text, A + "#thirties", "About"); });
-        (about.chapters || []).forEach(function (c) { add(c.label, c.text, A + "#story", "About"); });
-        (about.route || []).forEach(function (st) {
+        var aHidden = {};
+        ((about.layout || {}).sections || []).forEach(function (s) { if (s.hidden) aHidden[s.id] = true; });
+        var aw = about.ways || {};
+        if (!aHidden.ways) {
+          if (aw.lede) add(hl((about.sections || {}).ways && about.sections.ways.headline) || "How I think and work", [aw.lead, aw.lede].filter(Boolean).join(" "), A + "#ways", "About");
+          (aw.items || []).forEach(function (c) { if (c && !c.hidden) add(c.title, c.text, A + "#ways", "About"); });
+        }
+        if (!aHidden.thirties) (about.thirties || []).forEach(function (c) { add(c.title, c.text, A + "#thirties", "About"); });
+        if (!aHidden.story) (about.chapters || []).forEach(function (c) { if (c && !c.hidden) add(c.label || "The story", c.text, A + "#story", "About"); });
+        if (!aHidden.route) (about.route || []).forEach(function (st) {
           add(st.where, [st.role, st.when].concat(st.detail || []).filter(Boolean).join(" · "), A + "#route", "About");
+          (st.roles || []).forEach(function (ro) { add([st.where, ro.role].filter(Boolean).join(": "), [ro.when].concat(ro.detail || []).filter(Boolean).join(" · "), A + "#route", "About"); });
         });
         var pr = about.principle;
         if (pr && typeof pr === "object") add(pr.latin, [pr.translation, pr.note].filter(Boolean).join(" "), A + "#principle", "About");
         ["principle", "method", "proudest", "holdup"].forEach(function (k) {
+          if (k === "holdup" && !((about.sections || {}).story || {}).showHoldup) return;
           if (typeof about[k] === "string" && about[k]) add(k.charAt(0).toUpperCase() + k.slice(1), about[k], A + "#story", "About");
         });
         (about.toolbox || []).forEach(function (g) { add("Toolbox: " + g.group, (g.items || []).join(", "), A + "#toolbox", "About"); });
