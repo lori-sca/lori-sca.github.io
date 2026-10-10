@@ -152,26 +152,31 @@ body { font-family: var(--body); background: var(--white); color: var(--ink); }
 }
 .lh-cta:hover { background: var(--accent); color: var(--on-accent); }
 .lh-menu { display: none; }
+.lh-links .lh-cta-m { display: none; }
+
+/* Fit levels, set by header.js after measuring the bar (not by screen width):
+   lh-fit-1  role line hidden
+   lh-fit-2  role line and button hidden
+   lh-menu-mode  links don't fit: they go into the menu button        */
+.lh-fit-1 .lh-brand span, .lh-fit-2 .lh-brand span { display: none; }
+.lh-fit-2 .lh-cta, .lh-menu-mode .lh-cta { display: none; }
+.lh-menu-mode .lh-menu { display: inline-flex; }
+.lh-menu-mode .lh-links {
+  display: none; position: absolute; left: 0; right: 0; top: 100%;
+  flex-direction: column; align-items: stretch; gap: 0;
+  background: var(--white); border-bottom: 1px solid var(--hairline);
+  padding: .3rem var(--gutter) 1rem; box-shadow: var(--shadow);
+}
+.lh-menu-mode .lh-links a { padding: .75rem 0; border-bottom: 1px solid var(--hairline); font-size: 1.05rem; }
+.lh-menu-mode .lh-links a[aria-current="page"] { box-shadow: none; color: var(--accent); }
+.lh-menu-mode .lh-links .lh-cta-m { display: block; margin-top: .9rem; border-bottom: 0; text-align: center; background: var(--ink); color: var(--white); border-radius: 999px; padding: .7rem 1rem; font-weight: 600; }
+.nav.lh-open .lh-menu-mode .lh-links { display: flex; }
+
 /* before the script runs (or if it fails) the links simply wrap */
-@media (max-width: 980px) {
+@media (max-width: 860px) {
   .nav-inner.lh:not(.lh-ready) { flex-wrap: wrap; }
   .nav-inner.lh:not(.lh-ready) .lh-links { order: 3; width: 100%; flex-wrap: wrap; gap: .4rem 1rem; }
 }
-@media (max-width: 980px) {
-  .lh-cta { display: none; }
-  .lh-menu { display: inline-flex; }
-  .lh-ready .lh-links {
-    display: none; position: absolute; left: 0; right: 0; top: 100%;
-    flex-direction: column; align-items: stretch; gap: 0;
-    background: var(--white); border-bottom: 1px solid var(--hairline);
-    padding: .3rem var(--gutter) 1rem; box-shadow: var(--shadow);
-  }
-  .lh-links a { padding: .75rem 0; border-bottom: 1px solid var(--hairline); font-size: 1.05rem; }
-  .lh-links a[aria-current="page"] { box-shadow: none; color: var(--accent); }
-  .lh-links .lh-cta-m { display: block; margin-top: .9rem; border-bottom: 0; text-align: center; background: var(--ink); color: var(--white); border-radius: 999px; padding: .7rem 1rem; font-weight: 600; }
-  .nav.lh-open .lh-ready .lh-links { display: flex; }
-}
-@media (min-width: 981px) { .lh-links .lh-cta-m { display: none; } }
 @media (max-width: 420px) { .lh-brand span { display: none; } .nav-inner.lh { gap: .5rem; } }
 
 /* ---------- search box ---------- */

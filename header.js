@@ -14,7 +14,7 @@
   var MAIN = "https://lori-sca.github.io";
   var SITES = [MAIN, "https://lorisca-analytics.github.io", "https://lorisca-builds.github.io"];
   var KEY = "lori-theme";
-  var VER = "1";
+  var VER = "2";
   var root = document.documentElement;
 
   /* ---------------- theme ---------------- */
@@ -118,7 +118,42 @@
     inner.className = "nav-inner lh lh-ready";
     inner.innerHTML = h;
     wire();
+    fit();
   }
+
+  /* ---------------- fit: keep the links in the bar whenever they fit ----------------
+     Tries, in order: everything; no role line; no role line and no button;
+     then moves the links into the menu button.                              */
+  var LEVELS = ["", "lh-fit-1", "lh-fit-2", "lh-menu-mode"];
+  function needed() {
+    var cs = getComputedStyle(inner);
+    var gap = parseFloat(cs.columnGap || cs.gap) || 0;
+    var w = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight), n = 0;
+    Array.prototype.forEach.call(inner.children, function (c) {
+      var s = getComputedStyle(c);
+      if (s.display === "none" || s.position === "absolute") return;
+      n++;
+      if (c.classList.contains("lh-brand")) {
+        var parts = Array.prototype.filter.call(c.children, function (x) { return getComputedStyle(x).display !== "none"; });
+        w += Math.max.apply(null, parts.map(function (x) { return x.scrollWidth; }).concat([0]));
+      } else w += c.scrollWidth;
+    });
+    return w + gap * Math.max(n - 1, 0) + 24; /* 24px breathing room */
+  }
+  function fit() {
+    if (!inner.classList.contains("lh-ready")) return;
+    var avail = inner.clientWidth;
+    for (var i = 0; i < LEVELS.length; i++) {
+      LEVELS.forEach(function (c) { if (c) inner.classList.remove(c); });
+      if (LEVELS[i]) inner.classList.add(LEVELS[i]);
+      if (i === LEVELS.length - 1 || needed() <= avail) break;
+    }
+    if (!inner.classList.contains("lh-menu-mode")) nav.classList.remove("lh-open");
+  }
+  var fitTimer = null;
+  function refit() { clearTimeout(fitTimer); fitTimer = setTimeout(fit, 60); }
+  if (window.ResizeObserver) new ResizeObserver(refit).observe(nav); else window.addEventListener("resize", refit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 
   function wire() {
     var tb = document.getElementById("lh-theme");
