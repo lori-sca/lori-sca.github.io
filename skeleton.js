@@ -231,6 +231,16 @@
     F("badge", "Badge (overrides Live/Draft)", "text", { group: "Card labels" }),
     F("hint", "Hint line", "text", { group: "Card labels" }),
     F("btnLabel", "Button label", "text", { group: "Card labels" }),
+    /* redesign thread 3: the wide card's short line and its drawn picture (additive keys) */
+    F("trace", "Card line: problem > move > result", "group", { group: "Card line", hint: "A few words each. Shown on the card under the hook.",
+      fields: [F("problem", "Problem", "text"), F("move", "Move", "text"), F("result", "Result", "text")] }),
+    F("cardVisual", "Card picture", "group", { group: "Card picture", fields: [
+      F("kind", "Picture", "select", { options: ["", "bars", "swing", "number"], default: "",
+        hint: "blank = the cover picture, bars = two bars side by side, swing = a loss turning into a profit, number = a big number only" }),
+      F("label", "Label above the picture", "text"),
+      F("aLabel", "First bar: label", "text"), F("aValue", "First bar: value (a number, negative for a loss)", "number"), F("aText", "First bar: value as shown (e.g. −$360K)", "text"),
+      F("bLabel", "Second bar: label", "text"), F("bValue", "Second bar: value (a number)", "number"), F("bText", "Second bar: value as shown", "text"),
+      F("big", "Big number", "text")] }),
     F("reviewNotes", "Review notes (hidden when live)", "group", { group: "Review notes", fields: [F("notes", "Notes to self", "lines"), F("missing", "Still missing", "lines")] }),
   ];
   const ORG_HERO = [
@@ -361,16 +371,17 @@
       looks: ["background", "spacing"], styleDefaults: { background: "tint" } },
 
     /* ---- Analytics site (files: hero, lanes, page) ---- */
-    "analytics-hero": { label: "Header", anchor: "top", about: "Title block. The live / drafted / queued counts update by themselves.",
+    "analytics-hero": { label: "Header", anchor: "top", about: "Title block: small label, headline, intro and buttons.",
       fields: ORG_HERO, bind: ORG_HERO_BIND },
-    "analytics-lanes": { label: "Lanes and case studies", anchor: "lanes", about: "Each lane is a block of case-study cards plus its pipeline list. Charts on a card are edited in the repo.",
-      fields: [F("laneEyebrow", "Word before each lane number", "text"), F("allLabel", "Label of the “All” filter", "text"),
+    "analytics-lanes": { label: "Lanes and case studies", anchor: "lanes", about: "Each lane is a group of case-study cards with a filter button. A lane shows only when it has a live card. Charts on a card are edited in the repo.",
+      fields: [F("laneEyebrow", "Word before each lane number (not shown in the current design)", "text"), F("allLabel", "Label of the “All” filter", "text"),
+        F("showPipeline", "Show the pipeline titles on the page", "toggle"),
         F("lanes", "Lanes", "list", { item: "lane", fields: [F("name", "Lane name", "text"), F("id", "Lane link name (#…)", "text"),
           F("blurb", "Intro", "textarea"), F("embed", "Embed link (optional)", "url"),
           F("projects", "Case studies", "list", { item: "case study", fields: PROJECT }),
           F("pipeline", "In the pipeline", "list", { item: "title", fields: [F("title", "Title", "text"), F("link", "Link (optional)", "url"), F("status", "Status tag", "text")] }),
         ].concat(MEDIA) })],
-      bind: { laneEyebrow: "page.laneEyebrow", allLabel: "page.subnavTop", lanes: "lanes.lanes" } },
+      bind: { laneEyebrow: "page.laneEyebrow", allLabel: "page.subnavTop", showPipeline: "page.showPipeline", lanes: "lanes.lanes" } },
 
     /* ---- Builds site (files: hero, projects, page) ---- */
     "builds-hero": { label: "Header", anchor: "top", about: "Title block plus the “What lives here” card.",
