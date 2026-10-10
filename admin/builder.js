@@ -278,6 +278,10 @@
 
   /* ---------------- one field, any kind ---------------- */
   function fieldEditor(host, f, get, set, ctx) {
+    fieldEditorInner(host, f, get, set, ctx);
+    if (f.hint && f.kind !== "toggle") host.appendChild(el("p", "ed-hint", f.hint));
+  }
+  function fieldEditorInner(host, f, get, set, ctx) {
     const v = get();
     if (f.kind === "toggle") {
       const row = el("label", "ed-check");
@@ -357,6 +361,10 @@
         row.appendChild(document.createTextNode(o.title));
         host.appendChild(row);
       });
+    } else if (f.kind === "picks") {
+      picksEditor(host, f, v, set, ctx);
+    } else if (f.kind === "cardref") {
+      cardRefEditor(host, f, v, set, ctx);
     } else if (f.kind === "rich") {
       richEditor(host, v, set);
     } else if (f.kind === "image") {
@@ -370,7 +378,7 @@
       const openSet = new WeakSet();
       sortable(host, items, {
         onChange: touched,
-        title: (it, i) => ({ kind: "#" + (i + 1), summary: SK.plain(it.title || it.name || it.label || it.city || it.group || it.when || it.caption || it.alt || it.k || it.src || "") || "(empty)",
+        title: (it, i) => ({ kind: "#" + (i + 1), summary: SK.plain(it.title || it.name || it.label || it.city || it.group || it.when || it.caption || it.alt || it.k || it.src || it.value || it.id || "") || "(empty)",
           badges: it.status && it.status !== "live" ? [it.status] : [] }),
         isOpen: (it) => openSet.has(it) || items.length <= 3,
         setOpen: (it, o) => { if (o) openSet.add(it); else openSet.delete(it); },
@@ -383,6 +391,122 @@
     } else if (f.kind === "blocks") {
       blocksEditor(host, v, set, ctx);
     }
+  }
+
+  /* ---------------- picks: ordered choice from a source, capped at f.max ----------------
+     ctx.sources[f.source]          [{ id, title, group }]
+     ctx.sources[f.source + "Error"] text shown when the list couldn't load
+     ctx.sources.homeCards()        Home-only cards, read fresh each draw
+     ctx.sources.cardText()         ids that already have Home text
+     Picked ids that aren't in the list stay saved and are marked, never dropped. */
+  function optionsFor(f, ctx) {
+    const src = (ctx.sources && ctx.sources[f.source]) || [];
+    const home = ctx.sources && typeof ctx.sources.homeCards === "function" ? ctx.sources.homeCards() : [];
+    const seen = {};
+    return src.concat(home).filter((o) => o && o.id && !seen[o.id] && (seen[o.id] = true));
+  }
+  const picksHosts = new Set();
+  document.addEventListener("lc-cards-changed", () => picksHosts.forEach((r) => { if (!r.host.isConnected) picksHosts.delete(r); else r.draw(); }));
+  function picksEditor(host, f, v, set, ctx) {
+    const box = el("div", "ed-picks");
+    host.appendChild(box);
+    let picked = Array.isArray(v) ? v : [];
+    const max = f.max || 99;
+    const err = ctx.sources && ctx.sources[f.source + "Error"];
+    function save() { set(picked); ctx.changed && ctx.changed(); draw(); }
+    function draw() {
+      box.innerHTML = "";
+      const opts = optionsFor(f, ctx);
+      const byId = {};
+      opts.forEach((o) => { byId[o.id] = o; });
+      const withText = ctx.sources && typeof ctx.sources.cardText === "function" ? ctx.sources.cardText() : [];
+      if (err) {
+        const e = el("div", "ed-picks-err");
+        e.appendChild(el("span", "", err + " "));
+        e.appendChild(btn("Try again", "ed-link", () => { if (typeof window.redrawCurrentTab === "function") window.redrawCurrentTab(); }));
+        box.appendChild(e);
+      }
+      // the ordered list of what's shown
+      const list = el("ol", "ed-picks-list");
+      if (!picked.length) box.appendChild(el("p", "ed-hint", "Nothing picked yet. Tick up to " + max + " cards below."));
+      picked.forEach((id, i) => {
+        const o = byId[id];
+        const li = el("li", "ed-picks-row");
+        li.appendChild(el("span", "ed-picks-name", (i + 1) + ". " + (o ? o.title : id)));
+        if (!o) li.appendChild(el("span", "ed-badge", err ? "Couldn't check" : "Not found, hidden on Home"));
+        else if (o.group !== "Home only" && withText.indexOf(id) < 0) li.appendChild(el("span", "ed-badge", "Uses the " + o.group + " card's text"));
+        const up = btn("↑", "ed-link", () => { picked.splice(i - 1, 0, picked.splice(i, 1)[0]); save(); }, "Move up");
+        up.disabled = i === 0;
+        const down = btn("↓", "ed-link", () => { picked.splice(i + 1, 0, picked.splice(i, 1)[0]); save(); }, "Move down");
+        down.disabled = i === picked.length - 1;
+        li.appendChild(up); li.appendChild(down);
+        li.appendChild(btn("Remove", "ed-link danger", () => { picked.splice(i, 1); save(); }));
+        list.appendChild(li);
+      });
+      if (picked.length) box.appendChild(list);
+      if (picked.some((id) => byId[id] && byId[id].group !== "Home only" && withText.indexOf(id) < 0))
+        box.appendChild(el("p", "ed-hint", "A card that uses the Work or Builds text still looks complete. Add its Home text under “Card text on Home” to match the design."));
+      if (picked.length >= max) box.appendChild(el("p", "ed-hint", picked.length + " of " + max + " picked. Remove one to pick another."));
+      // every option, grouped by site
+      const groups = {};
+      opts.forEach((o) => { (groups[o.group || "Other"] = groups[o.group || "Other"] || []).push(o); });
+      Object.keys(groups).forEach((g) => {
+        const det = el("details", "ed-group");
+        det.open = true;
+        det.appendChild(el("summary", "", g + " (" + groups[g].length + ")"));
+        groups[g].forEach((o) => {
+          const row = el("label", "ed-check");
+          const cb = el("input", "");
+          cb.type = "checkbox";
+          cb.checked = picked.indexOf(o.id) >= 0;
+          cb.disabled = !cb.checked && picked.length >= max;
+          cb.addEventListener("change", () => {
+            const i = picked.indexOf(o.id);
+            if (cb.checked && i < 0) picked.push(o.id);
+            if (!cb.checked && i >= 0) picked.splice(i, 1);
+            if (!Array.isArray(v)) { v = picked; }
+            save();
+          });
+          row.appendChild(cb);
+          row.appendChild(document.createTextNode(o.title));
+          det.appendChild(row);
+        });
+        box.appendChild(det);
+      });
+      if (!opts.length && !err) box.appendChild(el("p", "ed-hint", "Nothing to pick from yet."));
+    }
+    picksHosts.add({ host: box, draw: draw });
+    draw();
+  }
+  /* cardref: one card id from a source, or a new Home-only card ("home:…") */
+  function cardRefEditor(host, f, v, set, ctx) {
+    const s = el("select", "ed-select");
+    const opts = optionsFor(f, ctx);
+    const add = (parent, value, text) => { const op = el("option", "", text); op.value = value; parent.appendChild(op); return op; };
+    add(s, "", "(choose a card)");
+    const groups = {};
+    opts.forEach((o) => { (groups[o.group || "Other"] = groups[o.group || "Other"] || []).push(o); });
+    Object.keys(groups).forEach((g) => {
+      const og = el("optgroup", "");
+      og.label = g;
+      groups[g].forEach((o) => add(og, o.id, o.title));
+      s.appendChild(og);
+    });
+    if (v && !opts.some((o) => o.id === v)) add(s, v, v + " (not found)");
+    add(s, "__new_home__", "+ A new Home-only card");
+    s.value = v || "";
+    s.addEventListener("change", () => {
+      let id = s.value;
+      if (id === "__new_home__") {
+        id = "home:card-" + Date.now().toString(36);
+        add(s, id, "New Home-only card");
+        s.value = id;
+      }
+      set(id);
+      document.dispatchEvent(new CustomEvent("lc-cards-changed"));
+    });
+    host.appendChild(s);
+    host.appendChild(el("p", "ed-hint", "Home-only cards are for work that isn't on Work or Builds yet. Give it a title below, then tick it under “Cards shown”."));
   }
 
   /* ---------------- free blocks (Notion-like stack) ---------------- */
@@ -478,6 +602,12 @@
       fieldEditor(det, { key: "title", label: "Browser tab title", kind: "text" }, () => metaGet("title"), (v) => metaSet("title", v));
       fieldEditor(det, { key: "description", label: "Description", kind: "textarea" }, () => metaGet("description"), (v) => metaSet("description", v));
       pc.appendChild(det);
+    }
+    if (opts.menuSwitch) {
+      // the row of section links under the header (Top, Featured…); labels stay saved when it's off
+      host.layout = host.layout || {};
+      fieldEditor(pc, { key: "showMenu", label: "Show the section menu under the header", kind: "toggle" },
+        () => host.layout.showMenu !== false, (v) => { host.layout.showMenu = !!v; changed(); });
     }
 
     // --- sections

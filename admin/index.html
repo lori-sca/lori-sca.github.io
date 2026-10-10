@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin-base.css">
-<link rel="stylesheet" href="builder.css">
+<link rel="stylesheet" href="builder.css?v=2">
 <style>
   .ed-wrap { max-width: 820px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
   .ed-wrap h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: 2.2rem; margin-bottom: .6rem; }
@@ -135,8 +135,8 @@
 
 <script src="../content.js"></script>
 <script src="merge.js"></script>
-<script src="../skeleton.js"></script>
-<script src="builder.js"></script>
+<script src="../skeleton.js?v=2"></script>
+<script src="builder.js?v=2"></script>
 <script>
 /* ================= infra ================= */
 const SITES = {
@@ -723,11 +723,47 @@ function switchSite(siteId) {
 /* ================= MAIN SITE tabs ================= */
 const MAIN_HOME = "../index.html";
 
-defineTab("main", "home", "Home", (panel) => pageBuilder(panel, {
-  path: "data/home.json", label: "Home page", view: "../index.html", tag: "home",
-  sources: { projects: ["analytics", "builds"].flatMap((c) => (PROJECTS[c] || []).map((p) => ({ id: p.id, title: p.title }))) },
-  validate: (d) => ((d.featured || []).length > 3 ? "Featured work shows at most 3 projects. Untick one, then save." : ""),
-}));
+/* Read a JSON file from another of the three repos (read only, never saved).
+   Reads the repo at main, so a card Muse just synced shows up right away. */
+async function readFromSite(siteId, path) {
+  const site = SITES[siteId];
+  const res = await fetch("https://api.github.com/repos/" + site.owner + "/" + site.repo + "/contents/" + path + "?ref=" + BRANCH, {
+    cache: "no-store",
+    headers: { "Authorization": "Bearer " + getToken(), "Accept": "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error("GitHub " + res.status);
+  const f = await res.json();
+  return JSON.parse(b64ToUtf8(f.content));
+}
+/* Selected work picker: every live card on Work and Builds, plus Home-only cards. */
+async function homeCardSources(home) {
+  const out = { projects: [], projectsError: "" };
+  const fails = [];
+  const [lanes, builds] = await Promise.all([
+    readFromSite("analytics", "data/lanes.json").catch(() => { fails.push("Work"); return null; }),
+    readFromSite("builds", "data/projects.json").catch(() => { fails.push("Builds"); return null; }),
+  ]);
+  ((lanes && lanes.lanes) || []).forEach((l) => (l.projects || []).forEach((p) => {
+    if (p.status === "live" && p.id) out.projects.push({ id: p.id, title: "Work · " + (l.name ? l.name + " · " : "") + (p.title || p.id), group: "Work" });
+  }));
+  ((builds && builds.projects) || []).forEach((p) => {
+    if (p.status === "live" && p.id) out.projects.push({ id: p.id, title: "Builds · " + (p.title || p.id), group: "Builds" });
+  });
+  if (fails.length) out.projectsError = "Couldn't load " + fails.join(" and ") + " cards.";
+  out.homeCards = () => (home.featuredCards || []).filter((c) => c && c.id && (/^home:/.test(c.id) || c.source === "home"))
+    .map((c) => ({ id: c.id, title: "Home only · " + (c.title || "New card"), group: "Home only" }));
+  out.cardText = () => (home.featuredCards || []).filter((c) => c && c.id && (c.title || c.summary)).map((c) => c.id);
+  return out;
+}
+defineTab("main", "home", "Home", async (panel) => {
+  const entry = await loadData("data/home.json");
+  const sources = await homeCardSources(entry.data);
+  return pageBuilder(panel, {
+    path: "data/home.json", label: "Home page", view: "../index.html", tag: "home", menuSwitch: true,
+    sources: sources,
+    validate: (d) => ((d.featured || []).length > 3 ? "Selected work shows at most 3 cards. Remove one, then save." : ""),
+  });
+});
 
 defineTab("main", "writing", "Writing", (panel) => pageBuilder(panel, {
   path: "data/writing.json", label: "Writing page", view: "../writing.html", tag: "writing",
