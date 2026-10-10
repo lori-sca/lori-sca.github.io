@@ -4,13 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>/* theme before first paint: ?theme= from another of the three sites, else stored choice, else device */(function(){try{var d=document.documentElement,u=new URL(location.href),q=u.searchParams.get("theme");if(q==="dark"||q==="light"){localStorage.setItem("lori-theme",q);u.searchParams.delete("theme");history.replaceState(history.state,"",u.pathname+u.search+u.hash);}var s=localStorage.getItem("lori-theme");d.setAttribute("data-theme",s==="dark"||s==="light"?s:(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));}catch(e){}})();</script>
-<title>Off the clock — Lorisca Cessia</title>
+<title>Off the clock · Lorisca Cessia</title>
 <meta name="description" content="Communities, events, and hobbies. The rest of me.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css?v=2">
 <link rel="stylesheet" href="shared.css?v=3">
+<link rel="stylesheet" href="offclock.css?v=1">
 </head>
 <body data-page="offtheclock">
 
@@ -22,346 +23,348 @@
   <div class="subnav"><div class="subnav-inner" id="subnav-inner"></div></div>
 </nav>
 
-<main>
-  <section class="page-hero oc-hero" id="top">
-    <div class="wrap">
-      <span class="eyebrow" id="oc-eyebrow"></span>
-      <h1 class="oc-title" id="oc-headline"></h1>
-      <div class="oc-hero-row">
-        <p class="lede" id="oc-lede"></p>
+<main class="oc">
+  <section class="oc-hero" id="top">
+    <div class="oc-wrap">
+      <span class="oc-label" id="oc-eyebrow">Communities, Events, Hobbies</span>
+      <h1 class="oc-title" id="oc-headline">Off the <em>clock.</em></h1>
+      <div class="oc-row section-head">
+        <p class="oc-lede" id="oc-lede"></p>
         <div class="oc-clock" id="oc-clock" hidden>
-          <svg class="oc-clock-face" viewBox="0 0 32 32" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="13"/><line id="oc-hour" x1="16" y1="16" x2="16" y2="10" stroke-linecap="round"/><line id="oc-min" x1="16" y1="16" x2="22" y2="16" stroke-linecap="round"/></svg>
-          <span class="oc-clock-txt">
-            <span class="k">San Francisco right now</span>
-            <span><strong id="oc-time">--:--</strong> &middot; off the clock</span>
-          </span>
+          <svg viewBox="0 0 32 32" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="16" cy="16" r="13"/><line id="oc-hour" x1="16" y1="16" x2="16" y2="10" stroke-linecap="round"/><line id="oc-min" x1="16" y1="16" x2="22" y2="16" stroke-linecap="round"/></svg>
+          <span class="oc-clock-txt"><span class="oc-label">San Francisco right now</span><span><strong id="oc-time">--:--</strong> &middot; off the clock</span></span>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="fun">
-    <div class="wrap">
-      <div class="fun-grid" id="post-list"></div>
+  <section class="oc-fun" id="fun" aria-label="The fun stuff">
+    <div class="oc-wrap">
+      <div class="oc-fun-grid" id="post-list"></div>
     </div>
   </section>
 
-  <div class="band oc-field" id="field">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-field-eyebrow"></span>
-          <h2 id="sec-field-headline"></h2>
-        </div>
-        <p class="sh-side" id="sec-field-side"></p>
+  <section class="oc-field" id="field">
+    <div class="oc-wrap">
+      <div class="oc-head section-head">
+        <span class="oc-label" id="sec-field-eyebrow">In the field</span>
+        <h2 id="sec-field-headline">Out &amp; <em>about.</em></h2>
+        <p id="sec-field-side"></p>
       </div>
-      <div class="tile-grid" id="tile-grid"></div>
+      <div class="oc-rail">
+        <div class="oc-tiles" id="tile-grid" tabindex="0" aria-label="Events, scroll sideways for more"></div>
+        <div class="oc-rail-nav" id="tile-nav" hidden>
+          <button type="button" class="oc-icon" id="tile-prev" aria-label="Previous events">&lsaquo;</button>
+          <button type="button" class="oc-icon" id="tile-next" aria-label="More events">&rsaquo;</button>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="band" id="contact">
-    <div class="wrap">
-      <div class="section-head">
-        <div class="sh-main">
-          <span class="eyebrow" id="sec-contact-eyebrow"></span>
-          <h2 id="sec-contact-headline"></h2>
+  <section class="oc-foot" id="contact">
+    <div class="oc-wrap">
+      <div class="oc-foot-main section-head">
+        <span class="oc-label" id="sec-contact-eyebrow" hidden></span>
+        <h2 id="sec-contact-headline">Open to roles in people, operations and analytics at growing companies.</h2>
+        <p id="sec-contact-side">Based in San Francisco.</p>
+        <div class="oc-copy" id="copy-mail">
+          <code id="mail-addr">loriscatuuk@gmail.com</code>
+          <button type="button" id="mail-copy">Copy email</button>
+          <span class="oc-copy-status" id="mail-status" role="status" aria-live="polite"></span>
         </div>
       </div>
-      <div class="cta-row" id="contact-row" style="margin-top:0;"></div>
+      <div class="oc-foot-ctas" id="contact-ctas"><a class="ds-btn ds-btn-dark" href="mailto:loriscatuuk@gmail.com">Get in touch</a></div>
+    </div>
+  </section>
+
+  <div class="oc-sheet" id="oc-sheet" hidden>
+    <div class="oc-sheet-bg" data-close></div>
+    <div class="oc-sheet-box" role="dialog" aria-modal="true" aria-labelledby="oc-blog-title">
+      <div class="oc-sheet-bar">
+        <span class="oc-label">Off the clock</span>
+        <button type="button" class="oc-icon" id="oc-prev" aria-label="Previous">&larr;</button>
+        <button type="button" class="oc-icon" id="oc-next" aria-label="Next">&rarr;</button>
+        <button type="button" class="oc-icon" data-close aria-label="Close">&#10005;</button>
+      </div>
+      <div class="oc-sheet-in" id="oc-sheet-in"></div>
     </div>
   </div>
 </main>
 
-<footer class="site-footer oc-footer">
-  <div class="wrap">
-    <div class="foot-links">
-      <a href="https://lori-sca.github.io">Lorisca Cessia</a>
-      <a href="https://lorisca-analytics.github.io">Analytics Work</a>
-      <a href="https://lorisca-builds.github.io">Builds</a>
-      <a href="https://lori-sca.github.io/about.html">About</a>
-    </div>
-    <p class="fine">&copy; <span id="year"></span> LORISCA CESSIA</p>
-  </div>
-</footer>
-
 <script src="site.js?v=2"></script>
-<script src="https://lori-sca.github.io/header.js?v=4"></script>
+<script src="https://lori-sca.github.io/header.js?v=5"></script>
 <script src="motion.js?v=2"></script>
 <script>
-  /* ---------- fun cards: title first, photo below, story expander ---------- */
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  function h(tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+  function has(v) { return v != null && String(v).trim() !== ""; }
+  function plural(n) { return n + (n === 1 ? " story" : " stories"); }
+  function get(path) { return fetch(path).then(function (r) { if (!r.ok) throw new Error(path); return r.json(); }); }
+  var posts = [], current = null, lastFocus = null;
+
+  /* ---------- what shows: hidden cards, stories and tiles stay in the file ---------- */
+  function liveEntries(p) {
+    return (p.entries || []).filter(function (e) { return e && !e.hidden && (has(e.title) || has(e.text) || (e.photos || []).length); });
+  }
+  function hasBlog(p) { return liveEntries(p).length > 0 || has(p.story) || has(p.embed); }
+
+  /* ---------- fun cards ---------- */
   function postCard(p, i) {
-    const card = document.createElement("article");
-    card.className = "fun-card tilt-" + (i % 3);
-    const top = document.createElement("div");
-    top.className = "fun-top";
-    const meta = document.createElement("div");
-    meta.className = "post-meta";
-    const em = document.createElement("span");
-    em.className = "post-emoji";
-    em.textContent = p.emoji || "✳";
-    meta.appendChild(em);
-    if (p.date) {
-      const dt = document.createElement("span");
-      dt.className = "post-date";
-      dt.textContent = prettyDate(p.date);
-      meta.appendChild(dt);
-    }
-    top.appendChild(meta);
-    const h = document.createElement("h3");
-    h.textContent = p.title || "";
-    top.appendChild(h);
-    if (p.text) {
-      const t = document.createElement("p");
-      t.textContent = p.text;
-      top.appendChild(t);
-    }
-    card.appendChild(top);
-    if (p.photo) {
-      const ph = document.createElement("div");
-      ph.className = "fun-photo";
-      const img = document.createElement("img");
-      img.src = p.photo; img.alt = p.title || ""; img.loading = "lazy";
-      img.setAttribute("data-zoom", p.photo);
-      img.dataset.caption = p.title || "";
-      ph.appendChild(img);
-      card.appendChild(ph);
-    }
-    if (p.story || p.embed) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "fun-story-btn";
-      btn.setAttribute("aria-expanded", "false");
-      btn.innerHTML = '<span>The story</span><span class="plus" aria-hidden="true">+</span>';
-      const panel = document.createElement("div");
-      panel.className = "fun-story-panel";
-      panel.hidden = true;
-      if (p.story) {
-        const st = document.createElement("p");
-        st.textContent = p.story;
-        panel.appendChild(st);
-      }
-      const emb = embedNode(p.embed);
-      if (emb) panel.appendChild(emb);
-      btn.addEventListener("click", () => {
-        const open = panel.hidden;
-        panel.hidden = !open;
-        btn.setAttribute("aria-expanded", String(open));
-        btn.querySelector(".plus").textContent = open ? "–" : "+";
-      });
-      card.appendChild(btn);
-      card.appendChild(panel);
+    var es = liveEntries(p), card = h("article", "oc-card t" + (i % 3));
+    card.id = "card-" + p.id;
+    card.appendChild(h("span", "oc-emoji", p.emoji || "\u2733"));
+    card.appendChild(h("h3", "", p.title || ""));
+    if (has(p.text)) card.appendChild(h("p", "", p.text));
+    if (has(p.photo)) { var ph = h("div", "oc-card-photo"), im = h("img"); im.src = p.photo; im.alt = p.title || ""; im.loading = "lazy"; ph.appendChild(im); card.appendChild(ph); }
+    if (hasBlog(p)) {
+      card.classList.add("has-blog");
+      var foot = h("div", "oc-card-foot"), b = h("button", "oc-open");
+      b.type = "button";
+      b.appendChild(h("span", "oc-label", es.length ? plural(es.length) : "The story"));
+      b.appendChild(h("span", "oc-arrow", "\u2192"));
+      b.setAttribute("aria-label", "Open " + (p.title || "this card") + (es.length ? ", " + plural(es.length) : ""));
+      foot.appendChild(b);
+      var stack = h("span", "oc-stack"); stack.setAttribute("aria-hidden", "true");
+      es.filter(function (e) { return (e.photos || []).length; }).slice(0, 3).forEach(function (e) { var t = h("img"); t.src = e.photos[0]; t.alt = ""; t.loading = "lazy"; stack.appendChild(t); });
+      foot.appendChild(stack);
+      card.appendChild(foot);
+      card.addEventListener("click", function () { openBlog(p.id); });
     }
     return card;
   }
-  /* ---------- involvement tiles with detail panels ---------- */
+
+  /* ---------- event tiles ---------- */
   function tileNode(t) {
-    const d = document.createElement("div");
-    d.className = "tile";
-    const media = document.createElement("div");
-    media.className = "tile-media";
-    if (t.photo) {
-      const img = document.createElement("img");
-      img.src = t.photo;
-      img.alt = [t.place, t.context].filter(Boolean).join(" — ");
-      img.loading = "lazy";
-      img.setAttribute("data-zoom", t.photo);
-      img.dataset.caption = [t.place, t.context].filter(Boolean).join(" · ");
-      if (t.link) img.dataset.link = t.link;
-      media.appendChild(img);
-    } else {
-      const ph = document.createElement("div");
-      ph.className = "tile-empty";
-      ph.textContent = (t.place || "?").trim().charAt(0).toUpperCase();
-      media.appendChild(ph);
-    }
-    const cap = document.createElement("div");
-    cap.className = "tile-cap";
-    const name = document.createElement("strong");
-    name.textContent = t.place || "";
-    cap.appendChild(name);
-    if (t.context) {
-      const ctx = document.createElement("span");
-      ctx.textContent = t.context;
-      cap.appendChild(ctx);
-    }
-    media.appendChild(cap);
-    d.appendChild(media);
-    if (t.badge) {
-      const b = document.createElement("span");
-      b.className = "tile-badge";
-      b.textContent = t.badge;
-      d.appendChild(b);
-    }
-    if (t.details || t.link) {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "tile-plus";
-      btn.setAttribute("aria-label", "Details for " + (t.place || "tile"));
-      btn.setAttribute("aria-expanded", "false");
-      btn.textContent = "+";
-      const panel = document.createElement("div");
-      panel.className = "tile-panel";
-      panel.hidden = true;
-      if (t.details) {
-        const p = document.createElement("p");
-        p.textContent = t.details;
-        panel.appendChild(p);
-      }
-      if (t.link) {
-        const a = document.createElement("a");
-        a.className = "text-link";
-        a.href = t.link; a.target = "_blank"; a.rel = "noopener";
-        a.textContent = "Open link ↗";
-        panel.appendChild(a);
-      }
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const open = panel.hidden;
-        panel.hidden = !open;
-        btn.setAttribute("aria-expanded", String(open));
-        btn.textContent = open ? "–" : "+";
-      });
-      media.appendChild(btn);
-      d.appendChild(panel);
+    var d = h("div", "oc-tile"), m = h("div", "oc-tile-media");
+    var name = [t.place, t.context].filter(has).join(" \u00b7 ");
+    if (has(t.photo)) {
+      var im = h("img"); im.src = t.photo; im.alt = name; im.loading = "lazy";
+      im.addEventListener("click", function () { zoom(t.photo, name, t.link); });
+      m.appendChild(im);
+    } else m.appendChild(h("div", "oc-tile-empty", (t.place || "?").trim().charAt(0).toUpperCase()));
+    var cap = h("div", "oc-tile-cap"); cap.appendChild(h("strong", "", t.place || "")); if (has(t.context)) cap.appendChild(h("span", "", t.context)); m.appendChild(cap);
+    d.appendChild(m);
+    if (has(t.badge)) d.appendChild(h("span", "oc-tile-badge", t.badge));
+    if (has(t.details) || has(t.link)) {
+      var b = h("button", "oc-tile-plus", "+"), pn = h("div", "oc-tile-panel");
+      b.type = "button"; b.setAttribute("aria-expanded", "false"); b.setAttribute("aria-label", "Details for " + (t.place || "this event")); pn.hidden = true;
+      if (has(t.details)) pn.appendChild(h("p", "", t.details));
+      if (has(t.link)) { var a = h("a", "", "Open link \u2197"); a.href = t.link; a.target = "_blank"; a.rel = "noopener"; pn.appendChild(a); }
+      b.addEventListener("click", function (e) { e.stopPropagation(); var o = pn.hidden; pn.hidden = !o; b.textContent = o ? "\u2013" : "+"; b.setAttribute("aria-expanded", String(o)); });
+      m.appendChild(b); d.appendChild(pn);
     }
     return d;
   }
+  function drawTiles(tiles) {
+    var grid = $("tile-grid"), nav = $("tile-nav"), prev = $("tile-prev"), next = $("tile-next");
+    tiles = tiles.filter(function (t) { return t && !t.hidden; });
+    if (!tiles.length) { $("field").hidden = true; return; }
+    tiles.forEach(function (t) { grid.appendChild(tileNode(t)); });
+    /* one row in the admin's order: arrows on wide screens, swipe on phones, arrows hide when all tiles fit */
+    function sync() {
+      var over = grid.scrollWidth > grid.clientWidth + 2;
+      nav.hidden = !over;
+      prev.disabled = grid.scrollLeft <= 2;
+      next.disabled = grid.scrollLeft + grid.clientWidth >= grid.scrollWidth - 2;
+    }
+    function go(d) {
+      var first = grid.querySelector(".oc-tile"), step = first ? first.getBoundingClientRect().width + 14 : grid.clientWidth * 0.8;
+      var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+      grid.scrollBy({ left: d * step, behavior: reduce ? "auto" : "smooth" });
+    }
+    prev.addEventListener("click", function () { go(-1); });
+    next.addEventListener("click", function () { go(1); });
+    grid.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    grid.querySelectorAll("img").forEach(function (im) { im.addEventListener("load", sync); });
+    sync();
+  }
+
+  /* ---------- mini blog sheet ---------- */
+  var sheet = $("oc-sheet"), body = $("oc-sheet-in");
+  function host(u) { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return u; } }
+  function embedBox(url) {
+    if (!has(url)) return null;
+    var m = String(url).match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([\w-]{6,})/);
+    if (m) { var w = h("div", "oc-video"), fr = h("iframe"); fr.src = "https://www.youtube.com/embed/" + m[1]; fr.loading = "lazy"; fr.title = "Video"; fr.allowFullscreen = true; fr.allow = "accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"; w.appendChild(fr); return w; }
+    var a = h("a", "oc-embed"); a.href = url; a.target = "_blank"; a.rel = "noopener";
+    a.appendChild(h("span", "", "\ud83d\udd17")); var s = h("span", "", "Open the post"); s.appendChild(h("small", "", host(url))); a.appendChild(s);
+    return a;
+  }
+  function entryNode(e, p) {
+    var photos = (e.photos || []).filter(has), art = h("article", "oc-entry"), btn = h("button", "oc-entry-btn"); btn.type = "button";
+    var cov = h("div", "oc-entry-cover");
+    if (photos.length) { var im = h("img"); im.src = photos[0]; im.alt = ""; im.loading = "lazy"; cov.appendChild(im); if (photos.length > 1) cov.appendChild(h("span", "oc-count", photos.length + " photos")); }
+    else cov.appendChild(h("span", "oc-emoji", p.emoji || "\u2733"));
+    btn.appendChild(cov);
+    var tx = h("div", "oc-entry-text");
+    if (has(e.date)) tx.appendChild(h("span", "oc-label", e.date));
+    tx.appendChild(h("h3", "", e.title || "")); if (has(e.text)) tx.appendChild(h("p", "", e.text));
+    btn.appendChild(tx); art.appendChild(btn);
+    var full = h("div", "oc-entry-full"), head = h("div", "oc-ef-head"), hl = h("div");
+    if (has(e.date)) hl.appendChild(h("span", "oc-label", e.date));
+    hl.appendChild(h("h3", "", e.title || "")); head.appendChild(hl);
+    var cl = h("button", "ds-btn ds-btn-line ds-btn-sm", "Close story"); cl.type = "button"; head.appendChild(cl); full.appendChild(head);
+    if (photos.length) {
+      var g = h("div", "oc-gallery" + (photos.length === 1 ? " one" : ""));
+      photos.forEach(function (src) { var b = h("button"); b.type = "button"; b.setAttribute("aria-label", "See photo full size"); var i2 = h("img"); i2.src = src; i2.alt = ""; i2.loading = "lazy"; b.appendChild(i2); b.addEventListener("click", function () { zoom(src, e.title || ""); }); g.appendChild(b); });
+      full.appendChild(g);
+    }
+    if (has(e.text)) full.appendChild(h("p", "oc-ef-text", e.text));
+    var em = embedBox(e.embed); if (em) full.appendChild(em);
+    var links = (e.links || []).filter(function (l) { return l && has(l.url); });
+    if (links.length) { var lk = h("div", "oc-links"); links.forEach(function (l) { var a = h("a", "ds-btn ds-btn-line ds-btn-sm", (l.label || host(l.url)) + " \u2197"); a.href = l.url; a.target = "_blank"; a.rel = "noopener"; lk.appendChild(a); }); full.appendChild(lk); }
+    art.appendChild(full);
+    btn.addEventListener("click", function () {
+      body.querySelectorAll(".oc-entry.open").forEach(function (o) { o.classList.remove("open"); });
+      art.classList.add("open"); cl.focus(); art.scrollIntoView({ block: "nearest" });
+    });
+    cl.addEventListener("click", function () { art.classList.remove("open"); btn.focus(); });
+    return art;
+  }
+  function withBlog() { return posts.filter(hasBlog); }
+  function render(p) {
+    current = p.id; body.innerHTML = "";
+    var es = liveEntries(p), head = h("div", "oc-blog-head"), l = h("div"), t = h("h2");
+    t.id = "oc-blog-title"; t.appendChild(h("span", "oc-emoji", p.emoji || "\u2733")); t.appendChild(document.createTextNode(p.title || ""));
+    l.appendChild(t); if (has(p.text)) l.appendChild(h("p", "", p.text));
+    head.appendChild(l); if (es.length) head.appendChild(h("span", "oc-label", plural(es.length)));
+    body.appendChild(head);
+    if (has(p.story)) body.appendChild(h("p", "oc-intro", p.story));
+    var em = embedBox(p.embed); if (em) body.appendChild(em);
+    if (es.length) { var list = h("div", "oc-entries"); es.forEach(function (e) { list.appendChild(entryNode(e, p)); }); body.appendChild(list); }
+    var many = withBlog().length > 1;
+    $("oc-prev").disabled = !many; $("oc-next").disabled = !many;
+    sheet.scrollTop = 0;
+  }
+  function openBlog(id, fromHash) {
+    var p = posts.filter(function (x) { return x.id === id; })[0];
+    if (!p || !hasBlog(p)) return false;
+    if (sheet.hidden) lastFocus = document.activeElement;
+    render(p); sheet.hidden = false; document.body.classList.add("oc-locked");
+    sheet.querySelector(".oc-sheet-bar [data-close]").focus();
+    if (!fromHash) { try { history.replaceState(null, "", "#" + id); } catch (e) {} }
+    return true;
+  }
+  function closeBlog() {
+    if (sheet.hidden) return;
+    sheet.hidden = true; document.body.classList.remove("oc-locked"); current = null;
+    try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function step(d) { var list = withBlog(), ids = list.map(function (p) { return p.id; }), i = ids.indexOf(current); if (list.length > 1) openBlog(ids[(i + d + ids.length) % ids.length]); }
+  sheet.querySelectorAll("[data-close]").forEach(function (b) { b.addEventListener("click", closeBlog); });
+  $("oc-prev").addEventListener("click", function () { step(-1); });
+  $("oc-next").addEventListener("click", function () { step(1); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !document.querySelector(".oc-lightbox")) closeBlog(); });
+  sheet.addEventListener("keydown", function (e) {
+    if (e.key !== "Tab") return;
+    var f = [].slice.call(sheet.querySelectorAll("button:not([disabled]), a[href], iframe")).filter(function (x) { return x.offsetParent !== null; });
+    if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  });
+
+  /* ---------- lightbox ---------- */
+  function zoom(src, caption, link) {
+    var lb = h("div", "oc-lightbox"), im = h("img"); im.src = src; im.alt = caption || ""; lb.appendChild(im);
+    if (has(caption) || has(link)) { var c = h("p", "", caption || ""); if (has(link)) { var a = h("a", "", "Open link \u2197"); a.href = link; a.target = "_blank"; a.rel = "noopener"; a.addEventListener("click", function (ev) { ev.stopPropagation(); }); c.appendChild(a); } lb.appendChild(c); }
+    function close() { lb.remove(); document.removeEventListener("keydown", esc, true); }
+    function esc(ev) { if (ev.key === "Escape") { ev.stopPropagation(); close(); } }
+    lb.addEventListener("click", close); document.addEventListener("keydown", esc, true);
+    document.querySelector("main.oc").appendChild(lb);
+  }
+
   /* ---------- live SF clock ---------- */
-  function tickClock() {
-    const pill = document.getElementById("oc-clock");
-    const t = document.getElementById("oc-time");
-    if (!pill || !t) return;
+  function tick() {
     try {
-      const now = new Date();
-      t.textContent = new Intl.DateTimeFormat("en-US", {
-        hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles"
-      }).format(now);
-      const mins = now.getMinutes() + now.getHours() * 60;
-      const hr = document.getElementById("oc-hour");
-      const mn = document.getElementById("oc-min");
-      if (hr) hr.setAttribute("transform", "rotate(" + ((now.getHours() % 12) * 30 + mins % 60 * 0.5) + " 16 16)");
-      if (mn) mn.setAttribute("transform", "rotate(" + ((mins % 60) * 6) + " 16 16)");
-      pill.hidden = false;
+      var now = new Date();
+      $("oc-time").textContent = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/Los_Angeles" }).format(now);
+      var parts = new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "numeric", hourCycle: "h23", timeZone: "America/Los_Angeles" }).formatToParts(now);
+      var H = 0, M = 0; parts.forEach(function (x) { if (x.type === "hour") H = +x.value % 12; if (x.type === "minute") M = +x.value; });
+      $("oc-hour").setAttribute("transform", "rotate(" + (H * 30 + M * 0.5) + " 16 16)");
+      $("oc-min").setAttribute("transform", "rotate(" + (M * 6) + " 16 16)");
+      $("oc-clock").hidden = false;
     } catch (e) { /* clock stays hidden */ }
   }
+
+  /* ---------- contact: same block as Home and About ---------- */
+  function drawContact(c, site) {
+    c = c || {}; site = site || {};
+    var eb = $("sec-contact-eyebrow"); eb.textContent = c.eyebrow || ""; eb.hidden = !has(c.eyebrow);
+    if (c.headline && (has(c.headline.main) || has(c.headline.accent))) setHeadline($("sec-contact-headline"), c.headline);
+    var side = $("sec-contact-side"); side.textContent = c.side || ""; side.hidden = !has(c.side);
+    $("copy-mail").hidden = c.copyEmail === false || !has(site.email);
+    if (has(site.email)) $("mail-addr").textContent = site.email;
+    var row = $("contact-ctas"); row.innerHTML = "";
+    function btn(text, href, dark) {
+      var a = h("a", "ds-btn " + (dark ? "ds-btn-dark" : "ds-btn-line"), text); a.href = href;
+      if (/^https?:/.test(href)) { a.target = "_blank"; a.rel = "noopener"; }
+      return a;
+    }
+    if (has(site.email)) row.appendChild(btn(c.ctaLabel || "Get in touch", "mailto:" + site.email, true));
+    [["Email", has(site.email) ? "mailto:" + site.email : ""], ["LinkedIn", site.linkedin], ["GitHub", site.github]].forEach(function (p) { if (has(p[1])) row.appendChild(btn(p[0], p[1], false)); });
+  }
+  $("mail-copy").addEventListener("click", function () {
+    var ma = $("mail-addr"), ms = $("mail-status"), mc = $("mail-copy");
+    function done() { ms.textContent = "Copied"; mc.textContent = "Copied"; setTimeout(function () { mc.textContent = "Copy email"; ms.textContent = ""; }, 2000); }
+    function fail() { var r = document.createRange(); r.selectNodeContents(ma); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); ms.textContent = "Selected. Press Ctrl+C or Cmd+C to copy."; }
+    try { navigator.clipboard.writeText(ma.textContent.trim()).then(done, fail); } catch (e) { fail(); }
+  });
+
   /* ---------- boot ---------- */
-  function slimFooter() {
-    const fl = document.querySelector(".foot-links");
-    if (!fl) return;
-    const keep = [
-      "https://lori-sca.github.io",
-      "https://lorisca-analytics.github.io",
-      "https://lorisca-builds.github.io",
-      "https://lori-sca.github.io/about.html",
-    ];
-    [...fl.children].forEach((a) => {
-      if (!keep.includes(a.getAttribute("href"))) a.remove();
-    });
-  }
-  loadJSON("data/site.json").then((site) => { applySiteChrome(site); slimFooter(); }).catch(() => {});
   Promise.all([
-    loadJSON("data/off-the-clock.json").catch(() => null),
-    fetch("fun/layout.json").then((r) => r.ok ? r.json() : null).catch(() => null)
-  ]).then(([oc, layout]) => {
-    if (oc) {
-      setMeta(oc.meta);
-      const order = (layout && layout.sections) || [];
-      const byHref = {};
-      (oc.subnav || []).forEach((s) => { byHref[s.href] = s; });
-      const items = [];
+    loadJSON("data/off-the-clock.json").catch(function () { return null; }),
+    get("fun/layout.json").catch(function () { return null; }),
+    loadJSON("data/site.json").catch(function () { return null; }),
+    get("fun/posts.json").catch(function () { return null; }),
+    get("fun/tiles.json").catch(function () { return null; })
+  ]).then(function (r) {
+    var oc = r[0] || {}, layout = r[1], site = r[2], pd = r[3], td = r[4];
+    if (site) applySiteChrome(site);
+    setMeta(oc.meta);
+    var hero = oc.hero || {}, S = oc.sections || {};
+    if (has(hero.eyebrow)) setText("oc-eyebrow", hero.eyebrow);
+    if (hero.headline) setHeadline($("oc-headline"), hero.headline);
+    setText("oc-lede", hero.lede);
+    mountSectionMedia("top", hero);
+    var F = S.field || {};
+    if (has(F.eyebrow)) setText("sec-field-eyebrow", F.eyebrow);
+    if (F.headline) setHeadline($("sec-field-headline"), F.headline);
+    var fs = $("sec-field-side"); fs.textContent = F.side || ""; fs.hidden = !has(F.side);
+    mountSectionMedia("field", F);
+    drawContact(S.contact, site);
+    mountSectionMedia("contact", S.contact || {});
+
+    /* section order, editable in the admin ("Page sections") */
+    var order = (layout && layout.sections) || [];
+    var main = document.querySelector("main.oc"), band = $("contact"), map = { field: $("field"), fun: $("fun") };
+    order.forEach(function (k) { if (map[k]) main.insertBefore(map[k], band); });
+
+    /* sub-row menu: off unless switched on in the admin */
+    var items = [];
+    if (oc.layout && oc.layout.showMenu === true) {
+      var byHref = {}; (oc.subnav || []).forEach(function (s) { byHref[s.href] = s; });
       if (byHref["#top"]) items.push(byHref["#top"]);
-      order.forEach((k) => { if (byHref["#" + k]) items.push(byHref["#" + k]); });
-      ["#field", "#fun"].forEach((h) => {
-        if (!order.length && byHref[h] && !items.includes(byHref[h])) items.push(byHref[h]);
-      });
+      (order.length ? order : ["field", "fun"]).forEach(function (k) { if (byHref["#" + k]) items.push(byHref["#" + k]); });
       if (byHref["#contact"]) items.push(byHref["#contact"]);
-      renderSubnav(items);
-      const hero = oc.hero || {};
-      setText("oc-eyebrow", hero.eyebrow);
-      setHeadline(document.getElementById("oc-headline"), hero.headline);
-      setText("oc-lede", hero.lede);
-      mountSectionMedia("top", hero);
-      const S = oc.sections || {};
-      if (S.field) {
-        setText("sec-field-eyebrow", S.field.eyebrow);
-        setHeadline(document.getElementById("sec-field-headline"), S.field.headline);
-        setText("sec-field-side", S.field.side);
-        mountSectionMedia("field", S.field);
-      }
-      if (S.contact) {
-        setText("sec-contact-eyebrow", S.contact.eyebrow);
-        setHeadline(document.getElementById("sec-contact-headline"), S.contact.headline);
-        mountSectionMedia("contact", S.contact);
-      }
     }
-    // section order, editable in the admin ("Page sections")
-    const order = (layout && layout.sections) || [];
-    if (order.length) {
-      const main = document.querySelector("main");
-      const band = document.getElementById("contact");
-      const map = { field: document.getElementById("field"), fun: document.getElementById("fun") };
-      order.forEach((key) => {
-        const el = map[key];
-        if (el && band) main.insertBefore(el, band);
-      });
-    }
-    tickClock();
-    setInterval(tickClock, 30000);
+    renderSubnav(items);
+
+    posts = ((pd && pd.posts) || []).filter(function (p) { return p && !p.hidden; });
+    var list = $("post-list");
+    if (!pd) list.appendChild(h("p", "oc-lede", "Posts couldn't load. Try refreshing."));
+    else if (!posts.length) $("fun").hidden = true;
+    posts.forEach(function (p, i) { list.appendChild(postCard(p, i)); });
+
+    if (td) drawTiles(td.tiles || []); else $("field").hidden = true;
+
+    if (location.hash.length > 1) openBlog(decodeURIComponent(location.hash.slice(1)), true);
+    tick(); setInterval(tick, 30000);
   });
-  // lightbox: click any zoomable photo to see it full-size
-  function openLightbox(src, alt, caption, link) {
-    const lb = document.createElement("div");
-    lb.className = "lightbox";
-    const fig = document.createElement("figure");
-    fig.className = "lb-fig";
-    const full = document.createElement("img");
-    full.src = src;
-    full.alt = alt || "";
-    fig.appendChild(full);
-    if (caption) {
-      const cap = document.createElement("figcaption");
-      cap.className = "lb-cap";
-      cap.textContent = caption;
-      if (link) {
-        const a = document.createElement("a");
-        a.href = link; a.target = "_blank"; a.rel = "noopener";
-        a.textContent = "Open link ↗";
-        cap.appendChild(a);
-      }
-      fig.appendChild(cap);
-    }
-    lb.appendChild(fig);
-    const close = () => lb.remove();
-    lb.addEventListener("click", close);
-    document.addEventListener("keydown", function esc(ev) {
-      if (ev.key === "Escape") { close(); document.removeEventListener("keydown", esc); }
-    });
-    document.body.appendChild(lb);
-  }
-  document.addEventListener("click", (e) => {
-    const z = e.target.closest("[data-zoom]");
-    if (!z) return;
-    openLightbox(z.getAttribute("data-zoom"), z.alt || "", z.dataset.caption || "", z.dataset.link || "");
-  });
-  fetch("fun/tiles.json")
-    .then((r) => { if (!r.ok) throw new Error("tiles not found"); return r.json(); })
-    .then((d) => {
-      const tiles = d.tiles || [];
-      if (!tiles.length) { document.getElementById("field").hidden = true; return; }
-      const grid = document.getElementById("tile-grid");
-      tiles.forEach((t) => grid.appendChild(tileNode(t)));
-    })
-    .catch(() => { document.getElementById("field").hidden = true; });
-  fetch("fun/posts.json")
-    .then((r) => { if (!r.ok) throw new Error("posts not found"); return r.json(); })
-    .then((d) => {
-      const list = document.getElementById("post-list");
-      (d.posts || []).forEach((p, i) => list.appendChild(postCard(p, i)));
-    })
-    .catch(() => {
-      document.getElementById("post-list").innerHTML =
-        "<p class='lede'>Posts couldn't load — try refreshing.</p>";
-    });
+})();
 </script>
 </body>
 </html>

@@ -21,7 +21,8 @@
       "place": "TechCrunch",
       "context": "Coming up!",
       "link": "",
-      "photo": ""
+      "photo": "",
+      "hidden": true
     }
   ]
 }

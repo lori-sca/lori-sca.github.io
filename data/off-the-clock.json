@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Off the clock — Lorisca Cessia",
+    "title": "Off the clock · Lorisca Cessia",
     "description": "Communities, events, and hobbies. The rest of me."
   },
   "subnav": [
@@ -47,15 +47,21 @@
       "links": []
     },
     "contact": {
-      "eyebrow": "Contact",
+      "eyebrow": "",
       "headline": {
-        "main": "Get in ",
-        "accent": "touch."
+        "main": "Open to roles in people, operations and analytics at growing companies.",
+        "accent": ""
       },
       "image": "",
       "imageAlt": "",
       "imageCaption": "",
-      "links": []
+      "links": [],
+      "side": "Based in San Francisco.",
+      "ctaLabel": "Get in touch",
+      "copyEmail": true
     }
+  },
+  "layout": {
+    "showMenu": false
   }
 }

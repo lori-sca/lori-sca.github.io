@@ -73,3 +73,13 @@ body.ed-preview-on .ed-wrap { margin-left: 0; max-width: 50vw; }
 .ed-picks-row { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .6rem; }
 .ed-picks-name { font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
 .ed-picks-err { border: 1px solid #b3261e; color: #b3261e; border-radius: 8px; padding: .5rem .7rem; font-size: .9rem; }
+
+/* Off the clock: mini blog inside a fun card (thread 6) */
+.ed-oc-blog { margin-top: 1.6rem; padding-top: 1.2rem; border-top: 1px solid var(--hairline); display: grid; }
+.ed-oc-blog > h3 { font-size: 1.05rem; margin: 0 0 .2rem; }
+.ed-oc-blog .ed-sortable { margin-top: .4rem; }
+.ed-oc-thumbs { display: flex; flex-wrap: wrap; gap: .6rem; margin: .4rem 0 .5rem; }
+.ed-oc-thumb { display: grid; gap: .2rem; justify-items: center; }
+.ed-oc-thumb img { width: 84px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid var(--hairline); display: block; }
+.ed-oc-thumb > div { display: flex; gap: .45rem; }
+.ed-oc-thumb .ed-link:disabled { opacity: .3; cursor: default; }

@@ -121,8 +121,14 @@
 
       var O = M + "off-the-clock.html";
       if (oc) { if (oc.title || oc.headline) add(oc.title || oc.headline, oc.lede || "", O + "#top", "Off the clock"); layoutEntries(oc, O, "Off the clock"); }
-      if (posts) (posts.posts || []).forEach(function (p) { add(p.title, p.text, O + "#fun", "Off the clock"); });
-      if (tiles) (tiles.tiles || []).forEach(function (t) { add(t.place, t.context, O + "#field", "Off the clock"); });
+      if (posts) (posts.posts || []).forEach(function (p) {
+        if (!p || p.hidden) return;
+        var es = (p.entries || []).filter(function (e) { return e && !e.hidden && (e.title || e.text || (e.photos || []).length); });
+        var opens = es.length || p.story || p.embed;
+        add(p.title, p.text, O + (opens ? "#" + p.id : "#fun"), "Off the clock");
+        es.forEach(function (e) { add(e.title || p.title, [p.title, e.date, e.text].filter(Boolean).join(" · "), O + "#" + p.id, "Off the clock"); });
+      });
+      if (tiles) (tiles.tiles || []).forEach(function (t) { if (t && !t.hidden) add(t.place, t.context, O + "#field", "Off the clock"); });
 
       var WK = WORK + "/";
       if (wHero && wHero.headline) add(wHero.headline, wHero.lede || "", WK + "#top", "Work");
