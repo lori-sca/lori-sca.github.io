@@ -584,7 +584,7 @@
       {
         "title": "The builder",
         "text": "I build the machine the work runs on, then leave behind something the team can run without me.",
-        "hidden": true
+        "hidden": false
       },
       {
         "title": "The skeptic",
