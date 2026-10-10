@@ -385,13 +385,15 @@
 
     /* ---- Builds site (files: hero, projects, page) ---- */
     "builds-hero": { label: "Header", anchor: "top", about: "Title block plus the “What lives here” card.",
-      fields: ORG_HERO.concat([F("nowTitle", "Side card title", "text", { group: "Side card" }),
+      fields: ORG_HERO.concat([F("nowHidden", "Hide the side card", "toggle", { group: "Side card" }),
+        F("nowTitle", "Side card title", "text", { group: "Side card" }),
         F("nowRows", "Side card rows", "list", { group: "Side card", item: "row", fields: [F("k", "Label", "text"), F("v", "Text", "text")] })]),
-      bind: Object.assign({ nowTitle: "page.nowCard.title", nowRows: "page.nowCard.rows" }, ORG_HERO_BIND) },
+      bind: Object.assign({ nowHidden: "page.nowCard.hidden", nowTitle: "page.nowCard.title", nowRows: "page.nowCard.rows" }, ORG_HERO_BIND) },
     "builds-list": { label: "Builds", anchor: "builds", about: "One card per tool. Only cards set to live are shown.",
       fields: [F("projects", "Builds", "list", { item: "build", fields: PROJECT }),
+        F("showProto", "Show the prototyping line on the page", "toggle"),
         F("protoLabel", "Prototyping label", "text"), F("prototyping", "Prototyping line", "textarea")],
-      bind: { projects: "projects.projects", protoLabel: "page.prototypingLabel", prototyping: "projects.prototyping" } },
+      bind: { projects: "projects.projects", showProto: "page.showPrototyping", protoLabel: "page.prototypingLabel", prototyping: "projects.prototyping" } },
   };
   Object.keys(NATIVE).forEach((k) => { NATIVE[k].native = true; NATIVE[k].single = true; NATIVE[k].looks = NATIVE[k].looks || []; TYPES[k] = NATIVE[k]; });
 
