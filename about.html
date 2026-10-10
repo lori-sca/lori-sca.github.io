@@ -192,6 +192,7 @@
 <script src="site.js"></script>
 <script src="skeleton.js"></script>
 <script src="theme.js"></script>
+<script src="journey.js"></script>
 <script src="motion.js"></script>
 <script>
   Promise.all([loadJSON("data/site.json"), loadJSON("data/about.json")])
@@ -330,7 +331,7 @@
       // field notes
       document.getElementById("fieldnotes").textContent = about.fieldnotes || "";
       // journey map
-      initJourney(about.journey || []);
+      if (window.Journey) Journey.init(about);
       // section order, hidden sections, looks and builder-added sections (admin page builder)
       if (window.Theme && Theme.applyLayout && about.layout) {
         Theme.applyLayout(document.querySelector("main"), about, { site: site });
@@ -344,78 +345,6 @@
         "<p class='lede'>Content couldn't load — try refreshing.</p>";
     });
 
-  /* ---------- journey map ---------- */
-  function initJourney(stops) {
-    const box = document.getElementById("journey-map");
-    if (!stops.length || typeof mapboxgl === "undefined") { box.style.display = "none"; return; }
-    fetch("assets/mapbox-token.txt")
-      .then((r) => { if (!r.ok) throw new Error("no token"); return r.text(); })
-      .then((tok) => {
-        mapboxgl.accessToken = tok.trim();
-        const pts = stops.map((s) => [s.lng, s.lat]);
-        const map = new mapboxgl.Map({
-          container: "journey-canvas",
-          style: "mapbox://styles/mapbox/streets-v12",
-          scrollZoom: false,
-        });
-        const bounds = pts.reduce((b, p) => b.extend(p), new mapboxgl.LngLatBounds(pts[0], pts[0]));
-        const markers = [];
-        function addRoute() {
-          if (map.getSource("journey")) return;
-          map.addSource("journey", {
-            type: "geojson",
-            data: { type: "Feature", geometry: { type: "LineString", coordinates: pts } },
-          });
-          map.addLayer({
-            id: "journey-line", type: "line", source: "journey",
-            paint: { "line-color": "#5b7fa6", "line-width": 3, "line-opacity": 0.85 },
-          });
-        }
-        map.on("load", () => { addRoute(); map.fitBounds(bounds, { padding: 70 }); });
-        stops.forEach((s, idx) => {
-          const pin = document.createElement("div");
-          pin.className = "map-pin";
-          pin.setAttribute("role", "button");
-          pin.setAttribute("tabindex", "0");
-          pin.setAttribute("aria-label", s.city + " — " + s.note + ". Activate for details.");
-          const popup = new mapboxgl.Popup({ offset: 20 }).setHTML(
-            "<strong>" + s.city + "</strong><br>" + s.note
-          );
-          const marker = new mapboxgl.Marker(pin)
-            .setLngLat([s.lng, s.lat])
-            .setPopup(popup)
-            .addTo(map);
-          // Mapbox toggles the popup on marker click by default; adding our own
-          // click listener would double-toggle (open then instantly close).
-          // Keyboard users get the legend buttons below, which call togglePopup once.
-          markers.push(marker);
-        });
-        // legend
-        const lg = document.getElementById("journey-legend");
-        stops.forEach((s, idx) => {
-          const sp = document.createElement("button");
-          sp.type = "button";
-          sp.className = "journey-stop";
-          const dot = document.createElement("i");
-          sp.appendChild(dot);
-          sp.appendChild(document.createTextNode(s.city + " — " + s.note));
-          sp.addEventListener("click", () => {
-            map.flyTo({ center: [s.lng, s.lat], zoom: 4, duration: 900 });
-            markers[idx].togglePopup();
-          });
-          lg.appendChild(sp);
-        });
-        // follow dark mode
-        document.addEventListener("lori-theme", (e) => {
-          map.setStyle(e.detail === "dark"
-            ? "mapbox://styles/mapbox/dark-v11"
-            : "mapbox://styles/mapbox/streets-v12");
-          map.once("styledata", addRoute);
-        });
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), "top-right");
-      })
-      .catch(() => { box.style.display = "none"; });
-  }
 </script>
 </body>
 </html>
