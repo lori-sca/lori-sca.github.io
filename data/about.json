@@ -377,16 +377,16 @@
       "href": "#top"
     },
     {
-      "label": "30 seconds",
-      "href": "#thirties"
-    },
-    {
-      "label": "Story",
-      "href": "#story"
+      "label": "How I think",
+      "href": "#ways"
     },
     {
       "label": "The Route",
       "href": "#route"
+    },
+    {
+      "label": "Story",
+      "href": "#story"
     },
     {
       "label": "Toolbox",
@@ -584,7 +584,7 @@
       {
         "title": "The builder",
         "text": "I build the machine the work runs on, then leave behind something the team can run without me.",
-        "hidden": false
+        "hidden": true
       },
       {
         "title": "The skeptic",
