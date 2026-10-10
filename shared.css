@@ -104,7 +104,8 @@ body { font-family: var(--body); background: var(--white); color: var(--ink); }
 .lc-dark a:not(.btn), [data-theme="dark"] .lc-dark a:not(.btn) { color: var(--on-band); }
 .lc-dark .btn.primary { background: var(--on-band); color: var(--band-dark); }
 .lc-dark .btn.ghost { color: var(--on-band); border-color: rgba(255,255,255,.35); }
-.lc-dark .card, .lc-dark .lc-callout { color: var(--ink); }
+.lc-dark .card { color: var(--ink); }
+.lc-dark .lc-callout { color: var(--on-band); background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }
 .lc-dark .card .lc-rich { color: var(--steel); }
 .lc-dark .lc-quote, .lc-dark .lc-rich blockquote { border-color: var(--on-band); }
 

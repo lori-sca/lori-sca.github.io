@@ -4,8 +4,13 @@
   "linkedin": "https://www.linkedin.com/in/lorisca",
   "name": "Lorisca Cessia Tuuk",
   "portrait": "assets/portrait.jpg",
-  "role": "System-Minded People Analytics & Operations",
+  "role": "People, operations and the data behind them",
   "nav": [
+    {
+      "label": "Home",
+      "href": "index.html",
+      "key": "home"
+    },
     {
       "label": "Work",
       "href": "https://lorisca-analytics.github.io"
@@ -13,11 +18,6 @@
     {
       "label": "Builds",
       "href": "https://lorisca-builds.github.io"
-    },
-    {
-      "label": "Writing",
-      "href": "writing.html",
-      "key": "writing"
     },
     {
       "label": "Off the clock",
