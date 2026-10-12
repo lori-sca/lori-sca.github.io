@@ -2,7 +2,7 @@
   "aboutTeaser": "I build the systems I needed when I was starting out: clear intake, honest measurement, and room for people to grow into them.",
   "aboutTeaserEmbed": "",
   "featured": [
-    "h1b-sponsorship",
+    "gig-worker-referral-platform",
     "bike-venture-turnaround",
     "site-cms"
   ],
@@ -292,6 +292,33 @@
       "id": "site-cms",
       "source": "builds",
       "visual": "editor"
+    },
+    {
+      "label": "Consulting · Banking strategy",
+      "title": "Gig Worker Referral Platform",
+      "summary": "The bank already banks these people. It just can't see their income.",
+      "problem": "Documented side income counts as zero",
+      "move": "A partner referral pilot and a four-role prototype",
+      "result": "About $100 per activated customer vs $350 to $600",
+      "note": "39-person survey · 8 interviews · 4-role prototype",
+      "button": "Deep dive",
+      "href": "",
+      "visualLabel": "Cost per new customer",
+      "aLabel": "Industry estimates",
+      "aText": "$350 to $600",
+      "bLabel": "Pilot target",
+      "bText": "About $100",
+      "big": "About $100",
+      "editorActive": "",
+      "editorNote": "",
+      "noButton": false,
+      "aValue": 350,
+      "bValue": 100,
+      "editorTabs": [],
+      "editorRows": [],
+      "id": "gig-worker-referral-platform",
+      "source": "work",
+      "visual": "bars"
     }
   ],
   "method": [
