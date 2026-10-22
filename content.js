@@ -54,10 +54,10 @@ const PROJECTS = {
       hook: "A scheduled scan that catches everything I leave midway across AI chats and lands it on one prioritized board. Built for my ADHD; built so anyone can repurpose it.",
       metric: "Live demo · open playbook",
       visual:
-        "https://raw.githubusercontent.com/lori-sca/muse-adhd-project-manager/main/docs/screenshots/board.png",
+        "https://raw.githubusercontent.com/lorisca-builds/muse-adhd-project-manager/main/docs/screenshots/board.png",
       visualAlt: "Prioritized board of open loops",
       diagram:
-        "https://raw.githubusercontent.com/lori-sca/muse-adhd-project-manager/main/docs/problem-diagram.svg",
+        "https://raw.githubusercontent.com/lorisca-builds/muse-adhd-project-manager/main/docs/problem-diagram.svg",
       diagramAlt: "Trap → Insight → Machine diagram",
       status: "live",
       type: "tool",
@@ -65,12 +65,12 @@ const PROJECTS = {
       links: [
         {
           label: "Repo",
-          url: "https://github.com/lori-sca/muse-adhd-project-manager",
+          url: "https://github.com/lorisca-builds/muse-adhd-project-manager",
           kind: "github",
         },
         {
           label: "Live demo",
-          url: "https://lori-sca.github.io/muse-adhd-project-manager/board/index.html",
+          url: "https://lorisca-builds.github.io/muse-adhd-project-manager/board/index.html",
           kind: "demo",
         },
       ],
