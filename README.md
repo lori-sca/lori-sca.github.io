@@ -11,6 +11,10 @@ site lives in `data/*.json` and `fun/*.json` and is edited from `/admin/`.
 | Skeleton | `skeleton.js` | Only additively: new section types or fields |
 | Design | `theme.js`, `theme.css`, `styles.css`, page HTML | Any redesign |
 
+- **Visitor counter.** The last line of `header.js` loads `counter.js` (GoatCounter,
+  private stats at lorisca.goatcounter.com). Keep that line in any redesign of the
+  header. The admin never loads it, and admin previews are not counted.
+
 - **Skeleton is a contract.** Never rename or remove a section type or a field key in
   `skeleton.js`, and never rename or remove a JSON key. The admin's forms are generated
   from the skeleton, so breaking it breaks editing.

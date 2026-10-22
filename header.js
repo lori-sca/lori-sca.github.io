@@ -203,3 +203,6 @@
     .then(function (site) { if (site) draw(site); })
     .catch(function () {});
 })();
+
+/* Visitor counter (GoatCounter). Keep this line through redesigns. See counter.js. */
+(function () { try { var s = document.createElement("script"); s.async = true; s.src = "https://lori-sca.github.io/counter.js"; document.head.appendChild(s); } catch (e) {} })();
