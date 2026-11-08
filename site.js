@@ -1,4 +1,4 @@
-/* site.js — renders content.js into the pages. No copy lives here. */
+/* site.js: fills the pages from the JSON data files. No copy lives here. */
 
 function el(tag, cls, html) {
   const e = document.createElement(tag);
@@ -63,7 +63,7 @@ function setText(id, v) {
   const e = document.getElementById(id);
   if (e && v != null) e.textContent = v;
 }
-/* A headline may be a plain string or {main, accent} — the accent renders in <em>. */
+/* A headline may be a plain string or {main, accent}. The accent renders in <em>. */
 function setHeadline(elm, h) {
   if (!elm || h == null) return;
   elm.innerHTML = "";

@@ -170,7 +170,7 @@ async function ghRepo(sub, method, body) {
   const res = await fetch("https://api.github.com/repos/" + currentSite.owner + "/" + currentSite.repo + "/" + sub, {
     method: method || "GET",
     // no-store: GitHub lets browsers cache API reads for 60s, which would
-    // hide a change Muse pushed a moment ago.
+    // hide a change an agent pushed a moment ago.
     cache: "no-store",
     headers: {
       "Authorization": "Bearer " + getToken(),
@@ -223,7 +223,7 @@ async function putJSON(path, data, sha, message) {
   return res.content.sha;
 }
 /* Save = fetch the live file first. If nobody else touched it, write.
-   If someone did (Muse, Claude, another tab), merge field by field and
+   If someone did (an AI agent, another tab), merge field by field and
    ask only about fields you both changed. Never overwrites blindly. */
 async function saveData(path, data, message) {
   const entry = await loadData(path);
@@ -744,7 +744,7 @@ function switchSite(siteId) {
 const MAIN_HOME = "../index.html";
 
 /* Read a JSON file from another of the three repos (read only, never saved).
-   Reads the repo at main, so a card Muse just synced shows up right away. */
+   Reads the repo at main, so a card that was just synced shows up right away. */
 async function readFromSite(siteId, path) {
   const site = SITES[siteId];
   const res = await fetch("https://api.github.com/repos/" + site.owner + "/" + site.repo + "/contents/" + path + "?ref=" + BRANCH, {

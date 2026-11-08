@@ -1,5 +1,5 @@
-/* ============================================================
-   skeleton.js — THE CONTRACT between content, editor and design.
+/*
+   skeleton.js: the contract between content, editor and design.
 
    Three layers:
      1. Content   data/*.json         your words, pictures, links
@@ -28,7 +28,7 @@
 
    Plain JS, no build step. Loaded by the site pages, the admin, and
    the two sister sites (from https://lori-sca.github.io/skeleton.js).
-   ============================================================ */
+*/
 (function (root) {
   "use strict";
 

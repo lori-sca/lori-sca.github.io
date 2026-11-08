@@ -1,5 +1,5 @@
-/* ============================================================
-   admin/builder.js — the page builder.
+/*
+   admin/builder.js: the page builder.
 
    Every form here is generated from ../skeleton.js. Nothing in this
    file knows what a page looks like: it only knows section types and
@@ -7,7 +7,7 @@
 
    Uses globals from admin/index.html: lab, status, h2card, loadData,
    saveData, uploadPhoto, currentSite, SITES.
-   ============================================================ */
+*/
 (function () {
   "use strict";
   const SK = window.Skeleton;

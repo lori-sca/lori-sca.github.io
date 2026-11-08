@@ -1,5 +1,5 @@
-/* ============================================================
-   journey.js — the About page journey map.
+/*
+   journey.js: the About page journey map.
 
    Reads from data/about.json:
      journey[]            pins in travel order { city, note, lat, lng, skip }
@@ -19,7 +19,7 @@
    arc to the visitor's approximate location (from their IP address).
    Reduced-motion visitors get the finished map with no flight.
    Plain JS, no build step. Needs mapbox-gl.js loaded first.
-   ============================================================ */
+*/
 (function (root) {
   "use strict";
 

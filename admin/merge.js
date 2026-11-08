@@ -1,8 +1,8 @@
-/* ============================================================
-   admin/merge.js — keeps two writers from overwriting each other.
+/*
+   admin/merge.js: keeps two writers from overwriting each other.
 
    The admin is not the only thing that writes to these JSON files
-   (Muse and Claude push too). When you hit Save, the editor fetches
+   (AI agents push too). When you hit Save, the editor fetches
    the live file again. If it changed since you opened the tab, this
    file does a three-way merge:
 
@@ -17,12 +17,12 @@
      - you both changed it differently -> conflict, you pick
 
    Lists whose items all carry an "id" (posts, tiles, case studies,
-   lanes) merge item by item, so adding a post here while Muse edits
+   lanes) merge item by item, so adding a post here while an agent edits
    a different post is not a conflict.
 
    Plain JS, no build step. Works in the browser (window.Merge)
    and in node (module.exports) so it can be tested on its own.
-   ============================================================ */
+*/
 (function (root) {
   "use strict";
 

@@ -1,5 +1,5 @@
-/* ============================================================
-   theme.js — DESIGN LAYER. Draws each section type from skeleton.js.
+/*
+   theme.js: the design layer. Draws each section type from skeleton.js.
 
    A redesign rewrites this file and theme.css (and styles.css).
    It must keep reading the same field names from skeleton.js, so
@@ -9,7 +9,7 @@
      Theme.renderPage(mainEl, data, { site })
        data  the page JSON (with data.layout.sections)
        site  data/site.json (for the contact buttons)
-   ============================================================ */
+*/
 (function (root) {
   "use strict";
   const S = root.Skeleton;

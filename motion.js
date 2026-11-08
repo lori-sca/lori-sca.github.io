@@ -1,9 +1,9 @@
-/* ============================================================
-   motion.js — the dynamic layer for lori-sca.github.io
+/*
+   motion.js: the dynamic layer for lori-sca.github.io
    Scroll reveals, cursor tilt, spring expands, count-ups,
    dark mode, sparkles, like hearts. Presentation only:
    no copy lives here. Respects prefers-reduced-motion.
-   ============================================================ */
+*/
 (function () {
   "use strict";
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

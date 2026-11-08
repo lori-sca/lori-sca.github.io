@@ -1,9 +1,9 @@
-/* ============================================================
-   content.js — project case-study bodies (featured cards on home).
+/*
+   content.js: project case-study bodies (featured cards on home).
    Everyday text (hero, about, writing, site links) now lives in
    data/*.json and is edited from the /admin/ page. Do not add
    page copy here.
-   ============================================================ */
+*/
 
 /* ---------------- PROJECTS ----------------
    type: "case-study" | "essay" | "tool" | "experiment"
