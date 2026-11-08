@@ -3,6 +3,12 @@
 Personal site. Plain HTML, CSS and JS, no build step. Everything you read on the
 site lives in `data/*.json` and `fun/*.json` and is edited from `/admin/`.
 
+**How it's built:** [DECISIONS.md](DECISIONS.md) explains each architecture choice,
+what else was considered, and what it costs.
+
+**Tests:** `node --test` from the repo root (Node 20+, no install). They also run on
+every push.
+
 ## Three layers (read before changing anything)
 
 | Layer | Files | Who changes it |
