@@ -34,7 +34,7 @@
     {
       "embed": "",
       "title": "People & Talent",
-      "text": "Recruiting systems, sourcing, and measurement. 10,000+ CVs a year through one intake gate; hiring turnaround down 80%."
+      "text": "Recruiting systems, sourcing and measurement. One intake gate cut hiring turnaround by about 80%, at 10,000+ CVs a year."
     },
     {
       "embed": "",
@@ -166,24 +166,24 @@
   },
   "stats": [
     {
-      "value": "−80%",
-      "label": "Hiring turnaround",
+      "value": "~80%",
+      "label": "Faster hiring turnaround",
       "detail": "after one intake gate, with 10,000+ CVs a year"
     },
     {
       "value": "−17%",
       "label": "Department turnover",
-      "detail": "in 2024, after one joined view of attrition at Bank Mega"
+      "detail": "in 2024. My joined view of attrition contributed to the drop"
     },
     {
-      "value": "+27%",
-      "label": "Training success",
-      "detail": "from the Recruit, Develop, Nurture program at Bank Mega"
+      "value": "24+ months",
+      "label": "Still in use",
+      "detail": "after I left Bank Mega. The team kept running the recruitment system"
     },
     {
       "value": "+40%",
       "label": "Merchant acquisition",
-      "detail": "with one shared field dashboard at DigiResto"
+      "detail": "at DigiResto. My shared field dashboard contributed"
     }
   ],
   "ribbon": {
@@ -208,10 +208,10 @@
       "label": "People systems · Bank Mega",
       "title": "The recruitment front door",
       "summary": "One intake gate for high-volume hiring at a bank.",
-      "problem": "10,000+ CVs a year",
+      "problem": "Many portals, many shapes",
       "move": "One intake gate",
-      "result": "−80% hiring turnaround",
-      "note": "Admin work also down about 60%",
+      "result": "About −80% hiring turnaround",
+      "note": "Both figures approximate. Admin work also down about 60%",
       "button": "Deep dive",
       "href": "",
       "visualLabel": "Hiring turnaround",
