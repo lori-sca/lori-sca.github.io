@@ -140,3 +140,8 @@ details[open] > summary > .ab-plus::before { transform: rotate(45deg); }
 .ab .ab-foot-main.section-head { display: block; margin: 0; }
 .ab .section-head h2 { margin: 0; max-width: none; }
 .ab .ab-foot .section-head h2 { max-width: 20ch; }
+
+/* readability (Nov 11): timeline dates a touch larger, city names under the map easier to tap */
+.ab-row-key .ds-label, .ab-sub-head .ds-label { font-size: .82rem; }
+.ab .journey-legend .journey-stop { padding-block: .7rem; min-height: 44px; }
+.ab .journey-legend { padding-block: .2rem; row-gap: 0; }
