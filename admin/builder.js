@@ -36,7 +36,7 @@
 
   /* ---------------- live preview (one shared panel) ---------------- */
   const Preview = {
-    on: false, frame: null, url: null, payload: null, timer: null,
+    on: false, frame: null, url: null, payload: null, timer: null, mode: "desktop", stage: null,
     attach(url, payloadFn) { this.url = url; this.payload = payloadFn; if (this.on) this.load(); },
     toggle() { this.on ? this.close() : this.open(); },
     open() {
@@ -49,17 +49,41 @@
         pane.id = "ed-preview";
         const bar = el("div", "ed-preview-bar");
         bar.appendChild(el("span", "", "Live preview · shows unsaved edits · nothing is public until you save"));
+        const modes = el("span", "ed-preview-modes");
+        [["desktop", "Laptop"], ["phone", "Phone"]].forEach((m) => {
+          const b = btn(m[1], "", () => { this.mode = m[0]; modes.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); this.fit(); });
+          b.setAttribute("aria-pressed", String(this.mode === m[0]));
+          modes.appendChild(b);
+        });
+        bar.appendChild(modes);
         bar.appendChild(btn("Close", "ed-link", () => this.close()));
         pane.appendChild(bar);
+        this.stage = el("div", "ed-preview-stage");
         this.frame = document.createElement("iframe");
         this.frame.title = "Live preview";
-        pane.appendChild(this.frame);
+        this.stage.appendChild(this.frame);
+        pane.appendChild(this.stage);
         document.body.appendChild(pane);
         this.frame.addEventListener("load", () => this.send());
+        if (window.ResizeObserver) new ResizeObserver(() => this.fit()).observe(this.stage);
+        else window.addEventListener("resize", () => this.fit());
       }
       pane.hidden = false;
+      this.fit();
       this.load();
       document.querySelectorAll("[data-preview-toggle]").forEach((b) => { b.textContent = "Hide live preview"; });
+    },
+    /* Draw the page at a real width (1280 laptop, 390 phone) and scale it to the panel. */
+    fit() {
+      if (!this.stage || !this.frame) return;
+      const w = this.stage.clientWidth, h = this.stage.clientHeight;
+      if (!w || !h) return;
+      const real = this.mode === "phone" ? 390 : 1280;
+      const scale = Math.min(1, w / real);
+      this.frame.style.width = real + "px";
+      this.frame.style.height = Math.ceil(h / scale) + "px";
+      this.frame.style.transform = "scale(" + scale + ")";
+      this.frame.style.left = Math.max(0, (w - real * scale) / 2) + "px";
     },
     load() { if (this.frame) this.frame.src = this.url + (this.url.indexOf("?") < 0 ? "?" : "&") + "preview=1"; },
     close() {
@@ -265,8 +289,9 @@
       let h = host;
       if (f.group) {
         if (!groups[f.group]) {
-          const g = el("details", "ed-group");
+          const g = el("details", "ed-group" + (f.group === "Not shown in the current design" ? " ed-group-unused" : ""));
           g.appendChild(el("summary", "", f.group));
+          if (f.group === "Not shown in the current design") g.appendChild(el("p", "ed-hint", "The current page design doesn't draw these. They stay saved, in case a later design uses them."));
           host.appendChild(g);
           groups[f.group] = g;
         }
@@ -380,7 +405,7 @@
         onChange: touched,
         title: (it, i) => ({ kind: "#" + (i + 1), summary: SK.plain(it.title || it.name || it.label || it.city || it.group || it.when || it.caption || it.alt || it.k || it.src || it.value || it.id || "") || "(empty)",
           badges: it.status && it.status !== "live" ? [it.status] : [] }),
-        isOpen: (it) => openSet.has(it) || items.length <= 3,
+        isOpen: (it) => openSet.has(it) || items.length === 1,
         setOpen: (it, o) => { if (o) openSet.add(it); else openSet.delete(it); },
         body: (box, it) => renderFields(box, f.fields, (k) => it[k], (k, nv) => { it[k] = nv; ctx.changed(); }, ctx),
         tools: (it, i, render) => [btn("Copy", "ed-link", () => { const c = clone(it); items.splice(i + 1, 0, c); openSet.add(c); render(); touched(); }, "Duplicate")],
@@ -738,7 +763,7 @@
           status("Saving " + files[a] + "…");
           await saveData(files[a], entries[a].data, "Update " + opts.label.toLowerCase() + " via page builder");
         }
-        status("Saved — live in about a minute.");
+        status("Saved, usually live within a few minutes.");
       } catch (e) { status(e.message, false); }
     }, "Save " + opts.label.toLowerCase());
   }

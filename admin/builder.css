@@ -56,13 +56,18 @@ details.ed-group[open] > summary { margin-bottom: .2rem; }
 .ed-img-field .ed-photo-preview { display: block; margin: 0 0 .5rem; max-height: 180px; object-fit: contain; }
 .ed-img-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: .5rem; font-size: .88rem; }
 
-/* live preview, side by side on wide screens */
-#ed-preview { position: fixed; top: 0; right: 0; bottom: 0; width: 50vw; z-index: 60; display: flex; flex-direction: column; background: var(--white); border-left: 1px solid var(--hairline); box-shadow: -10px 0 30px rgba(20,30,45,.08); }
+/* live preview, side by side down to laptop width. The page is drawn at a
+   real desktop or phone width and scaled to fit, so it shows its true layout. */
+#ed-preview { position: fixed; top: 0; right: 0; bottom: 0; width: 55vw; z-index: 60; display: flex; flex-direction: column; background: var(--white); border-left: 1px solid var(--hairline); box-shadow: -10px 0 30px rgba(20,30,45,.08); }
 #ed-preview[hidden] { display: none; }
-.ed-preview-bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem 1rem; border-bottom: 1px solid var(--hairline); font-size: .85rem; color: var(--steel); background: #fff8e6; }
-#ed-preview iframe { flex: 1; width: 100%; border: 0; }
-body.ed-preview-on .ed-wrap { margin-left: 0; max-width: 50vw; }
-@media (max-width: 1100px) {
+.ed-preview-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .5rem 1rem; padding: .6rem 1rem; border-bottom: 1px solid var(--hairline); font-size: .85rem; color: var(--steel); background: #fff8e6; }
+.ed-preview-modes { display: inline-flex; gap: .25rem; }
+.ed-preview-modes button { border: 1px solid var(--hairline); background: var(--white); color: var(--ink); border-radius: 999px; padding: .25rem .7rem; font: inherit; font-size: .8rem; cursor: pointer; }
+.ed-preview-modes button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--white); }
+.ed-preview-stage { flex: 1; position: relative; overflow: hidden; background: var(--mist); }
+.ed-preview-stage iframe { position: absolute; top: 0; left: 0; border: 0; background: #fff; transform-origin: 0 0; }
+body.ed-preview-on .ed-wrap { margin-left: 0; max-width: 45vw; }
+@media (max-width: 900px) {
   #ed-preview { width: 100vw; }
   body.ed-preview-on .ed-wrap { max-width: 820px; }
 }
@@ -83,3 +88,6 @@ body.ed-preview-on .ed-wrap { margin-left: 0; max-width: 50vw; }
 .ed-oc-thumb img { width: 84px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid var(--hairline); display: block; }
 .ed-oc-thumb > div { display: flex; gap: .45rem; }
 .ed-oc-thumb .ed-link:disabled { opacity: .3; cursor: default; }
+
+/* fields the current page design does not draw */
+.ed-group-unused > summary { color: var(--steel); font-style: italic; }
