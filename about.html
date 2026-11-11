@@ -9,11 +9,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.css" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.css" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="styles.css?v=2">
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="shared.css?v=3">
-<link rel="stylesheet" href="about.css?v=1">
+<link rel="stylesheet" href="about.css?v=2">
 </head>
 <body data-page="about">
 
@@ -36,7 +36,7 @@
         <p class="ab-tagline" id="about-tagline"></p>
       </div>
       <figure class="ab-photo" id="portrait-block" hidden>
-        <img id="portrait-img" alt="Portrait of Lorisca Cessia">
+        <img id="portrait-img" alt="Portrait of Lorisca Cessia" width="360" height="306">
       </figure>
     </div>
   </section>
@@ -168,7 +168,7 @@
   </section>
 </main>
 
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js"></script>
+<script id="mapbox-js" src="https://api.mapbox.com/mapbox-gl-js/v3.9.1/mapbox-gl.js" async></script>
 <script src="site.js?v=2"></script>
 <script src="https://lori-sca.github.io/header.js?v=5"></script>
 <script src="skeleton.js?v=6"></script>
@@ -209,7 +209,7 @@
       var detail = (s.detail || []).filter(has);
       var roles = (s.roles || []).filter(function (r) { return r && (has(r.role) || has(r.when)); });
       if (detail.length) {
-        var d = h("details", "ab-stop");
+        var d = h("details", "ab-stop"); if (s.open) d.open = true;
         var sm = h("summary"); sm.appendChild(hd); sm.appendChild(plus());
         d.appendChild(sm); d.appendChild(list(detail));
         body.appendChild(d);
@@ -222,7 +222,7 @@
           if (has(r.when)) rh.appendChild(h("span", "ds-label", r.when));
           var rd = (r.detail || []).filter(has);
           if (rd.length) {
-            var sub = h("details", "ab-sub");
+            var sub = h("details", "ab-sub"); if (s.open || r.open) sub.open = true;
             var ssm = h("summary"); ssm.appendChild(rh); ssm.appendChild(plus());
             sub.appendChild(ssm); sub.appendChild(list(rd));
             subs.appendChild(sub);
@@ -376,7 +376,13 @@
     });
 
     /* journey map */
-    if (window.Journey) Journey.init(about);
+    /* Mapbox loads async so the page never waits for it. Start the map once it is there (or hide it if it fails). */
+    (function () {
+      var started = false, go = function () { if (started) return; started = true; if (window.Journey) Journey.init(about); };
+      if (window.mapboxgl) return go();
+      var ms = document.getElementById("mapbox-js");
+      if (ms) { ms.addEventListener("load", go); ms.addEventListener("error", go); } else go();
+    })();
     /* section order, hidden sections, looks and builder-added sections (admin page builder) */
     if (window.Theme && Theme.applyLayout && about.layout) Theme.applyLayout(document.querySelector("main"), about, { site: site });
     renderSubnav(about.layout && about.layout.showMenu === false ? [] : (window.Theme ? Theme.menu(about) : about.subnav));

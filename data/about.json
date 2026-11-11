@@ -132,7 +132,7 @@
     "translation": "I shall either find a way or make one."
   },
   "proudest": {
-    "text": "The referral anti-gaming system my successors ran and extended for 12+ months after I left. The best systems don't need their builder in the room.",
+    "text": "The referral anti-gaming system my successors ran and extended for 24+ months after I left. The best systems don't need their builder in the room.",
     "title": "What I'm proudest of"
   },
   "route": [
@@ -165,6 +165,7 @@
     {
       "when": "2022 – 2024 · Jakarta",
       "where": "PT Bank Mega Tbk",
+      "open": true,
       "role": "Talent Management · Acquisition & Development",
       "now": false,
       "detail": [],
@@ -175,8 +176,8 @@
           "detail": [
             "Built difficulty-weighted KPI scorecards for 15 recruiters across six regions. Fair measurement where the hiring was hardest.",
             "Joined intake, exit interview, performance and training records into one view of frontline attrition, and cut department turnover about 15% in 2023 and 17% in 2024.",
-            "Advised the training team on scheduling, assessment and reporting.",
-            "Built a referral anti-gaming system my successors ran and extended for 12+ months after I left."
+            "Split the attrition fix by expertise: I tightened recruiting criteria and gave Training the evidence to rework manager training, curriculum and promotion assessment.",
+            "Built a referral anti-gaming system my successors ran and extended for 24+ months after I left."
           ]
         },
         {
@@ -192,10 +193,11 @@
     {
       "when": "2021 – 2022 · Jakarta",
       "where": "SiCepat Ekspres Group · DigiResto",
+      "open": true,
       "role": "Commercial Project Manager",
       "now": false,
       "detail": [
-        "Lifted merchant acquisitions 40% with a real-time dashboard across field sales and partnerships.",
+        "Lifted merchant acquisitions about 40% with a real-time dashboard across field sales and partnerships.",
         "One shared view of the field, instead of everyone running their own numbers."
       ],
       "roles": []
@@ -257,24 +259,6 @@
   ],
   "toolbox": [
     {
-      "group": "AI, daily",
-      "items": [
-        "Claude",
-        "Claude Code",
-        "Claude API",
-        "Custom Claude skills",
-        "ChatGPT",
-        "Codex",
-        "Gemini",
-        "Perplexity",
-        "Muse",
-        "Lovable",
-        "Wispr Flow",
-        "NotebookLM",
-        "Gamma"
-      ]
-    },
-    {
       "group": "Data and analysis",
       "items": [
         "SQL",
@@ -300,6 +284,14 @@
       ]
     },
     {
+      "group": "Recruiting",
+      "items": [
+        "LinkedIn Recruiter",
+        "Boolean search",
+        "Clay"
+      ]
+    },
+    {
       "group": "Workflow and automation",
       "items": [
         "Google Apps Script",
@@ -313,11 +305,21 @@
       ]
     },
     {
-      "group": "Recruiting",
+      "group": "AI, daily",
       "items": [
-        "LinkedIn Recruiter",
-        "Boolean search",
-        "Clay"
+        "Claude",
+        "Claude Code",
+        "Claude API",
+        "Custom Claude skills",
+        "ChatGPT",
+        "Codex",
+        "Gemini",
+        "Perplexity",
+        "Muse",
+        "Lovable",
+        "Wispr Flow",
+        "NotebookLM",
+        "Gamma"
       ]
     },
     {
