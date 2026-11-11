@@ -142,7 +142,7 @@
       var BK = BUILDS + "/";
       if (bHero && bHero.headline) add(bHero.headline, bHero.lede || "", BK + "#top", "Builds");
       ((projects && projects.projects) || []).filter(function (p) { return p.status === "live"; }).forEach(function (p) {
-        add(p.title, [p.hook, p.metric].filter(Boolean).join(" · "), BK + "#build-" + p.id, "Builds");
+        add(p.title, [p.hook, p.metric].filter(Boolean).join(" · "), BK + "#card-" + p.id, "Builds");
       });
       layoutEntries(bPage, BK, "Builds");
     });
