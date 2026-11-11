@@ -189,6 +189,15 @@
      always read, so nothing is renamed. `anchor` is the element id the
      page already has. Not offered in "Add a section".               */
   const F = (key, label, kind, extra) => Object.assign({ key: key, label: label, kind: kind }, extra || {});
+  /* Fields a page no longer draws move into one folded group at the end of the
+     form. They keep their keys and values (the skeleton only grows); they just
+     stop crowding the fields that do show. */
+  const NOT_SHOWN = "Not shown in the current design";
+  function foldUnused(fields, unused) {
+    const keep = [], fold = [];
+    fields.forEach((f) => { if (unused.indexOf(f.key) >= 0) fold.push(Object.assign({}, f, { group: NOT_SHOWN })); else keep.push(f); });
+    return keep.concat(fold);
+  }
   const HEAD = [F("eyebrow", "Eyebrow", "text"), F("headline", "Headline", "headline"), F("side", "Side note", "textarea")];
   const HEAD_NOSIDE = [F("eyebrow", "Eyebrow", "text"), F("headline", "Headline", "headline")];
   function headBind(prefix, side) {
@@ -216,7 +225,7 @@
     F("diagramAlt", "Diagram description", "text", { group: "Pictures" }),
     F("images", "Gallery (replaces cover + diagram when filled)", "list", { group: "Pictures", item: "picture", fields: [F("src", "Picture", "image"), F("alt", "Description", "text")] }),
     F("links", "Links", "list", { group: "Links and files", item: "link", fields: [F("label", "Label", "text"), F("url", "Link", "url"),
-      F("kind", "Kind", "select", { options: ["github", "demo", "article", "deck", "sheet", "drive", "other"], default: "other" })] }),
+      F("kind", "Kind", "select", { options: ["github", "demo", "video", "article", "deck", "sheet", "drive", "other"], default: "other" })] }),
     F("files", "Files", "list", { group: "Links and files", item: "file", fields: [F("title", "Title", "text"), F("src", "Link", "url"), F("public", "Show on the site", "toggle")] }),
     F("context", "Context", "textarea", { group: "Story" }),
     F("body", "Story", "group", { group: "Story", fields: [F("problem", "Problem", "textarea"), F("approach", "Approach", "textarea"),
@@ -232,7 +241,7 @@
     F("hint", "Hint line", "text", { group: "Card labels" }),
     F("btnLabel", "Button label", "text", { group: "Card labels" }),
     /* redesign thread 3: the wide card's short line and its drawn picture (additive keys) */
-    F("trace", "Card line: problem > move > result", "group", { group: "Card line", hint: "A few words each. Shown on the card under the hook.",
+    F("trace", "Card line: problem > move > result", "group", { group: "Card line", hint: "A few words each. Shown on the Work card under the hook, and on Home when this card is picked and Home's own line is blank.",
       fields: [F("problem", "Problem", "text"), F("move", "Move", "text"), F("result", "Result", "text")] }),
     F("cardVisual", "Card picture", "group", { group: "Card picture", fields: [
       F("kind", "Picture", "select", { options: ["", "bars", "swing", "number"], default: "",
@@ -243,12 +252,16 @@
       F("big", "Big number", "text")] }),
     F("reviewNotes", "Review notes (hidden when live)", "group", { group: "Review notes", fields: [F("notes", "Notes to self", "lines"), F("missing", "Still missing", "lines")] }),
   ];
+  /* What each hub page draws today: Work (rows.js) and Builds (builds.js). */
+  const PROJECT_WORK = foldUnused(PROJECT, ["group", "year", "stat", "badge"]);
+  const PROJECT_BUILDS = foldUnused(PROJECT, ["group", "year", "images", "files", "context", "calls", "outcome", "setting", "csr",
+    "stat", "badge", "hint", "btnLabel"]);
   const ORG_HERO = [
     F("eyebrow", "Eyebrow", "text"), F("headline", "Headline", "text"), F("lede", "Intro", "textarea"),
     F("ctas", "Buttons", "list", { item: "button", fields: [F("label", "Label", "text"), F("href", "Link", "url"),
       F("orgGithub", "Link to the GitHub org (ignores the link above)", "toggle"), F("newTab", "Open in a new tab", "toggle")] }),
-    F("backLabel", "Menu link back to the main site: label", "text", { group: "Menu" }),
-    F("backHref", "Menu link back to the main site: link", "url", { group: "Menu" }),
+    F("backLabel", "Menu link back to the main site: label", "text", { group: NOT_SHOWN }),
+    F("backHref", "Menu link back to the main site: link", "url", { group: NOT_SHOWN }),
   ].concat(MEDIA);
   const ORG_HERO_BIND = Object.assign({ eyebrow: "hero.eyebrow", headline: "hero.headline", lede: "hero.lede", ctas: "page.heroCtas",
     backLabel: "page.backLink.label", backHref: "page.backLink.href" }, mediaBind("hero"));
@@ -302,51 +315,51 @@
     "home-ribbon": { label: "Keyword ribbon", anchor: "ribbon", about: "The slow scrolling line of kinds of work.",
       fields: [F("items", "Keywords (one per line)", "lines"), F("still", "Keep still (no scrolling)", "toggle")],
       bind: { items: "ribbon.items", still: "ribbon.still" }, looks: [] },
-    "home-start": { label: "Start here", anchor: "start", about: "The three cards under the hero.",
+    "home-start": { label: "Start here (not drawn in the current design)", anchor: "start", about: "The current Home design doesn't draw this section, so showing it leaves an empty band. Its text is kept.",
       fields: HEAD.concat([F("cards", "Cards", "list", { item: "card", fields: [F("title", "Title", "text"), F("text", "Text", "textarea"), F("embed", "Embed link (optional)", "url")] })], MEDIA),
       bind: Object.assign(headBind("sections.start", true), { cards: "startHere" }),
-      looks: ["background", "spacing"], styleDefaults: { background: "tint" } },
-    "home-featured": { label: "Featured work", anchor: "featured", about: "Project cards picked from your work.",
+      looks: [] },
+    "home-featured": { label: "Selected work", anchor: "featured", about: "Up to three project cards. Blank card text uses the Work or Builds card's own words and picture.",
       fields: HEAD.concat([F("featured", "Cards shown (up to 3, in this order)", "picks", { source: "projects", max: 3 }),
         F("cards", "Card text on Home", "list", { item: "card", fields: FEATURED_CARD })], MEDIA),
       bind: Object.assign(headBind("sections.featured", true), { featured: "featured", cards: "featuredCards" }),
-      looks: ["background", "spacing"] },
+      looks: [], unused: ["eyebrow", "image", "imageAlt", "imageCaption"] },
     "home-about": { label: "About teaser", anchor: "about", about: "A short line pointing to the About page.",
       fields: HEAD_NOSIDE.concat([F("teaser", "Teaser", "textarea"), F("buttonLabel", "Button label (links to About)", "text"), F("teaserEmbed", "Embed link (optional)", "url")], MEDIA),
       bind: Object.assign(headBind("sections.about"), { teaser: "aboutTeaser", buttonLabel: "sections.about.buttonLabel", teaserEmbed: "aboutTeaserEmbed" }),
-      looks: ["background", "spacing"], styleDefaults: { background: "tint" } },
+      looks: [], unused: ["eyebrow"] },
     "home-method": { label: "How I tend to work", anchor: "method", about: "Three short ways of working, side by side.",
       fields: HEAD_NOSIDE.concat([F("items", "Items", "list", { item: "item", fields: [F("title", "Title", "text"), F("text", "Text", "textarea")] })]),
-      bind: Object.assign({ eyebrow: "sections.method.eyebrow", headline: "sections.method.headline" }, { items: "method" }), looks: ["spacing"] },
+      bind: Object.assign({ eyebrow: "sections.method.eyebrow", headline: "sections.method.headline" }, { items: "method" }), looks: [], unused: ["eyebrow"] },
     "home-contact": { label: "Contact", anchor: "contact", about: "Heading plus email, LinkedIn and GitHub buttons (links come from Site links).",
       fields: HEAD.concat([F("ctaLabel", "Filled button label (opens an email)", "text"), F("copyEmail", "Show the copy-email box", "toggle")], MEDIA),
-      bind: Object.assign(headBind("sections.contact", true), { ctaLabel: "sections.contact.ctaLabel", copyEmail: "sections.contact.copyEmail" }), looks: ["background", "spacing"] },
+      bind: Object.assign(headBind("sections.contact", true), { ctaLabel: "sections.contact.ctaLabel", copyEmail: "sections.contact.copyEmail" }), looks: [], unused: ["eyebrow"] },
 
     /* ---- main site: About ---- */
     "about-hero": { label: "About hero", anchor: "top", about: "Greeting, intro and tagline. The portrait comes from Site links.",
       fields: [F("eyebrow", "Eyebrow", "text"), F("greeting", "Greeting", "textarea"), F("lede", "Intro", "textarea"), F("tagline", "Tagline", "text")].concat(MEDIA),
-      bind: Object.assign({ eyebrow: "hero.eyebrow", greeting: "hero.greeting", lede: "hero.lede", tagline: "hero.tagline" }, mediaBind("hero")) },
+      bind: Object.assign({ eyebrow: "hero.eyebrow", greeting: "hero.greeting", lede: "hero.lede", tagline: "hero.tagline" }, mediaBind("hero")), unused: ["imageCaption"] },
     "about-ways": { label: "How I think and work", anchor: "ways", about: "An opening paragraph and a row of short cards. Hide any card with its switch.",
       fields: HEAD_NOSIDE.concat([F("lead", "Opening words in the accent color (optional)", "text"), F("lede", "Opening paragraph", "textarea"),
         F("items", "Cards", "list", { item: "card", fields: [F("title", "Title", "text"), F("text", "Text", "textarea"), F("hidden", "Hide this card", "toggle")] })]),
-      bind: { eyebrow: "sections.ways.eyebrow", headline: "sections.ways.headline", lead: "ways.lead", lede: "ways.lede", items: "ways.items" }, looks: ["background", "spacing"] },
-    "about-thirties": { label: "30-second version", anchor: "thirties", about: "The three quick cards.",
+      bind: { eyebrow: "sections.ways.eyebrow", headline: "sections.ways.headline", lead: "ways.lead", lede: "ways.lede", items: "ways.items" }, looks: ["background"] },
+    "about-thirties": { label: "30-second version (old layout)", anchor: "thirties", about: "The three quick cards. Hidden on the redesigned About page. Its text is kept.",
       fields: HEAD_NOSIDE.concat([F("cards", "Cards", "list", { item: "card", fields: [F("title", "Title", "text"), F("text", "Text", "textarea")] })], MEDIA),
-      bind: Object.assign(headBind("sections.thirties"), { cards: "thirties" }), looks: ["background", "spacing"] },
+      bind: Object.assign(headBind("sections.thirties"), { cards: "thirties" }), looks: ["background"] },
     "about-story": { label: "Story", anchor: "story", about: "Short paragraphs. A label is optional. Hidden paragraphs stay here and don't show on the page.",
       fields: HEAD_NOSIDE.concat([
         F("chapters", "Chapters", "list", { item: "chapter", fields: [F("label", "Label", "text"), F("text", "Text", "textarea"), F("embed", "Embed link (optional)", "url"), F("hidden", "Hide this paragraph", "toggle")] }),
         F("showHoldup", "Show the “Hold up” card", "toggle"), F("holdup", "“Hold up” card", "textarea"), F("showProudest", "Show the “proudest” card", "toggle"), F("proudestTitle", "Proudest card: title", "text"), F("proudestText", "Proudest card: text", "textarea")], MEDIA),
       bind: Object.assign(headBind("sections.story"), { chapters: "chapters", showHoldup: "sections.story.showHoldup", showProudest: "sections.story.showProudest", holdup: "holdup", proudestTitle: "proudest.title", proudestText: "proudest.text" }),
-      looks: ["background", "spacing"] },
-    "about-selected": { label: "Selected work", anchor: "selected", about: "The 10-second cards with count-up numbers.",
+      looks: ["background"] },
+    "about-selected": { label: "Selected work (old layout)", anchor: "selected", about: "The 10-second cards with a big number. Hidden on the redesigned About page. Its text is kept.",
       fields: HEAD.concat([
         F("cards", "Cards", "list", { item: "card", fields: [F("tag", "Tag", "text"), F("num", "Number", "number"), F("prefix", "Before the number", "text"),
           F("suffix", "After the number", "text"), F("decimals", "Decimals", "number"), F("label", "Number label", "text"), F("title", "Title", "text"),
           F("outcome", "Outcome", "textarea"), F("url", "Link", "url")] }),
         F("deepDive", "Card link label", "text"), F("seeAll", "“See all” link label", "text")], MEDIA),
       bind: Object.assign(headBind("sections.selected", true), { cards: "selected", deepDive: "labels.deepDive", seeAll: "labels.seeAllCases" }),
-      looks: ["background", "spacing"] },
+      looks: ["background"] },
     "about-route": { label: "The route", anchor: "route", about: "Journey map and work history stops.",
       fields: HEAD.concat([
         F("stops", "Work history, newest first", "list", { item: "stop", fields: [F("when", "When", "text"), F("where", "Where", "text"), F("role", "Role", "text"),
@@ -361,33 +374,34 @@
         F("mapAvatar", "Picture on your current city (last pin)", "image"),
         F("mapAvatarAlt", "Picture description", "text")], MEDIA),
       bind: Object.assign(headBind("sections.route", true), { stops: "route", journey: "journey",
-        mapText: "journeyMap.text", mapTextNoLocation: "journeyMap.textNoLocation", mapTextNearby: "journeyMap.textNearby", mapAvatar: "journeyMap.avatar", mapAvatarAlt: "journeyMap.avatarAlt" }), looks: ["background", "spacing"] },
+        mapText: "journeyMap.text", mapTextNoLocation: "journeyMap.textNoLocation", mapTextNearby: "journeyMap.textNearby", mapAvatar: "journeyMap.avatar", mapAvatarAlt: "journeyMap.avatarAlt" }), looks: ["background"] },
     "about-toolbox": { label: "Toolbox", anchor: "toolbox", about: "Tool groups and their items. Add a group, or add a tool as a new line in a group.",
       fields: HEAD.concat([F("groups", "Groups", "list", { item: "group", fields: [F("group", "Group", "text"), F("items", "Items (one per line)", "lines")] })], MEDIA),
       bind: Object.assign(headBind("sections.toolbox", true), { groups: "toolbox" }),
-      looks: ["background", "spacing"] },
+      looks: ["background"] },
     "about-principle": { label: "Principle and field notes", anchor: "principle", about: "The Latin line, field notes, and the Off the clock teaser.",
       fields: [F("latin", "Latin", "text"), F("translation", "Translation", "text"), F("note", "Note", "textarea"), F("fieldnotes", "Field notes", "textarea"),
         F("octTitle", "Off the clock teaser: title", "text"), F("octText", "Off the clock teaser: text", "textarea"), F("octButton", "Off the clock teaser: button", "text")],
       bind: { latin: "principle.latin", translation: "principle.translation", note: "principle.note", fieldnotes: "fieldnotes",
         octTitle: "offclockTeaser.title", octText: "offclockTeaser.text", octButton: "offclockTeaser.button" },
-      looks: ["background", "spacing"] },
+      looks: ["background"] },
     "about-contact": { label: "Contact", anchor: "contact", about: "Heading plus email, LinkedIn and GitHub buttons (links come from Site links).",
       fields: HEAD.concat([F("ctaLabel", "Filled button label (opens an email)", "text"), F("copyEmail", "Show the copy-email box", "toggle")], MEDIA),
       bind: Object.assign(headBind("sections.contact", true), { ctaLabel: "sections.contact.ctaLabel", copyEmail: "sections.contact.copyEmail" }),
-      looks: ["background", "spacing"] },
+      looks: ["background"] },
 
     /* ---- Analytics site (files: hero, lanes, page) ---- */
     "analytics-hero": { label: "Header", anchor: "top", about: "Title block: small label, headline, intro and buttons.",
       fields: ORG_HERO, bind: ORG_HERO_BIND },
-    "analytics-lanes": { label: "Lanes and case studies", anchor: "lanes", about: "Each lane is a group of case-study cards with a filter button. A lane shows only when it has a live card. Charts on a card are edited in the repo.",
-      fields: [F("laneEyebrow", "Word before each lane number (not shown in the current design)", "text"), F("allLabel", "Label of the “All” filter", "text"),
+    "analytics-lanes": { label: "Groups and case studies", anchor: "lanes", about: "Each group holds case-study cards. A group shows only when it has a live card. Charts on a card are edited in the repo.",
+      fields: [F("allLabel", "Label of the “All” filter", "text"),
         F("showPipeline", "Show the pipeline titles on the page", "toggle"),
-        F("lanes", "Lanes", "list", { item: "lane", fields: [F("name", "Lane name", "text"), F("id", "Lane link name (#…)", "text"),
+        F("lanes", "Groups", "list", { item: "group", fields: [F("name", "Group name", "text"), F("id", "Group link name (#…)", "text"),
           F("blurb", "Intro", "textarea"), F("embed", "Embed link (optional)", "url"),
-          F("projects", "Case studies", "list", { item: "case study", fields: PROJECT }),
+          F("projects", "Case studies", "list", { item: "case study", fields: PROJECT_WORK }),
           F("pipeline", "In the pipeline", "list", { item: "title", fields: [F("title", "Title", "text"), F("link", "Link (optional)", "url"), F("status", "Status tag", "text")] }),
-        ].concat(MEDIA) })],
+        ].concat(MEDIA) }),
+        F("laneEyebrow", "Word before each group number", "text", { group: NOT_SHOWN })],
       bind: { laneEyebrow: "page.laneEyebrow", allLabel: "page.subnavTop", showPipeline: "page.showPipeline", lanes: "lanes.lanes" } },
 
     /* ---- Builds site (files: hero, projects, page) ---- */
@@ -397,11 +411,12 @@
         F("nowRows", "Side card rows", "list", { group: "Side card", item: "row", fields: [F("k", "Label", "text"), F("v", "Text", "text")] })]),
       bind: Object.assign({ nowHidden: "page.nowCard.hidden", nowTitle: "page.nowCard.title", nowRows: "page.nowCard.rows" }, ORG_HERO_BIND) },
     "builds-list": { label: "Builds", anchor: "builds", about: "One card per tool. Only cards set to live are shown.",
-      fields: [F("projects", "Builds", "list", { item: "build", fields: PROJECT }),
+      fields: [F("projects", "Builds", "list", { item: "build", fields: PROJECT_BUILDS }),
         F("showProto", "Show the prototyping line on the page", "toggle"),
         F("protoLabel", "Prototyping label", "text"), F("prototyping", "Prototyping line", "textarea")],
       bind: { projects: "projects.projects", showProto: "page.showPrototyping", protoLabel: "page.prototypingLabel", prototyping: "projects.prototyping" } },
   };
+  Object.keys(NATIVE).forEach((k) => { if (NATIVE[k].unused) NATIVE[k].fields = foldUnused(NATIVE[k].fields, NATIVE[k].unused); });
   Object.keys(NATIVE).forEach((k) => { NATIVE[k].native = true; NATIVE[k].single = true; NATIVE[k].looks = NATIVE[k].looks || []; TYPES[k] = NATIVE[k]; });
 
   /* ---------- blocks (inside a "Free blocks" section) ---------- */

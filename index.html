@@ -115,7 +115,7 @@
 <script src="content.js"></script>
 <script src="site.js?v=2"></script>
 <script src="https://lori-sca.github.io/header.js?v=5"></script>
-<script src="skeleton.js?v=5"></script>
+<script src="skeleton.js?v=6"></script>
 <script src="theme.js"></script>
 <script src="motion.js?v=2"></script>
 <script>
@@ -269,9 +269,13 @@
     body.appendChild(h("h3", "wc-title", has(t.title) ? t.title : c.title || ""));
     var sum = has(t.summary) ? t.summary : c.hook;
     if (has(sum)) body.appendChild(h("p", "wc-sum", sum));
-    if (has(t.problem) || has(t.move) || has(t.result)) {
+    /* Blank Home fields fall back to the hub card's own trace line, so a
+       wording fix on Work reaches Home without a second edit. */
+    var tr = c.trace || {};
+    var pmr = [["Problem", has(t.problem) ? t.problem : tr.problem], ["Move", has(t.move) ? t.move : tr.move], ["Result", has(t.result) ? t.result : tr.result]];
+    if (has(pmr[0][1]) || has(pmr[1][1]) || has(pmr[2][1])) {
       var ol = h("ol", "wc-trace"); ol.setAttribute("aria-label", "Problem, move and result");
-      [["Problem", t.problem], ["Move", t.move], ["Result", t.result]].forEach(function (p) {
+      pmr.forEach(function (p) {
         var li = h("li", ""); li.appendChild(h("span", "ds-label", p[0])); li.appendChild(h("span", "", p[1] || "")); ol.appendChild(li);
       });
       body.appendChild(ol);
@@ -282,7 +286,17 @@
     if (has(t.note)) foot.appendChild(h("span", "wc-note", t.note));
     if (foot.children.length) body.appendChild(foot);
     art.appendChild(body);
-    art.appendChild(visual(has(t.visual) || has(t.big) ? t : { visual: "number" }, hub && !has(t.big) && !has(t.visual) ? c.metric : ""));
+    /* Picture panel: Home's own settings first, then the hub card's picture
+       (cardVisual), then the hub card's metric as a big number. */
+    var bothBars = num(t.aValue) != null && num(t.bValue) != null;
+    var ownPanel = has(t.big) || t.visual === "editor" || ((t.visual === "bars" || t.visual === "swing") && bothBars);
+    var cv = c.cardVisual;
+    if (!ownPanel && cv && has(cv.kind)) {
+      art.appendChild(visual({ visual: cv.kind, visualLabel: cv.label, aLabel: cv.aLabel, aValue: cv.aValue, aText: cv.aText,
+        bLabel: cv.bLabel, bValue: cv.bValue, bText: cv.bText, big: cv.big }, ""));
+    } else {
+      art.appendChild(visual(has(t.visual) || has(t.big) ? t : { visual: "number" }, hub && !has(t.big) && !has(t.visual) ? c.metric : ""));
+    }
     return art;
   }
   function drawFeatured(home, hubs) {

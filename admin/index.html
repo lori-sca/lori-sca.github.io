@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editor — Lorisca Cessia</title>
+<title>Editor · Lorisca Cessia</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Martian+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="admin-base.css">
-<link rel="stylesheet" href="builder.css?v=3">
+<link rel="stylesheet" href="builder.css?v=4">
 <style>
   .ed-wrap { max-width: 820px; margin: 0 auto; padding: 3rem var(--gutter) 5rem; }
   .ed-wrap h1 { font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; font-size: 2.2rem; margin-bottom: .6rem; }
@@ -50,6 +50,8 @@
   .ed-post .t { font-weight: 700; }
   .ed-post .d { font-family: var(--mono); font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--steel); margin-left: .7rem; }
   .ed-siteerr { border: 1px solid #e5b6b0; background: #fdf1f0; border-radius: 12px; padding: 1.4rem; color: #7a2e28; line-height: 1.6; }
+  .ed-siteerr p { margin-top: .6rem; }
+  .ed-errdetail { font-size: .85rem; opacity: .8; word-break: break-word; }
   @media (max-width: 640px) { .ed-row { grid-template-columns: 1fr; } }
   /* unsaved-changes bar + dots */
   .ed-dirty { position: sticky; top: 4.6rem; z-index: 40; display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap;
@@ -96,14 +98,15 @@
 
     <section id="setup-view">
       <h1>Site editor</h1>
-      <p class="ed-sub">Edit your sites' words the way you'd edit a blog — pick a site, pick a page, change the text, publish. The key below stays in this browser only, and is sent only to GitHub. I never see it.</p>
+      <p class="ed-sub">Edit your sites' words the way you'd edit a blog: pick a site, pick a page, change the text, publish. The key below stays in this browser only, and is sent only to GitHub. I never see it.</p>
       <div class="ed-card">
         <h2>1 · Create the key (one time)</h2>
         <ol class="ed-steps">
           <li>On GitHub: profile photo → <b>Settings</b> → <b>Developer settings</b> → <b>Personal access tokens</b> → <b>Fine-grained tokens</b> → <b>Generate new token</b>.</li>
-          <li>Name it <code>site-editor</code>. Repository access: <b>Only select repositories</b> → tick <code>lori-sca.github.io</code>, <code>lorisca-analytics.github.io</code>, and <code>lorisca-builds.github.io</code>.</li>
+          <li>Name it <code>site-editor</code>. Expiration: <b>90 days</b>. The two organizations refuse keys that live longer than their limit. Repository access: <b>Only select repositories</b> → tick <code>lori-sca.github.io</code>, <code>lorisca-analytics.github.io</code>, and <code>lorisca-builds.github.io</code>.</li>
           <li>Under Repository permissions, set <b>Contents</b> to <b>Read and write</b>. Generate the token and copy it.</li>
         </ol>
+        <p class="ed-hint">If GitHub won't let one fine-grained key pick repos from all three owners, make a <b>classic</b> key instead (Personal access tokens → Tokens (classic)), with the <code>repo</code> box ticked and a 90-day expiry. One key then covers all three sites.</p>
         <h2 style="margin-top:1.8rem;">2 · Paste it here</h2>
         <label class="ed-label" for="token-input">Key</label>
         <input class="ed-input" id="token-input" type="password" autocomplete="off" placeholder="github_pat_…">
@@ -116,7 +119,7 @@
 
     <section id="editor-view" hidden>
       <h1>Site editor</h1>
-      <p class="ed-sub">Pick a site, then a page. Edit the words, hit Save — live in about a minute. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
+      <p class="ed-sub">Pick a site, then a page. Edit the words and hit Save. The live page updates within a few minutes. An <b>embed link</b> under any text plays a YouTube video inline, or becomes a link card for anything else.</p>
       <div class="ed-dirty" id="ed-dirty" hidden>
         <span id="ed-dirty-text"></span>
         <button class="ed-link" id="ed-dirty-discard">Discard unsaved changes</button>
@@ -135,19 +138,38 @@
 
 <script src="../content.js"></script>
 <script src="merge.js"></script>
-<script src="../skeleton.js?v=5"></script>
-<script src="builder.js?v=2"></script>
+<script src="../skeleton.js?v=6"></script>
+<script src="builder.js?v=3"></script>
 <script>
 /* ================= infra ================= */
 const SITES = {
   main:      { id: "main",      label: "Main site",      owner: "lori-sca",         repo: "lori-sca.github.io",               home: "../index.html" },
-  analytics: { id: "analytics", label: "Analytics work", owner: "lorisca-analytics", repo: "lorisca-analytics.github.io",    home: "https://lorisca-analytics.github.io" },
+  analytics: { id: "analytics", label: "Work", owner: "lorisca-analytics", repo: "lorisca-analytics.github.io",    home: "https://lorisca-analytics.github.io" },
   builds:    { id: "builds",    label: "Builds",         owner: "lorisca-builds",    repo: "lorisca-builds.github.io",       home: "https://lorisca-builds.github.io" },
 };
 const BRANCH = "main";
 let currentSite = SITES.main;
 const $ = (id) => document.getElementById(id);
 const getToken = () => localStorage.getItem("oc_pat") || "";
+/* A saved picture path is relative to the site root. The editor lives in
+   /admin/, so a bare path needs "../" to show as a thumbnail here. */
+function adminSrc(u) {
+  u = String(u || "");
+  if (/^(https?:|data:|blob:)/.test(u)) return u;
+  return "../" + u.replace(/^\//, "");
+}
+/* Plain words for a GitHub error, by site. */
+function keyHelp(e, site) {
+  const st = e && e.status;
+  const m = String((e && (e.ghMessage || e.message)) || "");
+  if (st === 401) return "Your key has expired or was deleted. Make a new one and paste it on the start screen.";
+  if (st === 403 && /rate limit/i.test(m)) return "GitHub is limiting requests for a while. Wait a few minutes and reload the page. Your key is fine.";
+  if (st === 403 && /lifetime/i.test(m)) return "The " + site.owner + " organization refuses keys that live longer than its limit. Make a new key with a shorter expiry (90 days fits) and paste it on the start screen.";
+  if (st === 403 || st === 404) return "Your key can't reach " + site.repo + ". Edit the key on GitHub so it includes that repo with Contents set to Read and write, or make a classic key with the repo box ticked. Then reload this page.";
+  if (st) return "GitHub answered with an error (" + st + "). Reload the page and try again.";
+  if (e instanceof TypeError && /fetch|network/i.test(m)) return "GitHub couldn't be reached. Check your connection and reload the page.";
+  return "Something in the editor went wrong while opening this. Reload the page. If it keeps happening, send Claude the line below.";
+}
 function status(msg, ok) {
   const el = $("status");
   el.textContent = msg || "";
@@ -180,8 +202,12 @@ async function ghRepo(sub, method, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   if (!res.ok) {
-    const err = new Error("GitHub " + res.status + " — " + (await res.text()).slice(0, 140));
+    const text = await res.text();
+    let gm = "";
+    try { gm = JSON.parse(text).message || ""; } catch (e) { gm = text; }
+    const err = new Error("GitHub " + res.status + ": " + String(gm).slice(0, 300));
     err.status = res.status;
+    err.ghMessage = gm;
     throw err;
   }
   return res.status === 204 ? null : res.json();
@@ -352,7 +378,7 @@ function mediaFields(host, obj, tag) {
   m.appendChild(lab("Picture"));
   const prev = document.createElement("img");
   prev.className = "ed-photo-preview";
-  if (obj.image) prev.src = obj.image; else prev.hidden = true;
+  if (obj.image) prev.src = adminSrc(obj.image); else prev.hidden = true;
   m.appendChild(prev);
   const urlInput = field(m, "Image URL", obj, "image", false, "https://\u2026");
   const fi = document.createElement("input");
@@ -369,8 +395,8 @@ function mediaFields(host, obj, tag) {
       await uploadPhoto(upath, file, "Add section picture via editor");
       obj.image = upath;
       urlInput.value = upath;
-      prev.src = upath; prev.hidden = false;
-      status("Uploaded \u2014 save the page to keep it.");
+      prev.src = URL.createObjectURL(file); prev.hidden = false;
+      status("Uploaded. Save the page to keep it.");
     } catch (err) { status(err.message, false); }
   });
   field(m, "Alt text", obj, "imageAlt");
@@ -580,9 +606,9 @@ function deepDraft(r, parsed) {
     });
   });
   if (r.homepage && !seen[r.homepage]) p.links.push({ label: "Demo", url: r.homepage, kind: "demo" });
-  if (parsed.visual) { p.visual = parsed.visual; p.visualAlt = p.title + " — cover visual"; }
+  if (parsed.visual) { p.visual = parsed.visual; p.visualAlt = p.title + ": cover visual"; }
   if (r.topics && r.topics.length) p.tools = r.topics.slice(0, 6);
-  p.reviewNotes = { notes: [], missing: ["Review imported copy — pulled from the repo README; trim to the 10-second version before publishing."] };
+  p.reviewNotes = { notes: [], missing: ["Review imported copy. It was pulled from the repo README. Trim it to the 10-second version before publishing."] };
   return p;
 }
 function shallowDraft(r) {
@@ -619,7 +645,7 @@ function projectForm(box, p) {
   field(box, "Image description", p, "visualAlt");
   field(box, "Diagram URL", p, "diagram");
   field(box, "Diagram description", p, "diagramAlt");
-  box.appendChild(lab("Gallery images (optional — overrides the single image + diagram above)"));
+  box.appendChild(lab("Gallery images (optional, replaces the single image and diagram above)"));
   listEditor(box, p.images || (p.images = []), (ib, im) => {
     field(ib, "Image URL", im, "src");
     field(ib, "Alt text", im, "alt");
@@ -644,7 +670,7 @@ function projectForm(box, p) {
   field(box, "Her take", bd, "hers", true);
   field(box, "Result", bd, "result", true);
   field(box, "Lesson", bd, "lesson", true);
-  box.appendChild(lab("Review notes — hidden when published (one per line)"));
+  box.appendChild(lab("Review notes, hidden when published (one per line)"));
   const rn = p.reviewNotes || (p.reviewNotes = {});
   const taN = document.createElement("textarea");
   taN.value = (rn.notes || []).join("\n");
@@ -695,8 +721,11 @@ function switchTab(tab) {
         panel.innerHTML = "";
         const err = document.createElement("div");
         err.className = "ed-siteerr";
-        err.innerHTML = "<b>Couldn't open this section.</b><br>" + e.message +
-          "<br><br>If your key doesn't list this repo yet, edit the key on GitHub (Settings → Developer settings → Personal access tokens) and tick the repo, then reload this page.";
+        const site = SITES[tab.siteId] || currentSite;
+        const h = document.createElement("b"); h.textContent = "Couldn't open this section.";
+        const p1 = document.createElement("p"); p1.textContent = keyHelp(e, site);
+        const p2 = document.createElement("p"); p2.className = "ed-errdetail"; p2.textContent = (e.status ? "GitHub said: " : "Details: ") + e.message;
+        err.append(h, p1, p2);
         panel.appendChild(err);
       });
   }
@@ -747,13 +776,17 @@ const MAIN_HOME = "../index.html";
    Reads the repo at main, so a card that was just synced shows up right away. */
 async function readFromSite(siteId, path) {
   const site = SITES[siteId];
-  const res = await fetch("https://api.github.com/repos/" + site.owner + "/" + site.repo + "/contents/" + path + "?ref=" + BRANCH, {
-    cache: "no-store",
-    headers: { "Authorization": "Bearer " + getToken(), "Accept": "application/vnd.github+json" },
-  });
-  if (!res.ok) throw new Error("GitHub " + res.status);
-  const f = await res.json();
-  return JSON.parse(b64ToUtf8(f.content));
+  try {
+    const res = await fetch("https://api.github.com/repos/" + site.owner + "/" + site.repo + "/contents/" + path + "?ref=" + BRANCH, {
+      cache: "no-store",
+      headers: { "Authorization": "Bearer " + getToken(), "Accept": "application/vnd.github+json" },
+    });
+    if (res.ok) return JSON.parse(b64ToUtf8((await res.json()).content));
+  } catch (e) { /* fall through to the public copy */ }
+  // The key can't read this repo: the published file is public. It can be a few minutes behind main.
+  const pub = await fetch("https://" + site.repo + "/" + path + "?t=" + Date.now(), { cache: "no-store" });
+  if (!pub.ok) throw new Error("Couldn't read " + path + " (" + pub.status + ")");
+  return pub.json();
 }
 /* Selected work picker: every live card on Work and Builds, plus Home-only cards. */
 async function homeCardSources(home) {
@@ -785,7 +818,7 @@ defineTab("main", "home", "Home", async (panel) => {
   });
 });
 
-defineTab("main", "writing", "Writing", (panel) => pageBuilder(panel, {
+defineTab("main", "writing", "Writing (not in the menu)", (panel) => pageBuilder(panel, {
   path: "data/writing.json", label: "Writing page", view: "../writing.html", tag: "writing",
 }));
 
@@ -794,7 +827,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   const od = ocentry.data;
   od.hero = od.hero || {};
   od.hero.headline = od.hero.headline || {};
-  const opc = h2card("Page copy", "The title block at the top of the page — the subtitle lives here.", "../off-the-clock.html");
+  const opc = h2card("Page copy", "The title block at the top of the page. The subtitle lives here.", "../off-the-clock.html");
   panel.appendChild(opc);
   field(opc, "Eyebrow", od.hero, "eyebrow");
   field(opc, "Headline", od.hero.headline, "main");
@@ -827,7 +860,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     try {
       status("Saving…");
       await saveData("data/off-the-clock.json", od, "Update Off the clock page copy via editor");
-      status("Saved — live in about a minute.");
+      status("Saved, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }, "Save page copy");
   const entry = await loadData("fun/posts.json");
@@ -894,7 +927,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
       store.data.posts = posts;
       await saveData("fun/posts.json", store.data, "Reorder off-the-clock posts via editor");
       renderList();
-      status("Reordered — live in about a minute.");
+      status("Reordered, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }
   function openForm(id) {
@@ -1133,7 +1166,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
   const lentry = await loadData("fun/layout.json");
   const lstore = lentry;
   const SECTION_LABELS = { field: "In the field", fun: "The fun stuff" };
-  const lcard = h2card("Page sections", "Order the sections on Off the clock — top first.", "../off-the-clock.html");
+  const lcard = h2card("Page sections", "Order the sections on Off the clock, top first.", "../off-the-clock.html");
   panel.appendChild(lcard);
   const llist = document.createElement("div");
   lcard.appendChild(llist);
@@ -1172,7 +1205,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
       lstore.data.sections = secs;
       await saveData("fun/layout.json", lstore.data, "Reorder off-the-clock sections via editor");
       lRenderList();
-      status("Reordered — live in about a minute.");
+      status("Reordered, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }
   lRenderList();
@@ -1239,7 +1272,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
       tstore.data.tiles = tiles;
       await saveData("fun/tiles.json", tstore.data, "Reorder involvement tiles via editor");
       tRenderList();
-      status("Reordered — live in about a minute.");
+      status("Reordered, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }
   function tOpenForm(id) {
@@ -1258,7 +1291,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     field(tform, "Place (e.g. AWS Builder Loft)", draft, "place");
     field(tform, "Context (e.g. BuilderPub Buildathon · Volunteer)", draft, "context");
     field(tform, "Link (optional)", draft, "link");
-    field(tform, "Badge (e.g. SOON — optional)", draft, "badge");
+    field(tform, "Badge (optional, e.g. SOON)", draft, "badge");
     field(tform, "Details, shows in the + panel (optional)", draft, "details", true);
     checkField(tform, "Hide this tile (stays saved here, off the page)", draft, "hidden");
     tform.appendChild(lab("Photo"));
@@ -1267,7 +1300,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
     tform.appendChild(fi);
     const pv = document.createElement("img");
     pv.className = "ed-photo-preview";
-    if (draft.photo) { pv.src = draft.photo; } else { pv.hidden = true; }
+    if (draft.photo) { pv.src = adminSrc(draft.photo); } else { pv.hidden = true; }
     tform.appendChild(pv);
     let removePhoto = false;
     if (draft.photo) {
@@ -1344,7 +1377,7 @@ defineTab("main", "offclock", "Off the clock", async (panel) => {
         await saveData("fun/tiles.json", tstore.data, (tEditingId ? "Update" : "Add") + " involvement tile via editor");
         tform.hidden = true;
         tRenderList();
-        status("Published — live in about a minute.");
+        status("Published, usually live within a few minutes.");
       } catch (e) { status(e.message, false); }
     };
     tform.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1359,9 +1392,9 @@ defineTab("main", "about", "About", (panel) => pageBuilder(panel, {
 defineTab("main", "sitelinks", "Site links", async (panel) => {
   const entry = await loadData("data/site.json");
   const d = entry.data;
-  const card = h2card("Site links", "Name, contact links, and portrait. Used in the nav, footer, and contact buttons on every page.", MAIN_HOME);
+  const card = h2card("Site links", "Contact links and portrait. Email, LinkedIn and GitHub feed the contact buttons on every page. The portrait shows on About when its hero has no picture.", MAIN_HOME);
   panel.appendChild(card);
-  field(card, "Name", d, "name");
+  field(card, "Name (the header name is set under Header, below)", d, "name");
   field(card, "Role line (shown under your name in the header)", d, "role");
   field(card, "Email", d, "email");
   field(card, "LinkedIn URL", d, "linkedin");
@@ -1468,13 +1501,13 @@ defineTab("main", "sitelinks", "Site links", async (panel) => {
 /* ================= ANALYTICS tabs ================= */
 defineTab("analytics", "page", "Page", (panel) => pageBuilder(panel, {
   files: { hero: "data/hero.json", lanes: "data/lanes.json", page: "data/page.json" }, layoutIn: "page",
-  label: "Analytics page", view: SITES.analytics.home + "/", tag: "analytics",
+  label: "Work page", view: SITES.analytics.home + "/", tag: "analytics",
 }));
 
-defineTab("analytics", "import", "Import from GitHub", async (panel) => {
+defineTab("analytics", "import", "Draft from a repo", async (panel) => {
   const entry = await loadData("data/lanes.json");
   const d = entry.data;
-  const syncCard = h2card("Sync repos from GitHub", "Pull new lorisca-analytics repos in as draft case studies — title, story, links and cover image prefill from the repo README. Review them in the Page tab, then set them to live.", "https://github.com/lorisca-analytics");
+  const syncCard = h2card("Sync repos from GitHub", "A rough draft only. The publish loop is the main way to put a card on Work. This pulls new lorisca-analytics repos in as draft case studies, with title, story, links and cover prefilled from the README. Review them in the Page tab, then set them to live.", "https://github.com/lorisca-analytics");
   panel.appendChild(syncCard);
   const syncBtn = document.createElement("button");
   syncBtn.className = "btn primary"; syncBtn.textContent = "Check for new repos";
@@ -1495,7 +1528,7 @@ defineTab("analytics", "import", "Import from GitHub", async (panel) => {
         (p.links || []).forEach((x) => { if (x.url) known.add(String(x.url).replace(/\/$/, "")); });
       }));
       const fresh = repos.filter((r) => !r.fork && !r.archived && r.name !== ".github" && !r.name.endsWith(".github.io") && !known.has(r.name) && !known.has(String(r.html_url || "").replace(/\/$/, "")));
-      if (!fresh.length) { syncList.textContent = "No new repos — everything in the org is already on the site."; }
+      if (!fresh.length) { syncList.textContent = "No new repos. Everything in the org is already on the site."; }
       fresh.forEach((r) => {
         const row = document.createElement("div"); row.className = "ed-item";
         const top = document.createElement("div"); top.className = "ed-row";
@@ -1550,8 +1583,8 @@ defineTab("analytics", "sitelinks", "Site links", async (panel) => {
   const d = entry.data;
   const card = h2card("Site links", "Shown in the footer of this site. The header on all three sites is edited under Main site, Site links.", SITES.analytics.home);
   panel.appendChild(card);
-  field(card, "Site name", d, "orgLabel");
-  field(card, "Org id", d, "org");
+  field(card, "Site name (not shown in the current design)", d, "orgLabel");
+  field(card, "Org id (not shown in the current design)", d, "org");
   field(card, "Owner name", d, "owner");
   field(card, "Main site URL", d, "mainSite");
   field(card, "GitHub org URL", d, "githubOrg");
@@ -1560,7 +1593,7 @@ defineTab("analytics", "sitelinks", "Site links", async (panel) => {
     try {
       status("Saving…");
       await saveData("data/site.json", d, "Update analytics site links via editor");
-      status("Saved — live in about a minute.");
+      status("Saved, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }, "Save site links");
 });
@@ -1576,8 +1609,8 @@ defineTab("builds", "sitelinks", "Site links", async (panel) => {
   const d = entry.data;
   const card = h2card("Site links", "Shown in the footer of this site. The header on all three sites is edited under Main site, Site links.", SITES.builds.home);
   panel.appendChild(card);
-  field(card, "Site name", d, "orgLabel");
-  field(card, "Org id", d, "org");
+  field(card, "Site name (not shown in the current design)", d, "orgLabel");
+  field(card, "Org id (not shown in the current design)", d, "org");
   field(card, "Owner name", d, "owner");
   field(card, "Main site URL", d, "mainSite");
   field(card, "GitHub org URL", d, "githubOrg");
@@ -1586,7 +1619,7 @@ defineTab("builds", "sitelinks", "Site links", async (panel) => {
     try {
       status("Saving…");
       await saveData("data/site.json", d, "Update builds site links via editor");
-      status("Saved — live in about a minute.");
+      status("Saved, usually live within a few minutes.");
     } catch (e) { status(e.message, false); }
   }, "Save site links");
 });
@@ -1869,7 +1902,7 @@ async function restoreVersion(path, sha, whenTxt, list) {
       if (panel) panel.innerHTML = "";
     });
     if (activeTab && !activeTab.built) switchTab(activeTab);
-    status("Restored — live in about a minute.");
+    status("Restored, usually live within a few minutes.");
     renderHistory(path, list);
   } catch (e) { status(e.message, false); }
 }
@@ -1897,9 +1930,10 @@ async function boot() {
     });
     switchSite("main");
   } catch (e) {
-    localStorage.removeItem("oc_pat");
+    // forget the key only when GitHub refused it, never on a network hiccup
+    if (e.status === 401 || (e.status === 403 && !/rate limit/i.test(e.ghMessage || ""))) localStorage.removeItem("oc_pat");
     showEditor(false);
-    $("setup-status").textContent = "That key didn't work (" + e.message + "). Try a fresh one.";
+    $("setup-status").textContent = keyHelp(e, SITES.main) + " (" + e.message + ")";
   }
 }
 $("token-save").addEventListener("click", async () => {
