@@ -108,3 +108,9 @@ body[data-page="home"] { line-height: 1.6; }
   .hm-ribbon-track { width: auto; }
   .hm-ribbon ul + ul { display: none; }
 }
+
+/* ---------- card focus (Nov 11): Selected work cards stand out from a tinted band ---------- */
+:root { --card-page: var(--surface); --card-bg: var(--bg); }
+[data-theme="dark"] { --card-page: var(--bg); --card-bg: var(--surface); }
+.hm-featured { background: var(--card-page); }
+.hm-featured .wc { background: var(--card-bg); box-shadow: var(--shadow); }
