@@ -175,8 +175,8 @@
           "when": "2023 – 2024",
           "detail": [
             "Built difficulty-weighted KPI scorecards for 15 recruiters across six regions. Fair measurement where the hiring was hardest.",
-            "Joined intake, exit interview, performance and training records into one view of frontline attrition, and cut department turnover about 15% in 2023 and 17% in 2024.",
-            "Split the attrition fix by expertise: I tightened recruiting criteria and gave Training the evidence to rework manager training, curriculum and promotion assessment.",
+            "Joined intake, exit interview, performance and training records into one view of frontline attrition, and traced it to how team leaders were promoted.",
+            "Split the attrition fix by expertise: I tightened recruiting criteria and gave Training the evidence to rework manager training, curriculum and promotion assessment. I cut department turnover about 15% (2023) and 17% (2024).",
             "Built a referral anti-gaming system my successors ran and extended for 24+ months after I left."
           ]
         },
@@ -355,7 +355,7 @@
       "label": "turnover",
       "title": "Attrition was a promotion problem",
       "outcome": "The obvious metric pointed one way. The mechanism underneath pointed the other.",
-      "url": "https://lorisca-analytics.github.io",
+      "url": "https://lorisca-analytics.github.io#card-sales-attrition-evidence-layer",
       "tag": "On the job · 2024"
     },
     {
